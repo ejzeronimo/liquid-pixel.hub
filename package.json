@@ -10,7 +10,8 @@
     "dist": "electron-builder -mwl",
     "start": "electron .",
     "postinstall": "install-app-deps",
-    "install": "electron-rebuild"
+    "install": "electron-rebuild",
+    "build": "electron build --output public"
   },
   "build": {
     "appId": "com.LpcHub.app",
