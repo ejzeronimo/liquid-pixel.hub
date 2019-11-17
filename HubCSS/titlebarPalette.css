@@ -1,0 +1,83 @@
+#topbar 
+{
+    -webkit-app-region: drag;
+    vertical-align: baseline;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    font-size: .7em;
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+    height: 25px;
+    color: rgb(114, 118, 125);
+    border-bottom: 1px solid rgb(100,100,100);
+    background-color: rgb(32, 34, 37);
+}
+#title {
+    font-size: .75rem;
+    top: 6px;
+    left: 19px;
+    color: rgb(144, 148, 155);
+    position: inherit;
+    width: auto;
+    user-select: none;
+}
+
+#icon{
+    position: inherit;
+    font-size: .67rem;
+    top: 3px;
+    left: 1px;
+    width: 18px;
+    height: 18px;
+    image-rendering: pixelated;
+    user-select: none;
+}
+#titleitem
+{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+}
+.titlebar {
+    -webkit-app-region: no-drag;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 120px;
+    height: 25px;
+    font-size: 0;
+    background-color: rgba(76, 76, 76,0);
+}
+.titlebutton
+{
+    user-select: none;
+    font-family: 'Marlett';
+    font-size: .67rem;
+    display: inline-block;
+    border: 0px;
+    width: 40px;
+    height: 25px;
+    text-align: center;
+    background-color: rgb(43, 44, 49);
+    color: rgb(114, 118, 125);
+}
+.titlebutton:hover 
+{
+    background-color: rgb(140, 140, 140); 
+    color: rgb(255, 255, 255);
+}
+
+#closebutton:hover 
+{
+    background-color: #e35656; 
+    color: rgb(255, 255, 255);
+}
+
+#maxbutton:hover 
+{
+    background-color: #f9a12f; 
+    color: rgb(255, 255, 255);
+}

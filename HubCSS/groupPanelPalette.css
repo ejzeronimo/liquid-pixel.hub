@@ -1,0 +1,282 @@
+.groupPanelContent 
+{
+    transition: box-shadow .16s ease-out,
+        transform .16s ease-out;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+}
+
+.groupPanelContent:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* The top sticky bar css */
+#GeneralTopBarGroup
+{
+    position: relative;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: calc(100% - 20px);
+    height: 90px;
+    background-color: rgb(66, 70, 77);
+    border-radius: 15px;
+    max-width: 550px;
+    align-items: center;
+}
+
+#StickyBarGroupButton {
+    font-family: 'Proxima Nova Bold';
+    color: rgb(200, 200, 200);
+    font-size: 1.2em;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: calc(50% - 15px);
+    background-image: linear-gradient(to bottom right, #00c3dd, #0075ac);
+    height: 70px;
+    border-radius: 10px;
+    border: 0px solid rgb(200, 200, 200);
+    text-align: center;
+}
+
+#StickyBarGroupButton:hover {
+    border-width: 3px;
+}
+
+
+/* The actual CSS for the groups themselves */
+#groupPanelGroupHolder {
+    width: calc(100% - 10px);
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+/* The main container for the group */
+.viewableGroup {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    border-radius: 15px;
+    background-color: rgb(66, 70, 77);
+    width: 393px;
+    height: 393px;
+}
+
+/* The top bar for the groups */
+.viewableGroupTitlePane
+{
+    user-select: none;
+    border-radius: 15px;
+    background-color: rgba(114, 118, 125,0);
+    position: relative;
+    margin-left: 10px;
+    margin-top: 10px;
+    height: 15%;
+    width: calc(100% - 20px);
+}
+
+.viewableGroupTitlePaneStatus
+{
+    font-size: 15px;
+    float: left;
+    border-radius: 15px;
+    background-color: #f9a12f;
+    position: relative;
+    height: 100%;
+    width: 15%;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    text-align: center;
+    line-height: 58.94px;
+}
+
+.viewableGroupTitlePaneName
+{
+    float: left;
+    position: relative;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    height: calc(100%);
+    width: calc(60% - 30px);
+    background-color: rgb(200,200,200);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-break: break-all;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    color: rgb(66, 70, 77);
+    line-height: 58.94px;
+    font-size: xx-large;
+}
+
+.viewableGroupTitlePaneDisband
+{
+    cursor: pointer;
+    font-size: 15px;
+    font-family: 'Proxima Nova Bold';
+    color: rgb(200, 200, 200);
+    float: right;
+    border-width: 0px;
+    border-radius: 15px;
+    background-color: #e35656;
+    position: relative;
+    height: 100%;
+    width: 25%;
+    border: 2px solid #e35656;
+    text-align: center;
+    line-height: 54.94px;
+}
+
+.viewableGroupTitlePaneDisband:hover
+{
+    border: 2px solid rgb(200, 200, 200);
+}
+
+.viewableGroupTitlePaneDisband:active
+{
+    border: 2px solid #e35656;
+}
+
+/* The asset pane for the group */
+.viewableGroupAssetPaneWrapper
+{
+    padding: 5px;
+    overflow: hidden;
+    margin-left: 10px;
+    margin-top: 10px;
+    height: calc(50% - 10px);
+    width: calc(100% - 30px);
+    position: relative;
+    border-radius: 15px;
+    background-color: rgb(114, 118, 125);
+}
+
+.viewableGroupAssetPane 
+{
+    overflow: scroll;
+    overflow-x: hidden;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+.viewableGroupAssetPane::-webkit-scrollbar {
+    width: 5px;
+}
+.viewableGroupAssetPane::-webkit-scrollbar-thumb 
+{
+    background-color: rgb(200, 200, 200);
+    border: 1px solid rgba(0,0,0,0);
+    border-radius: 2.5px;
+}
+
+.viewableGroupAssetButton
+{
+    float: left;
+    display: block;
+    text-align: center;
+    user-select: none;
+    transform: translate3d(0,0,0);
+    margin-right: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0,0);
+    padding: 0px;
+    background-color: rgba(0, 0, 0,0);
+    color: rgb(200, 200, 200);
+    line-height: 24px;
+    letter-spacing: normal;
+    width: calc((100% - 20px) / 2);
+    height: 24px;
+    transition: border .1s ease-in-out;
+    overflow: hidden;
+}
+
+.viewableGroupAssetButton:hover
+{
+    background-color: rgb(200, 200, 200);
+    border: 2px solid rgb(200, 200, 200);
+}
+.viewableGroupAssetButton:active
+{
+    background-color: rgba(0, 0, 0,0);
+    border: 2px solid rgba(0, 0, 0,0);
+}
+.viewableGroupAssetButtonCheck:checked + .viewableGroupAssetButton 
+{
+    background-color: rgb(200, 200, 200);
+    border: 2px solid rgb(200, 200, 200);
+}
+
+.viewableGroupAssetButtonCheck
+{
+    display: none;
+}
+
+.viewableGroupAssetButtonThumbnail
+{
+    display: block;
+    line-height: 24px;
+    float: left;
+    text-align: center;
+    position: relative;
+    border-radius: 8px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: #f9a12f;
+    height: 24px;
+    width: 33%;
+    box-sizing: border-box;
+}
+
+.viewableGroupAssetButtonText
+{
+    float: right;
+    line-height: 24px;
+    display: block;
+    box-sizing: border-box;
+    font-family: 'Proxima Nova Regular';
+    padding-left: 2px;
+    padding-right: 2px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    background-color: rgb(66, 70, 77);
+    height: 24px;
+    width: calc(67%);
+}
+
+/* CSS for the manual command construction */
+.viewableGroupCommandConstruction
+{
+    position: relative;
+    border-radius: 15px;
+    background-color: rgb(114, 118, 125);
+    margin-left: 10px;
+    margin-top: 10px;
+    height: calc(35% - 40px);
+    width: calc(100% - 20px);
+}
+
+.viewableGroupCommandConstruction p
+{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    text-align: center;
+    font-family: "Proxima Nova Bold";
+    white-space: normal; 
+}

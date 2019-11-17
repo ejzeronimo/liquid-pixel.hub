@@ -1,0 +1,148 @@
+.commandPanelContent 
+{
+    transition: box-shadow .16s ease-out,
+        transform .16s ease-out;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+}
+
+.commandPanelContent:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+/* The CSS for the top bar on the Command tab */
+.commandTopStickyBar
+{
+    top: 0px;
+    left: 0px;
+    position: sticky;
+    margin: 10px;
+    border-radius: 15px;
+    background-color: rgb(66, 70, 77);
+    width: calc(100% - 20px);
+    height: 90px;
+}
+
+.commandTopBarCurrentCommand
+{
+    border-radius: 15px 0px 0px 15px;
+    height: 100%;
+    width: 15%;
+    background-color: #e35656;
+    text-align: center;
+    line-height: 90px;
+}
+
+
+/* The CSS an actual command*/
+.viewableCommand
+{
+    display: inline-block;
+    position: relative;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 0px;
+    margin: 10px;
+    border-radius: 15px;
+    width: calc(100% - 25px);
+    min-height: 75px;
+    height: auto;
+    background-color: rgb(66, 70, 77);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.viewableCommandNumber
+{
+    float: left;
+    position: relative;
+    margin: 5px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    border-radius: 15px;
+    height: 70px;
+    width: 70px;
+    min-width: 70px;
+    background-color: #e35656;
+    text-align: center;
+    line-height: 70px;
+    overflow: auto;
+}
+
+.viewableCommandInput
+{
+    font-size: x-large;
+    font-family: 'Proxima Nova Regular';
+    overflow: hidden;
+    word-break: break-all;
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+    text-align: center;
+    padding: 0px;
+    border-radius: 15px;
+    border: 0px solid rgba(0, 0, 0, 0);
+    float: left;
+    position: relative;
+    margin: 5px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    height: 70px;
+    width: 180px;
+    min-width: 180px;
+    box-sizing: border-box;
+    line-height: 70px;
+}
+
+.viewableCommandMessageGeneration
+{
+    height: 70px;
+    overflow: hidden;
+    background-color: rgb(114, 118, 125);
+    color: rgb(200, 200, 200);
+    text-align: center;
+    padding: 0px;
+    border-radius: 15px;
+    border: 0px solid rgba(0, 0, 0, 0);
+    float: left;
+    margin: 5px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    flex: 2 1 120px;
+}
+
+.viewableCommandMessageGenerationColor
+{
+    user-select: none;
+    font-size: small;
+    font-family: 'Proxima Nova Regular';
+    color: rgb(66, 70, 77);
+    text-align: center;
+    line-height: 60px;
+    margin: 5px;
+    background-color: rgb(200, 200, 200);
+    width: 60px;
+    float: left;
+    height: calc(100% - 10px);
+    border-radius: 15px;
+    border: 0px solid rgba(0, 0, 0, 0);
+}
+
+
+.viewableCommandControlPane
+{
+    flex: 1 1 150px;
+    height: 70px;
+    overflow: hidden;
+    background-color: rgb(114, 118, 125);
+    color: rgb(200, 200, 200);
+    text-align: center;
+    padding: 0px;
+    border-radius: 15px;
+    border: 0px solid rgba(0, 0, 0, 0);
+    float: left;
+    margin: 5px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+}

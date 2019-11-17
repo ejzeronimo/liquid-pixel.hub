@@ -1,0 +1,143 @@
+/* General Button stuff for the left sidebar */
+#sectionHeader
+{
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: 160px;
+    min-width: 160px;
+    height: 220px;
+}
+.sectionbutton
+{
+    left: 0px;
+    margin-top: 10px;
+    position: relative;
+    display: block;
+    border: 0px;
+    width: 100% - 10px;
+    height: 25px;
+    text-align: center;
+    background-color: rgba(0,0,0,0);
+    color: rgb(114, 118, 125);
+}
+.sectionbuttoncheck
+{
+    display: none;
+    width: 0px;
+    height: 0px;
+}
+.sectionimage
+{
+    fill: currentColor;
+    position: absolute;
+    top: 0px;
+    left: 15px;
+    width: 25px;
+    height: 25px;
+    user-select: none;
+}
+.sectionbuttontext
+{
+    font-size: .9rem;
+    bottom: 2px;
+    user-select: none;
+    position: absolute;
+    left: 55px;
+}
+/* Home Section special CSS*/
+#HomeTabLabel
+{
+    border-left: 4px solid rgba(255, 255, 255,0);
+}
+#HomeTabLabel:hover, #HomeTabCheckbox:checked + #HomeTabLabel
+{
+    color: rgb(200, 200, 200) !important; 
+    fill: rgb(200, 200, 200) !important; 
+    border-left: 4px solid #24c65b;
+}
+#HomeTabCheckbox:active + #HomeTabLabel
+{
+    color: rgb(114, 118, 125) !important; 
+    fill: rgb(114, 118, 125) !important; 
+}
+/* Stage Section special CSS*/
+#StageTabLabel
+{
+    border-left: 4px solid rgba(255, 255, 255,0);
+}
+#StageTabLabel:hover, #StageTabCheckbox:checked + #StageTabLabel
+{
+    color: rgb(200, 200, 200) !important; 
+    fill: rgb(200, 200, 200) !important; 
+    border-left: 4px solid #00da97;
+}
+#StageTabCheckbox:active + #StageTabLabel
+{
+    color: rgb(114, 118, 125) !important; 
+    fill: rgb(114, 118, 125) !important; 
+}
+/* Asset Section special CSS*/
+#AssetTabLabel
+{
+    border-left: 4px solid rgba(255, 255, 255,0);
+}
+#AssetTabLabel:hover, #AssetTabCheckbox:checked + #AssetTabLabel
+{
+    color: rgb(200, 200, 200) !important; 
+    fill: rgb(200, 200, 200) !important; 
+    border-left: 4px solid #00eccc;
+}
+#AssetTabCheckbox:active + #AssetTabLabel
+{
+    color: rgb(114, 118, 125) !important; 
+    fill: rgb(114, 118, 125) !important; 
+}
+/* Group Section special CSS*/
+#GroupTabLabel
+{
+    border-left: 4px solid rgba(255, 255, 255,0);
+}
+#GroupTabLabel:hover, #GroupTabCheckbox:checked + #GroupTabLabel
+{
+    color: rgb(200, 200, 200) !important; 
+    fill: rgb(200, 200, 200) !important; 
+    border-left: 4px solid #00c3dd;
+}
+#GroupTabCheckbox:active + #GroupTabLabel
+{
+    color: rgb(114, 118, 125) !important; 
+    fill: rgb(114, 118, 125) !important; 
+}
+/* Queue Section special CSS*/
+#QueueTabLabel
+{
+    border-left: 4px solid rgba(255, 255, 255,0);
+}
+#QueueTabLabel:hover, #QueueTabCheckbox:checked + #QueueTabLabel
+{
+    color: rgb(200, 200, 200) !important; 
+    fill: rgb(200, 200, 200) !important; 
+    border-left: 4px solid #0075ac;
+}
+#QueueTabCheckbox:active + #QueueTabLabel
+{
+    color: rgb(114, 118, 125) !important; 
+    fill: rgb(114, 118, 125) !important; 
+}
+/* Mode Section special CSS*/
+#ModeTabLabel
+{
+    border-left: 4px solid rgba(255, 255, 255,0);
+}
+#ModeTabLabel:hover, #ModeTabCheckbox:checked + #ModeTabLabel
+{
+    color: rgb(200, 200, 200) !important; 
+    fill: rgb(200, 200, 200) !important; 
+    border-left: 4px solid #00508b;
+}
+#ModeTabCheckbox:active + #ModeTabLabel
+{
+    color: rgb(114, 118, 125) !important; 
+    fill: rgb(114, 118, 125) !important; 
+}

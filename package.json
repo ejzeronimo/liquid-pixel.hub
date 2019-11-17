@@ -1,0 +1,33 @@
+{
+  "name": "LpcHub",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "LPC but crossplatform",
+  "author": "ejz <ejzeronik@gmail.com>",
+  "main": "hubMain.js",
+  "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -mwl",
+    "start": "electron .",
+    "postinstall": "install-app-deps",
+    "install": "electron-rebuild"
+  },
+  "build": {
+    "appId": "com.LpcHub.app",
+    "icon": "build/icon.ico",
+    "mac": {
+      "icon": "build/icon.icn",
+      "category": "public.app-category.developer-tools"
+    }
+  },
+  "dependencies": {
+    "electron": "latest",
+    "serialport": "^6.2.2",
+    "tedious": "^2.6.4"
+  },
+  "devDependencies": {
+    "electron": "latest",
+    "electron-builder": "^20.28.1",
+    "electron-rebuild": "^1.8.2"
+  }
+}

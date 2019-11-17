@@ -1,0 +1,168 @@
+.assetPanelContent 
+{
+    transition: box-shadow .16s ease-out,
+        transform .16s ease-out;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+}
+
+.assetPanelContent:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* The top sticky bar css */
+#GeneralTopBarAsset 
+{
+    position: relative;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: calc(100% - 20px);
+    height: 90px;
+    background-color: rgb(66, 70, 77);
+    border-radius: 15px;
+    max-width: 550px;
+    align-items: center;
+}
+
+#StickyBarAssetButton {
+    font-family: 'Proxima Nova Bold';
+    color: rgb(200, 200, 200);
+    font-size: 1.2em;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: calc(50% - 15px);
+    background-image: linear-gradient(to bottom right, #33CA9D, #638CF8);
+    height: 70px;
+    border-radius: 10px;
+    border: 0px solid rgb(200, 200, 200);
+    text-align: center;
+}
+
+#StickyBarAssetButton:hover {
+    border-width: 3px;
+}
+
+
+/* The actual CSS for the assets themselves */
+#assetPanelAssetHolder {
+    width: calc(100% - 10px);
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.viewableAsset {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    border-radius: 15px;
+    background-color: rgb(66, 70, 77);
+    width: 393px;
+    height: 393px;
+}
+
+/* This is the CSS for the colors that the asset has*/
+.viewableAssetColorTable {
+    float: left;
+    position: relative;
+    border-radius: 15px;
+    background-color: rgb(114, 118, 125);
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 50%;
+    width: 50%;
+    overflow: hidden;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.viewableAssetColorCube
+{
+    z-index: 2;
+    flex-grow: 1;
+    width: auto;
+    height: auto;
+    color: rgb(200, 200, 200);
+    background-color: #638CF8;
+    border: 0px;
+    transition: background-color .16s ease-out
+}
+.viewableAssetColorCube:hover
+{
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+}
+
+/* This is the CSS for the data part of the asset view, it holds all of the text */
+.viewableAssetDataTable {
+    float: right;
+    position: relative;
+    border-radius: 15px;
+    background-color: rgb(114, 118, 125);
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    height: 50%;
+    width: calc(50% - 30px);
+}
+
+.viewableAssetInput {
+    border: 0px;
+    border-radius: 20px;
+    margin-top: 5%;
+    margin-left: 5%;
+    margin-right: 5%;
+    display: block;
+    box-sizing: border-box;
+    width: 90%;
+    height: 15%;
+    background-color: rgb(200, 200, 200);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    color: rgb(66, 70, 77);
+}
+
+.viewableAssetInput.selectAssetInput {
+    text-align-last: center;
+}
+
+/* This is the CSS for the graph that will be on the asset panel */
+.viewableAssetCommandGraph {
+    border-radius: 15px;
+    background-image: linear-gradient(to bottom right, #33CA9D, #638CF8);
+    position: relative;
+    margin-left: 10px;
+    top: calc(50% + 10px);
+    margin-top: 10px;
+    height: 15%;
+    width: calc(100% - 20px);
+}
+.viewableAssetCommandGraph p, .viewableAssetCommandConstruction p, .viewableAssetColorTable p
+{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    text-align: center;
+    font-family: "Proxima Nova Bold";
+    white-space: normal; 
+}
+
+/* CSS for the manual command construction */
+.viewableAssetCommandConstruction{
+    border-radius: 15px;
+    background-color: rgb(114, 118, 125);
+    position: relative;
+    margin-left: 10px;
+    margin-top: 10px;
+    top: calc(50% + 10px);
+    height: calc(35% - 40px);
+    width: calc(100% - 20px);
+}

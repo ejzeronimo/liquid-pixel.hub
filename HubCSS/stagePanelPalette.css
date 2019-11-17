@@ -1,0 +1,46 @@
+/* For the stage panel only */
+.stagePanelContent
+{
+    transition: box-shadow .16s ease-out,
+    transform .16s ease-out;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+.stagePanelContent:hover
+{
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* for the stage representation in the stage tab */
+.stageTheaterAbstractionContainer { 
+    position: relative; 
+    width: 100%; 
+    padding-top: 40%; /* 16:9 Aspect Ratio */ 
+}
+
+.stageTheaterAbstraction
+{
+    position: absolute;
+    top: 0px;
+    margin: 10px;
+    border-radius: 15px;
+    border: 0px solid;
+    background-color: rgb(47, 49, 54);
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    min-height: calc(393px / 2); 
+    min-width: 393px;
+}
+
+.stageTheaterAbstractionSection
+{
+    float: left;
+    margin-top: 10px;
+    margin-left: 10px;
+    height: calc(100% - 20px);
+    width: calc( (100% - 40px) / 3 );
+    border-radius: 15px;
+    border: 0px solid;
+    background-color: rgb(114, 118, 125);
+}

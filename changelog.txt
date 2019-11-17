@@ -1,0 +1,67 @@
+Hey guys its me back with another update and I have alot for you this time! This is the first major update in a while so it will be called the "DragonFruit" upgrade. All of the following are in the app now (In order of modification):
+
+- Made a custom titlebar to keep the app in a nice darkmode.
+
+- Added the left sidepanel to house the main section buttons.
+
+- Added developed shortcuts F1 and F2 to make my life easier.
+
+- Added back the right panel that shows the status of assets and groups.
+
+- Redid all of the back end file system so that programming and modifying the app will be easier.
+
+- Recolored the entire UI to give it a more cohesive feeling, the grey colors are a modification of Discord's.
+
+- Overhauled the UX desging using Spotify as a reference to make the app feel more navigatable.
+
+- Added a header bar to the Home section so that more data can be displayed if needed.
+
+- Added this update and changelog viewer so that I could keep myself on track.
+
+- Rewrote this changelog because I was procrastinating.
+
+- Added an add asset button to the right sidebar.
+
+- Added an add group button to the right sidebar.
+
+- Removed the login pane that shows up when you open the app.
+
+- Added the create asset and open asset buttons.
+
+- Made the assets use JSON to store the data.
+
+- Changed how the assets and groups can be accessed.
+
+- Designed the Asset CSS to be flexible.
+
+- Refined the Asset CSS to be modular and clean so that the UX is much better.
+
+- Added punctuation to the changelog.
+
+- Spent the entire night making the Asset tab assets look polished.
+
+- Finished the assets and asset wrapping in the Asset tab!
+
+- Made the create asset function use the new styling.
+
+- Made the sidebar buttons for assets and added new vairiables to asset objects
+
+- Made the side button function and changed the icon for the asset tab.
+
+- Changed how commands are handled in the backend, started working on the command tab.
+
+- Made a custom icon for the group tab.
+
+- Made revamped customs icons that look much better for each tab.
+
+- Added a asset pane to the home panel so that you have a quick view right from the home panel.
+
+- Fixed a bug that caused CSS Flicker.
+
+- Finished the pane design for groups, and the sidebar design.
+
+- Completed and overhualed the backend system for groups.
+
+- Started designing the command tab!
+
+- Found a way to use the native colorpicker of each OS making my workload alot lighter.

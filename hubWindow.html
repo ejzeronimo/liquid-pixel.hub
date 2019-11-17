@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!--Font Inclusion-->
+    <link href="fonts/gotham/style.css" rel="stylesheet">
+    <link href="fonts/proximaNova/style.css" rel="stylesheet">
+
+    <!-- General Hub CSS -->
+    <link href="HubCSS/hubPalette.css" rel="stylesheet">
+    <link href="HubCSS/titlebarPalette.css" rel="stylesheet">
+    <link href="HubCSS/leftSidebarPalette.css" rel="stylesheet">
+    <link href="HubCSS/rightSidebarPalette.css" rel="stylesheet">
+    <link href="HubCSS/bottombarPalette.css" rel="stylesheet">
+
+    <!-- CSS Sheets for specific panels only -->
+    <link href="HubCSS/homePanelPalette.css" rel="stylesheet">
+    <link href="HubCSS/stagePanelPalette.css" rel="stylesheet">
+    <link href="HubCSS/assetPanelPalette.css" rel="stylesheet">
+    <link href="HubCSS/groupPanelPalette.css" rel="stylesheet">
+    <link href="HubCSS/commandPanelPalette.css" rel="stylesheet">
+    <!--Hub JS Scripts that must be included-->
+
+    <link href="node_modules/simple-color-picker/src/simple-color-picker.css" rel="stylesheet">
+
+    <script src="hubRemote.js"></script>
+
+    <title>Hub</title>
+</head>
+
+<body onload="onWindowLoad()">
+    <div id="topbar">
+        <!--This is the custom TitleBar and will be transparent-->
+        <div id="titleitem">
+            <!--The icon and the name of the app, maybe a build version later on-->
+            <img id="icon" src="SvgIcons/icon.ico">
+            <div id="title">LpcHub</div>
+        </div>
+
+        <div class="titlebar">
+            <!--Minimize, Maximize, Close-->
+            <button class="titlebutton" onclick="minimizeWindow()">&#x030;</button>
+            <button id="maxbutton" class="titlebutton" onclick="maximizeWindow()">&#x031;</button>
+            <button id="closebutton" class="titlebutton" onclick="closeWindow()">&#x072;</button>
+        </div>
+    </div>
+    <div id="maincontentwrapper">
+        <!--This is a wrapper for the middle contents-->
+        <div id="sidebarleft">
+            <!--This is the main sidebar that will navigate a filetree layout of functions and windows-->
+            <div id="sectionHeader">
+                <input type="radio" id="HomeTabCheckbox" class="sectionbuttoncheck" onchange="onHomeTabOpen()"
+                    checked="true" />
+                <label id="HomeTabLabel" for="HomeTabCheckbox" class="sectionbutton">
+                    <svg id="HomeSectionIcon" class="sectionimage">
+                        <use class="sectionimage" xlink:href="SvgIcons/home.svg#home"></use>
+                    </svg>
+                    <b id="HomeSectionText" class="sectionbuttontext">Home View</b>
+                </label>
+
+                <input type="radio" id="StageTabCheckbox" class="sectionbuttoncheck" onchange="onStageTabOpen()" />
+                <label id="StageTabLabel" for="StageTabCheckbox" class="sectionbutton">
+                    <svg id="StageSectionIcon" class="sectionimage">
+                        <use class="sectionimage" xlink:href="SvgIcons/theater-audience.svg#theater"></use>
+                    </svg>
+                    <b id="StageSectionText" class="sectionbuttontext">Stage View</b>
+                </label>
+
+                <input type="radio" id="AssetTabCheckbox" class="sectionbuttoncheck" onchange="onAssetTabOpen()" />
+                <label id="AssetTabLabel" for="AssetTabCheckbox" class="sectionbutton">
+                    <svg id="AssetSectionIcon" class="sectionimage">
+                        <use class="sectionimage" xlink:href="SvgIcons/arduino.svg#arduino"></use>
+                    </svg>
+                    <b id="AssetSectionText" class="sectionbuttontext">Asset Cluster</b>
+                </label>
+
+                <input type="radio" id="GroupTabCheckbox" class="sectionbuttoncheck" onchange="onGroupTabOpen()" />
+                <label id="GroupTabLabel" for="GroupTabCheckbox" class="sectionbutton">
+                    <svg id="GroupSectionIcon" class="sectionimage">
+                        <use class="sectionimage" xlink:href="SvgIcons/folder.svg#folder"></use>
+                    </svg>
+                    <b id="GroupSectionText" class="sectionbuttontext">Group Cluster</b>
+                </label>
+
+                <input type="radio" id="QueueTabCheckbox" class="sectionbuttoncheck" onchange="onQueueTabOpen()" />
+                <label id="QueueTabLabel" for="QueueTabCheckbox" class="sectionbutton">
+                    <svg id="QueueSectionIcon" class="sectionimage">
+                        <use class="sectionimage" xlink:href="SvgIcons/left-text-alignment-option.svg#lines"></use>
+                    </svg>
+                    <b id="QueueSectionText" class="sectionbuttontext">Commands</b>
+                </label>
+
+                <input type="radio" id="ModeTabCheckbox" class="sectionbuttoncheck" onchange="onModeTabOpen()" />
+                <label id="ModeTabLabel" for="ModeTabCheckbox" class="sectionbutton">
+                    <svg id="ModeSectionIcon" class="sectionimage">
+                        <use class="sectionimage" xlink:href="SvgIcons/contract.svg#mode"></use>
+                    </svg>
+                    <b id="ModeSectionText" class="sectionbuttontext">Mode Creator</b>
+                </label>
+
+            </div>
+        </div>
+        <div id="middlecontent">
+            <!--Dynamic pane to allow for multiple mini panes-->
+            <div id="HomeContentPanel" class="middlecontentpanel">
+                <div id="GeneralTopBarHome" class="homePanelContent">
+                    <div id="StickyBarHomeButton">
+                        Button Three
+                    </div>
+                    <div id="StickyBarHomeButton">
+                        Button Two
+                    </div>
+                    <div id="StickyBarHomeButton">
+                        Button One
+                    </div>
+                </div>
+                <div id="HomeContentPanelHolder">
+                    <div id="ChangelogHome" class="homePanelContent">
+                        <svg id="ChangelogIcon">
+                            <defs>
+                                <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#33CA9D" />
+                                    <stop offset="100%" stop-color="#638CF8" />
+                                </linearGradient>
+                            </defs>
+                            <use xlink:href="SvgIcons/dragon-fruit.svg#fruit" transform="scale(-1, 1)" x="-115px"
+                                y="15px" height="100px" width="100px"></use>
+                            <text x="60" y="32" transform="scale(2, 2)">The dragon<tspan fill="url(#linear)">FRUIT
+                                </tspan>
+                                <tspan x="70" y="45">update</tspan>
+                            </text>
+                        </svg>
+                        <div id="ChangelogText"></div>
+                    </div>
+                    <div id="HomeAssetSummary" class="homePanelContent">
+                        <div class="HomePanelAssetSummary">
+                            <div class="HomePanelAssetSummaryName">AssetName</div>
+                            <div class="HomePanelAssetSummaryColor">NULL</div>
+                            <div class="HomePanelAssetSummaryState">STBY</div>
+                            <div class="HomePanelAssetSummaryPortStatus">
+                                Not Connected
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="StageContentPanel" class="middlecontentpanel">
+                <div class="stageTheaterAbstractionContainer">
+                    <div class="stagePanelContent stageTheaterAbstraction">
+                        <div class="stagePanelContent stageTheaterAbstractionSection">
+
+                        </div>
+                        <div class="stagePanelContent stageTheaterAbstractionSection">
+
+                        </div>
+                        <div class="stagePanelContent stageTheaterAbstractionSection">
+
+                        </div>
+                    </div>
+                </div>
+
+                STAGE TEXT YES
+            </div>
+
+            <!--The Dedicated Asset panel meant for only assets and the add/ remove asset buttons-->
+            <div id="AssetContentPanel" class="middlecontentpanel">
+                <div id="GeneralTopBarAsset" class="assetPanelContent">
+                    <button type="button" id="StickyBarAssetButton" onclick="newAssetPrompt(0)">
+                        Create Asset
+                    </button>
+                    <button type="button" id="StickyBarAssetButton" onclick="newAssetPrompt(1)">
+                        Open Asset
+                    </button>
+                </div>
+
+                <!--A flexbox that hold all of the assets-->
+                <div id="assetPanelAssetHolder">
+                    <!--The data of the asset-->
+                    <div class="viewableAsset assetPanelContent" id="">
+                        <!--This will hold all of the colors the asset has in its queue-->
+                        <div class="viewableAssetColorTable">
+                            <p>No Commands Yet!</p>
+                            <button type="button" class="viewableAssetColorCube" onclick="">
+                                #Test
+                            </button>
+                        </div>
+                        <!--This is the basic data for the asset-->
+                        <div class="viewableAssetDataTable">
+                            <input class="viewableAssetInput" type="text" name="assetName" value="AssetName">
+                            <input class="viewableAssetInput" type="text" name="comport" value="Comport">
+                            <input class="viewableAssetInput" type="text" name="baudrate" value="9600">
+                            <input class="viewableAssetInput" type="text" name="filePath" value="Filepath">
+                            <select class="viewableAssetInput selectAssetInput">
+                                <option value="0">Alone</option>
+                                <option value="1">Master</option>
+                                <option value="2">Slave</option>
+                                <option value="3">Beacon</option>
+                            </select>
+                        </div>
+                        <!--This will house various bits of information for this asset and possible more-->
+                        <div class="viewableAssetCommandGraph">
+                            <p>This Asset has had no actions taken yet, please use it! Time XX:XX:XX</p>
+                        </div>
+                        <!--This is a basic command panel in the asset panel so that test commands can be sent-->
+                        <div class="viewableAssetCommandConstruction">
+                            <p>To be added - a slim command construction panel for one off commands.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--The Dedicated Group panel meant for only groups and the add/ remove groups buttons-->
+            <div id="GroupContentPanel" class="middlecontentpanel">
+                <!--The header of the group tab- meant for overall commands-->
+                <div id="GeneralTopBarGroup" class="groupPanelContent">
+                    <button type="button" id="StickyBarGroupButton" onclick="newGroupPrompt(0)">
+                        Create Group
+                    </button>
+                    <button type="button" id="StickyBarGroupButton" onclick="newGroupPrompt(1)">
+                        Open Group
+                    </button>
+                </div>
+
+                <!--A flexbox designed to hold all groups-->
+                <div id="groupPanelGroupHolder">
+
+                    <!--The data of the group-->
+                    <div class="viewableGroup groupPanelContent" id="">
+                        <!--This will house various bits of information for this group-->
+                        <div class="viewableGroupTitlePane">
+                            <div class="viewableGroupTitlePaneStatus"> STAT </div>
+                            <div class="viewableGroupTitlePaneName"> GroupName </div>
+                            <button type="button" class="viewableGroupTitlePaneDisband"> DISBAND </button>
+                        </div>
+                        <!--This will hold all of the assets in this group-->
+                        <div class="viewableGroupAssetPaneWrapper">
+                            <div class="viewableGroupAssetPane">
+                                <label id="">
+                                    <input type="checkbox" id="testAssetGroupPanel"
+                                        class="viewableGroupAssetButtonCheck">
+                                    <span class="viewableGroupAssetButton">
+                                        <span class="viewableGroupAssetButtonThumbnail">STAT</span>
+                                        <span class="viewableGroupAssetButtonText">AssetName</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <!--This is a basic command panel in the group panel so that test commands can be sent-->
+                        <div class="viewableGroupCommandConstruction">
+                            <p>To be added - a slim command construction panel for one off commands.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!--The Panel where all commands made will be stored, there will also be an autosaved file-->
+            <div id="CommandContentPanel" class="middlecontentpanel">
+                <div class="commandPanelContent commandTopStickyBar">
+                    <div class="commandTopBarCurrentCommand">
+                        #NULL
+                    </div>
+                </div>
+
+                <div class="viewableCommand commandPanelContent" id="">
+                    <div class="viewableCommandNumber">
+                        #Test
+                    </div>
+                    <input class="viewableCommandInput" type="text" name="commandName" value="CommandName">
+                    <div class="viewableCommandMessageGeneration">
+                        <label class="viewableCommandMessageGenerationColor">
+                            <input type="color" style="display: none;" onchange="this.parentElement.style.backgroundColor = this.value;  this.parentElement.style.color = this.value;"/>
+                            No Color
+                        </label>
+                    </div>
+                    <div class="viewableCommandControlPane">
+                        Yeet2
+                    </div>
+                </div>
+            </div>
+
+            <div id="ModeContentPanel" class="middlecontentpanel">
+                MODE TEXT YES
+            </div>
+        </div>
+
+        <div id="sidebarright">
+            <!--This is for temp testing and maybe other customizable information-->
+            <div id="RightPanelAssetHolder" class="rightpanelbuttonholder">
+                <p class="RightPanelSectionHeader">-ALL ASSETS-</p>
+
+                <div id="" class="rightPanelAssetButton" onclick="">
+                    <div class="rightPanelAssetButtonThumbnail">STAT</div>
+                    <div class="rightPanelAssetButtonText">AssetName</div>
+                </div>
+
+            </div>
+            <div id="RightPanelGroupHolder" class="rightpanelbuttonholder">
+                <p class="RightPanelSectionHeader">-ALL GROUPS-</p>
+
+                <div id="" class="rightPanelGroupButton" onclick="">
+                    <div class="rightPanelGroupButtonThumbnail">STAT</div>
+                    <div class="rightPanelGroupButtonText">GroupName</div>
+                </div>
+
+            </div>
+            <div id="RightPanelCommandHolder" class="rightpanelbuttonholder">
+                <p class="RightPanelSectionHeader">-ALL COMMANDS-</p>
+                <button type="button" class="rightpaneladdbutton" onclick="regeneratePanels()">
+                    Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="bottombar">
+        <!--This is the bottom bar that will be used for notifications and quickaccess-->
+    </div>
+</body>
+
+</html>
