@@ -9,7 +9,6 @@ const {
     ipcMain
 } = electron;
 var fs = require('fs');
-const colorpicker = require('simple-color-picker');
 var SerialPort = require('serialport');
 const url = require('url');
 const path = require('path');

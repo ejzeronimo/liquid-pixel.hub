@@ -9,12 +9,22 @@ const {
 } = electron;
 const url = require('url');
 const path = require('path');
+const isDev = require('electron-is-dev');
 
 // only here to initiate globals
 const classes = require('./classes.js');
 
 let hubWindow;
 let loginWindow;
+
+//The part of the app that checks if in devlopment or not
+if (isDev) 
+{
+	console.log('Running in development');
+} else 
+{
+	console.log('Running in production');
+}
 
 //just the startup script, nothing besides that should go in here.
 app.on('ready', openHub);

@@ -1,7 +1,6 @@
 {
-  "name": "LpcHub",
+  "name": "lpc_hub",
   "version": "1.0.0",
-  "license": "MIT",
   "description": "LPC but crossplatform",
   "author": "ejz <ejzeronik@gmail.com>",
   "main": "hubMain.js",
@@ -23,6 +22,7 @@
   },
   "dependencies": {
     "electron": "latest",
+    "electron-is-dev": "^1.1.0",
     "serialport": "^6.2.2",
     "tedious": "^2.6.4"
   },

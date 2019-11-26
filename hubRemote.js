@@ -9,7 +9,6 @@ const {
 const url = require('url');
 const path = require('path');
 var fs = require('fs');
-const colorpicker = require('simple-color-picker');
 var SerialPort = require('serialport');
 const classes = require('./classes.js');
 //const asset = require('./asset.js');
