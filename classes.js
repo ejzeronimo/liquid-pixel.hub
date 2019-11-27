@@ -9,7 +9,7 @@ const {
     ipcMain
 } = electron;
 var fs = require('fs');
-var SerialPort = require('serialport');
+//var SerialPort = require('serialport');
 const url = require('url');
 const path = require('path');
 

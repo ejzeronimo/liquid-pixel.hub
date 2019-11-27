@@ -11,8 +11,6 @@ const path = require('path');
 var fs = require('fs');
 var SerialPort = require('serialport');
 const classes = require('./classes.js');
-//const asset = require('./asset.js');
-var Split = require('split.js')
 
 ///////////////////////////////////////////////////////////////////       TITLEBAR
 function maximizeWindow()

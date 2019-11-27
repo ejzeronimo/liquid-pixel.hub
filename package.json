@@ -2,18 +2,18 @@
   "name": "lpc_hub",
   "version": "1.0.0",
   "description": "LPC but crossplatform",
-  "author": "ejz <ejzeronik@gmail.com>",
+  "author": "Ethan Zeronik",
   "main": "hubMain.js",
+  "license": "MIT",
   "scripts": {
     "pack": "electron-builder --dir",
-    "dist": "electron-builder -mwl",
+    "dist": "electron-builder",
     "start": "electron .",
     "postinstall": "install-app-deps",
-    "install": "electron-rebuild",
-    "build": "electron build --output public"
+    "install": "electron-rebuild"
   },
   "build": {
-    "appId": "com.LpcHub.app",
+    "appId": "com.zeronik.app",
     "icon": "build/icon.ico",
     "mac": {
       "icon": "build/icon.icn",
@@ -21,14 +21,12 @@
     }
   },
   "dependencies": {
-    "electron": "latest",
-    "electron-is-dev": "^1.1.0",
-    "serialport": "^6.2.2",
-    "tedious": "^2.6.4"
+    "serialport": "^6.2.2"
   },
   "devDependencies": {
-    "electron": "latest",
+    "electron": "^7.1.2",
     "electron-builder": "^20.28.1",
-    "electron-rebuild": "^1.8.2"
+    "electron-is-dev": "^1.1.0",
+    "electron-rebuild": "^1.8.8"
   }
 }

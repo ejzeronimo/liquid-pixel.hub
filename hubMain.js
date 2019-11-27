@@ -39,7 +39,11 @@ function openHub() {
         frame: false,
         closable: true,
         backgroundColor: '#FFF',
+        nodeIntegration: true,
+        //The lines below solved the issue
+    webPreferences: {
         nodeIntegration: true
+    }
     });
     hubWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'hubWindow.html'),

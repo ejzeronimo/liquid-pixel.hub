@@ -1,0 +1,9 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.zeronik.app
+icon: build/icon.ico
+mac:
+  icon: build/icon.icn
+  category: public.app-category.developer-tools
+electronVersion: 6.13.1
