@@ -9,23 +9,26 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "start": "electron .",
-    "postinstall": "install-app-deps",
-    "install": "electron-rebuild"
+    "install": "electron-rebuild",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "appId": "com.zeronik.app",
-    "icon": "build/icon.ico",
+    "win": {
+      "icon": "./SvgIcons/icon.ico"
+    },
     "mac": {
       "icon": "build/icon.icn",
       "category": "public.app-category.developer-tools"
     }
   },
   "dependencies": {
-    "serialport": "^6.2.2"
+    "electron-is-dev": "^1.1.0",
+    "serialport": "^8.0.5"
   },
   "devDependencies": {
     "electron": "^7.1.2",
-    "electron-builder": "^20.28.1",
+    "electron-builder": "^20.44.4",
     "electron-is-dev": "^1.1.0",
     "electron-rebuild": "^1.8.8"
   }

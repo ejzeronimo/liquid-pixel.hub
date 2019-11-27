@@ -37,14 +37,6 @@ function closeWindow()
 ///////////////////////////////////////////////////////////////////       ON WINDOW LOAD FUNCTION
 function onWindowLoad()
 {
-    /*var split = Split(["#middlecontent","#sidebarright"],
-    {
-        minSize: [418, 160],
-        expandToMin: true,
-        gutterAlign: 'center',
-        snapOffset: 10
-     }); */
-
 
     //grab the changelog and open it in the chnagelog html
     fs.readFile('./changelog.txt', (err, data) => 
