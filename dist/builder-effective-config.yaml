@@ -4,6 +4,8 @@ directories:
 appId: com.zeronik.app
 win:
   icon: ./SvgIcons/icon.ico
+  publish:
+    - github
 mac:
   icon: build/icon.icn
   category: public.app-category.developer-tools

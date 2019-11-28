@@ -15,7 +15,10 @@
   "build": {
     "appId": "com.zeronik.app",
     "win": {
-      "icon": "./SvgIcons/icon.ico"
+      "icon": "./SvgIcons/icon.ico",
+      "publish": [
+        "github"
+      ]
     },
     "mac": {
       "icon": "build/icon.icn",
@@ -24,6 +27,7 @@
   },
   "dependencies": {
     "electron-is-dev": "^1.1.0",
+    "electron-updater": "^4.2.0",
     "serialport": "^8.0.5"
   },
   "devDependencies": {

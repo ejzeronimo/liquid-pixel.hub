@@ -23,7 +23,13 @@ if (isDev)
 	console.log('Running in development');
 } else 
 {
-	console.log('Running in production');
+    console.log('Running in production');
+    //make const of update
+    const { autoUpdater } = require("electron-updater");
+
+    setInterval(() => {
+        autoUpdater.checkForUpdatesAndNotify();
+      }, 60000)
 }
 
 //just the startup script, nothing besides that should go in here.
