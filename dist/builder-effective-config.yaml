@@ -9,4 +9,7 @@ win:
 mac:
   icon: build/icon.icn
   category: public.app-category.developer-tools
+extraFiles:
+  - filter:
+      - ./changelog.txt
 electronVersion: 7.1.2
