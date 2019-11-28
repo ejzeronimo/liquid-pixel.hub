@@ -15,7 +15,8 @@
     border-bottom: 1px solid rgb(100,100,100);
     background-color: rgb(32, 34, 37);
 }
-#title {
+#titleTopbar {
+    font-family: 'Proxima Nova Regular';
     font-size: .75rem;
     top: 6px;
     left: 19px;

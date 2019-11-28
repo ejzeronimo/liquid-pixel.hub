@@ -1,0 +1,59 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest' #macOS-latest
+
+steps:
+- task: UseNode@1
+  inputs:
+    checkLatest: true
+
+- script: 
+    npm install electron@6.1.5 --save-dev
+  displayName: 'download electron'
+
+- script: 
+    npm install electron-builder
+  displayName: 'download app builder'
+
+- script: 
+    npm install electron-is-dev
+  displayName: 'download dev check'
+
+- script: 
+    npm install electron-updater
+  displayName: 'download app updater'
+
+- script: 
+    npm install serialport
+  displayName: 'download serial module'
+
+- script: 
+    npm install electron-rebuild
+  displayName: 'download rebuilder'
+
+- script: 
+    npm run install
+    npm run postinstall
+  displayName: 'rebuild and install app deps'
+
+- script: npm run dist
+  displayName: 'run npm dist of electron builder'
+
+- task: CopyFiles@2
+  inputs:
+    contents: |
+     dist/latest.yml
+     dist/*.exe
+     dist/*.blockmap
+    targetFolder: $(Build.ArtifactStagingDirectory)
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)
+    artifactName: Outputs

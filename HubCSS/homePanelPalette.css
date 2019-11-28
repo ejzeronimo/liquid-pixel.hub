@@ -29,7 +29,6 @@
 {
     margin: auto;
     margin-top: 10px;
-
     white-space: nowrap;
     width: calc(100% - 20px);
     height: 90px;
@@ -38,17 +37,18 @@
     max-width: 550px;
     min-width: 393px;
 }
-#StickyBarHomeButton
+#GeneralTopBarHomeProject
 {
     float: left;
     position: relative;
-    margin: 0 1.66666667%;
-    top: 10px;
-    width: 30%;
+    margin: 5px;
+    width: calc(100% - 10px);
     background-image: linear-gradient(to bottom right, #33CA9D, #638CF8);
-    height: 70px;
+    height: 80px;
     border-radius: 10px;
     text-align: center;
+    line-height: 80px;
+    font-size: 20px;
 }
 
 /* The Changelog styling */

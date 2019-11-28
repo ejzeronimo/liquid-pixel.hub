@@ -1,6 +1,6 @@
 {
   "name": "lpc_hub",
-  "version": "1.0.1",
+  "version": "1.1.2",
   "description": "LPC but crossplatform",
   "author": "Ethan Zeronik",
   "main": "hubMain.js",
@@ -14,11 +14,15 @@
   },
   "build": {
     "appId": "com.zeronik.app",
+    "productName": "Liquid Pixel Hub",
+    "artifactName": "${name}_${os}_${arch}_${version}-setup.${ext}",
+    "nsis": {
+      "artifactName": "${name}_${os}_${arch}_${version}-setup.${ext}",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
     "win": {
-      "icon": "./SvgIcons/icon.ico",
-      "publish": [
-        "github"
-      ]
+      "icon": "./SvgIcons/icon.ico"
     },
     "mac": {
       "icon": "build/icon.icn",
@@ -26,6 +30,12 @@
     },
     "extraFiles": [
       "./changelog.txt"
+    ],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "https://lpcupdatecloud.blob.core.windows.net/downloads"
+      }
     ]
   },
   "dependencies": {
@@ -34,9 +44,8 @@
     "serialport": "^8.0.5"
   },
   "devDependencies": {
-    "electron": "^7.1.2",
+    "electron": "^6.1.5",
     "electron-builder": "^20.44.4",
-    "electron-is-dev": "^1.1.0",
     "electron-rebuild": "^1.8.8"
   }
 }

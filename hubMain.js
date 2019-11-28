@@ -10,27 +10,13 @@ const {
 const url = require('url');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const { autoUpdater } = require("electron-updater");
 
 // only here to initiate globals
 const classes = require('./classes.js');
 
 let hubWindow;
 let loginWindow;
-
-//The part of the app that checks if in devlopment or not
-if (isDev) 
-{
-	console.log('Running in development');
-} else 
-{
-    console.log('Running in production');
-    //make const of update
-    const { autoUpdater } = require("electron-updater");
-
-    setInterval(() => {
-        autoUpdater.checkForUpdatesAndNotify();
-      }, 60000)
-}
 
 //just the startup script, nothing besides that should go in here.
 app.on('ready', openHub);
@@ -47,9 +33,9 @@ function openHub() {
         backgroundColor: '#FFF',
         nodeIntegration: true,
         //The lines below solved the issue
-    webPreferences: {
-        nodeIntegration: true
-    }
+        webPreferences: {
+            nodeIntegration: true
+        }
     });
     hubWindow.loadURL(url.format({
         pathname: path.join(__dirname, 'hubWindow.html'),
@@ -59,27 +45,63 @@ function openHub() {
     hubWindow.on('close', function () {
         app.quit();
     });
-    hubWindow.on("ready-to-show",function(){
+    hubWindow.on("ready-to-show", function () {
         //openLoginWindow();
         hubWindow.show();
-    });
-    
-    
-    globalShortcut.register('Shift+Space', function()
-    {
-        hubWindow.reload();
-    });
-    
+        //The part of the app that checks if in devlopment or not
+        if (!isDev) {
 
-    globalShortcut.register('f1', function() 
-    {
-        hubWindow.reload();
-        
-    });
+            //running production
+            autoUpdater.autoDownload = false;
 
-    globalShortcut.register('f2', function() 
-    {
-        hubWindow.toggleDevTools();
+            setInterval(() => {
+                autoUpdater.checkForUpdates();
+            }, 60000);
+
+            //changes the status text in the update button
+            autoUpdater.on("checking-for-update", () => {
+                hubWindow.webContents.send('update_status_changed', "searching for updates");
+            });
+
+            autoUpdater.on("update-not-available", () => {
+                hubWindow.webContents.send('update_status_changed', "no updates found");
+            });
+
+            autoUpdater.on("update-available", () => {
+                hubWindow.webContents.send('update_status_changed', "update found, downloading");
+                try
+                {
+                    autoUpdater.downloadUpdate(); //downloads the update
+                }
+                catch{}
+            });
+
+            autoUpdater.on('download-progress', (progressObj) => {
+                hubWindow.webContents.send('update_status_changed', "update found, downloading " + progressObj.percent.toFixed(1) + "%");
+            });
+
+            //changes text and changes function of button
+            autoUpdater.on("update-downloaded", () => {
+                hubWindow.webContents.send('update_status_changed', "update downloaded, click to install");
+            });
+
+            //response that does install update
+            ipcMain.on('quit-and-install', (event, arg) => {
+                event.reply('quit-and-install-reply', "installing update now ...")
+                autoUpdater.quitAndInstall();
+            });
+        }
+        else {
+            //shortcuts only in dev mode
+            globalShortcut.register('f1', function () {
+                hubWindow.reload();
+
+            });
+
+            globalShortcut.register('f2', function () {
+                hubWindow.toggleDevTools();
+            });
+        }
     });
 }
 
@@ -124,37 +146,37 @@ if (process.platform == 'darwin') {
 }
 
 const hubMenuTemplate = [{
-        label: 'Menu',
-        submenu: [{
-                label: 'Dev',
-                accelerator: process.platform == 'darwin' ? 'Command+D' : 'Ctrl+D',
-                click() {
-                    hubWindow.toggleDevTools();
-                }
-            },
-            {
-                label: 'Quit',
-                accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-                click() {
-                    app.quit();
-                }
-            }
-        ]
+    label: 'Menu',
+    submenu: [{
+        label: 'Dev',
+        accelerator: process.platform == 'darwin' ? 'Command+D' : 'Ctrl+D',
+        click() {
+            hubWindow.toggleDevTools();
+        }
     },
     {
-        label: 'File',
-        submenu: [{
-            label: 'New Asset',
-            click() {
-                openAsset();
-            }
-        }]
-    },
-    {
-        label: 'Window',
-        submenu: [{
-            label: 'Asset Settings',
-            click() {}
-        }]
+        label: 'Quit',
+        accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+        click() {
+            app.quit();
+        }
     }
+    ]
+},
+{
+    label: 'File',
+    submenu: [{
+        label: 'New Asset',
+        click() {
+            openAsset();
+        }
+    }]
+},
+{
+    label: 'Window',
+    submenu: [{
+        label: 'Asset Settings',
+        click() { }
+    }]
+}
 ]

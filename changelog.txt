@@ -65,3 +65,39 @@ Hey guys its me back with another update and I have alot for you this time! This
 - Started designing the command tab!
 
 - Found a way to use the native colorpicker of each OS making my workload alot lighter.
+
+- Spent three days figuring out how to implement an auto update system for free using the cloud!
+
+- Can actually pull new updates now and can download latest from Azure for windows!
+
+- Reset the version to 1.0.0 to test the update system.
+
+- Updated the version to 1.0.1 to test the update system for the 3rd time.
+
+- Finalized update 1.0.2.
+
+- Fixed local update system and bumped up to 1.0.3.
+
+- Added an UI element to make updates for viewable.
+
+- Pushed 1.0.5.
+
+- Fixed title of home page.
+
+- Added version marker to make life easier.
+
+- The current function tabs are Home, Asset, group.
+
+- Pushed version 1.0.6
+
+- Made it check for update every minute, pushed 1.0.7.
+
+- Pushed 1.0.8 to test out the pipeline.
+
+- Tried to silence the errors and pushed 1.0.9
+
+- Pushed 1.1.0 to YOLO!
+
+- Pushed 1.1.1 to see if I fixed the blockmaps.
+
+- Reverted version of electron to hopefully get rid of update errors.
