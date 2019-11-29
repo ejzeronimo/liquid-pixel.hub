@@ -68,12 +68,7 @@ function openHub() {
             });
 
             autoUpdater.on("update-available", () => {
-                hubWindow.webContents.send('update_status_changed', "update found, downloading");
-                try
-                {
-                    autoUpdater.downloadUpdate(); //downloads the update
-                }
-                catch{}
+                hubWindow.webContents.send('update_status_changed', "update found, click to download");
             });
 
             autoUpdater.on('download-progress', (progressObj) => {
@@ -89,6 +84,11 @@ function openHub() {
             ipcMain.on('quit-and-install', (event, arg) => {
                 event.reply('quit-and-install-reply', "installing update now ...")
                 autoUpdater.quitAndInstall();
+            });
+
+            //response that does install update
+            ipcMain.on('download-update', (event, arg) => {
+                autoUpdater.downloadUpdate(); //downloads the update
             });
         }
         else {

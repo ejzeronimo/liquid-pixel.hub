@@ -327,17 +327,29 @@ ipcRenderer.on('quit-and-install-reply', (event, arg) => {
 });
 
 function quitAndUpdate() {
-    var isDownloadReady = false;
+    var isDownloadReady = 0;
 
     //is when update is downloaded
     if("update downloaded, click to install" == document.getElementById("updateEntireAppButton").innerText)
     {
-        isDownloadReady = true;
+        isDownloadReady = 1;
+    }
+
+    //is when there is an update
+    if("update found, click to download" == document.getElementById("updateEntireAppButton").innerText)
+    {
+        isDownloadReady = 2;
     }
 
     //called when update button is clicked
-    if(isDownloadReady)
+    if(isDownloadReady == 1)
     {
         ipcRenderer.send('quit-and-install', true);
+    }
+
+    if(isDownloadReady == 2)
+    {
+        ipcRenderer.send('download-update', true);
+        isDownloadReady == 0;
     }
 }

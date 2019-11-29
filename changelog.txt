@@ -101,3 +101,9 @@ Hey guys its me back with another update and I have alot for you this time! This
 - Pushed 1.1.1 to see if I fixed the blockmaps.
 
 - Reverted version of electron to hopefully get rid of update errors.
+
+- Removed the dev shortcuts from the production version.
+
+- Fixed fatal error with constant downloads due to an aysnc promise.
+
+- Pushed 1.1.4.
