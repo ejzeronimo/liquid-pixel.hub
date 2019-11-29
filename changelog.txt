@@ -107,3 +107,5 @@ Hey guys its me back with another update and I have alot for you this time! This
 - Fixed fatal error with constant downloads due to an aysnc promise.
 
 - Pushed 1.1.4.
+
+- Changed minor CSS and pushed 1.1.5.
