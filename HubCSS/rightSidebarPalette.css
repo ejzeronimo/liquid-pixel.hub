@@ -164,32 +164,70 @@
     width: 67%;
 }
 
-
-
-/* General for the add buttons on the right panel */
-.rightpaneladdbutton
+/* The geneneral styling fot the group side button */
+.rightPanelCommandButton
 {
-    margin-top: 10px;
-    text-align: center;
+    transform: translate3d(0,0,0);
+    margin: auto;
+    margin-top: 5px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0,0);
+    padding: 0px;
+    background-color: rgba(0, 0, 0,0);
+    color: rgb(200, 200, 200);
+    line-height: 24px;
+    letter-spacing: normal;
     width: calc(100% - 20px);
-    height: 35px;
-    border-radius: 15px;
-    background-color: rgba(0,0,0,0);
-    border: 2px solid #43b581;
-    color: #43b581;
-    fill: #43b581;
+    height: 24px;
+    transition: border .1s ease-in-out;
+    overflow: hidden;
+}
+.rightPanelCommandButton:hover
+{
+    background-color: rgb(200, 200, 200);
+    border: 2px solid rgb(200, 200, 200);
 }
 
-/* #43b581 */
-.rightpaneladdbutton:hover
+.rightPanelCommandButton:active
 {
-    border: 2px solid rgb(200,200,200);
-    color: rgb(200,200,200);
-    fill: rgb(200,200,200);
+    background-color: rgba(0, 0, 0,0);
+    border: 2px solid rgba(0, 0, 0,0);
 }
-.rightpaneladdbutton:active
+
+.rightPanelCommandButtonThumbnail
 {
-    border: 2px solid #43b581;
-    color: #43b581;
-    fill: #43b581;
+    line-height: 24px;
+    float: left;
+    text-align: center;
+    position: relative;
+    border-radius: 8px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: #e35656;
+    height: 24px;
+    width: 33%;
+    box-sizing: border-box;
+}
+
+.rightPanelCommandButtonText
+{
+    line-height: 24px;
+    display: block;
+    margin-left: calc(33%);
+    box-sizing: border-box;
+    font-family: 'Proxima Nova Regular';
+    padding-left: 2px;
+    padding-right: 2px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    background-color: rgb(114, 118, 125);
+    height: 24px;
+    width: 67%;
 }

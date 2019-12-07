@@ -7,11 +7,11 @@
     font-size: .7em;
     text-align: center;
     vertical-align: middle;
-    width: 100%;
+    width: calc(100% - 5px);
     height: 16px;
     color: rgb(144, 148, 155);
     background-color: rgb(32, 34, 37);
-    
+    padding-left: 5px;
 }
 
 /* Generic button class for bottombar */
@@ -25,7 +25,6 @@
     user-select: none;
     line-height: 12px;
     font-size: 11px;
-    float: right;
     padding: 2px;
     user-select: none;
     cursor: pointer;
@@ -42,6 +41,12 @@
     background-color: rgba(255, 255, 255, .2);
 }
 
-/* The button that displays the notifications */
+.leftBottomBarButton
+{
+    float: left;
+}
 
-/* The button that displays the update status */
+.rightBottomBarButton
+{
+    float: right;
+}

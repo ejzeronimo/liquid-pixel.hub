@@ -109,3 +109,31 @@ Hey guys its me back with another update and I have alot for you this time! This
 - Pushed 1.1.4.
 
 - Changed minor CSS and pushed 1.1.5.
+
+- Added slim command to the Assets and Groups finally.
+
+- Finished the command design in the command tab.
+
+- Added side button for commands.
+
+- Added a refresh button to the bottom of the app.
+
+- Added a group summary to the home panel.
+
+- Added the middle panel to assets for debug information.
+
+- Began work on designing an automatic repo system to make "projects" applicable.
+
+- Removed the dev hollow versions of HTML.
+
+- Finished the projects system and added a global settings variable to the code.
+
+- Made the assets save when a variable is updated or the app is closed.
+
+- Made the serialports active!
+
+- Made the commands actually function.
+
+- DO NOT NAME ANY TWO OBJECTS THE SAME!!
+
+- Added the auto playlist button.

@@ -82,6 +82,19 @@
     flex-flow: row wrap;
 }
 
+.viewableAssetColorTable p
+{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    text-align: center;
+    font-family: "Proxima Nova Bold";
+    white-space: normal; 
+}
+
 .viewableAssetColorCube
 {
     z-index: 2;
@@ -110,6 +123,7 @@
     margin-bottom: 10px;
     height: 50%;
     width: calc(50% - 30px);
+    overflow: hidden;
 }
 
 .viewableAssetInput {
@@ -134,27 +148,79 @@
 }
 
 /* This is the CSS for the graph that will be on the asset panel */
-.viewableAssetCommandGraph {
+.viewableAssetCommandGraph 
+{
     border-radius: 15px;
-    background-image: linear-gradient(to bottom right, #33CA9D, #638CF8);
+    background-color: rgb(200, 200, 200);
     position: relative;
     margin-left: 10px;
-    top: calc(50% + 10px);
     margin-top: 10px;
     height: 15%;
     width: calc(100% - 20px);
+    overflow: hidden;
 }
-.viewableAssetCommandGraph p, .viewableAssetCommandConstruction p, .viewableAssetColorTable p
+
+.viewableAssetCommandGraphState
 {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
+    user-select: none;
+    font-size: 15px;
+    float: left;
+    border-radius: 15px;
+    background-color: #f9a12f;
+    position: relative;
+    height: 100%;
+    width: 15%;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
     text-align: center;
-    font-family: "Proxima Nova Bold";
-    white-space: normal; 
+    line-height: 58.94px;
+}
+
+.viewableAssetCommandGraphLog
+{
+    text-align: left;
+    float: left;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 15px;
+    position: relative;
+    height: 100%;
+    width: 60%;
+    overflow: scroll;
+    overflow-x: hidden;
+    color: rgb(66, 70, 77);
+}
+.viewableAssetCommandGraphLog::-webkit-scrollbar 
+{
+    width: 0px;  /* Remove scrollbar space */
+}
+
+.viewableAssetCommandGraphPortConnect
+{
+    font-family: 'Proxima Nova Bold';
+    color: rgb(66, 70, 77);
+    cursor: pointer;
+    font-size: 15px;
+    float: right;
+    border-radius: 0px;
+    border-width: 0px;
+    padding: 0px;
+    background-color: #24c65b;
+    position: relative;
+    height: 100%;
+    width: 25%;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    text-align: center;
+    line-height: 58.94px;
+}
+.viewableAssetCommandGraphPortConnect:hover
+{
+    color: rgb(200, 200, 200);
+}
+.viewableAssetCommandGraphPortConnect:active
+{
+    color: rgb(66, 70, 77);
 }
 
 /* CSS for the manual command construction */
@@ -164,7 +230,144 @@
     position: relative;
     margin-left: 10px;
     margin-top: 10px;
-    top: calc(50% + 10px);
     height: calc(35% - 40px);
     width: calc(100% - 20px);
+}
+
+/* CSS thats for the command generation */
+.viewableAssetCommandConstructionColor
+{
+    cursor: pointer;
+    position: relative;
+    float: left;
+    user-select: none;
+    font-size: small;
+    font-family: 'Proxima Nova Regular';
+    color: rgb(66, 70, 77);
+    text-align: center;
+    line-height: 60px;
+    margin: 5px;
+    background-color: rgb(200, 200, 200);
+    width: 60px;
+    float: left;
+    height: 60px;
+    border-radius: 15px;
+}
+
+.viewableAssetCommandConstructionModeSelect
+{
+    text-align-last:center;
+    border: 0px;
+    float: left;
+    border-radius: 20px;
+    margin-top: 5px;
+    margin-right: 5px;
+    width: 128px;
+    height: 28px;
+    line-height: 27.5px;
+    background-color: rgb(200, 200, 200);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    color: rgb(66, 70, 77);
+    padding: 0px;
+}
+
+.viewableAssetCommandConstructionDebug {
+    border: 0px;
+    float: left;
+    border-radius: 20px;
+    margin-top: 5px;
+    margin-right: 5px;
+    min-width: 100px;
+    height: 27.5px;
+    line-height: 27.5px;
+    background-color: rgb(200, 200, 200);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    color: rgb(66, 70, 77);
+    user-select: none;
+    cursor: pointer;
+}
+
+.viewableAssetCommandConstructionDebugCheckbox {
+    display: none;
+}
+
+.viewableAssetCommandConstructionGeneratedString
+{
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    border: 0px;
+    border-radius: 20px;
+    margin-top: 5px;
+    margin-right: 5px;
+    width: calc(373px - 10px - 60px - 5px);
+    height: 22.5px;
+    color: rgb(200, 200, 200);
+    background-color: rgb(66, 70, 77);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    padding: 0px;
+}
+
+.viewableAssetCommandConstructionDelay
+{
+    position: absolute;
+    left: 122.5px;
+    top: 32.5px;
+    border: 0px;
+    border-radius: 20px;
+    margin-top: 5px;
+    margin-right: 5px;
+    width: 128px;
+    height: 28px;
+    line-height: 27.5px;
+    background-color: rgb(200, 200, 200);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    color: rgb(66, 70, 77);
+    padding: 0px; 
+}
+
+
+/* Send button */
+.viewableAssetCommandConstructionSend
+{
+    float: right;
+    position: relative;
+    margin: 5px;
+    margin-left: 0px;
+    margin-bottom: 5px;
+    border-radius: 15px;
+    height: calc(100% - 10px);
+    width: 60px;
+    background-color: #0075ac;
+    text-align: center;
+    line-height: 60px;
+    overflow: auto;
+    border: 0px;
+    fill: rgb(200, 200, 200);
+}
+
+.viewableAssetCommandConstructionSend:hover
+{
+    border: 3px solid rgb(200, 200, 200);
+}
+.viewableAssetCommandConstructionSend:active
+{
+    border: 0px;
+}
+
+#viewableSlimCommandPlayIcon
+{
+    display: block;
+    height: 30px;
+    width: 30px;
+    margin-left: calc((100% - 30px) / 2);
+    top: calc((100% - 30px) / 2);
 }

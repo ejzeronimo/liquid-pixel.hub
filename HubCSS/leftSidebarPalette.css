@@ -109,18 +109,18 @@
     color: rgb(114, 118, 125) !important; 
     fill: rgb(114, 118, 125) !important; 
 }
-/* Queue Section special CSS*/
-#QueueTabLabel
+/* Command Section special CSS*/
+#CommandTabLabel
 {
     border-left: 4px solid rgba(255, 255, 255,0);
 }
-#QueueTabLabel:hover, #QueueTabCheckbox:checked + #QueueTabLabel
+#CommandTabLabel:hover, #CommandTabCheckbox:checked + #CommandTabLabel
 {
     color: rgb(200, 200, 200) !important; 
     fill: rgb(200, 200, 200) !important; 
     border-left: 4px solid #0075ac;
 }
-#QueueTabCheckbox:active + #QueueTabLabel
+#CommandTabCheckbox:active + #CommandTabLabel
 {
     color: rgb(114, 118, 125) !important; 
     fill: rgb(114, 118, 125) !important; 

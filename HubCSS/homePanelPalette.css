@@ -48,7 +48,32 @@
     border-radius: 10px;
     text-align: center;
     line-height: 80px;
-    font-size: 20px;
+    font-size: x-large;
+    overflow: hidden;
+}
+
+.GeneralTopBarHomeProjectButton
+{
+    cursor: pointer;
+    margin-right: 5px;
+    margin-top: 5px;
+    float: right;
+    position: relative;
+    height: 70px;
+    width: 70px;
+    padding: 0px;
+    color: rgb(200, 200, 200);
+    border: 3px solid rgb(66, 70, 77);
+    background-color: rgb(66, 70, 77);
+    border-radius: 10px;
+}
+.GeneralTopBarHomeProjectButton:hover
+{
+    border-color: rgb(200, 200, 200);
+}
+.GeneralTopBarHomeProjectButton:active
+{
+    border-color: rgb(66, 70, 77);
 }
 
 /* The Changelog styling */
@@ -102,14 +127,30 @@
 }
 
 /* The Asset Sumamry */
+.homeAssetSummary
+{
+    margin-top: 10px;
+    margin-left: 10px;
+    border-radius: 15px;
+}
+.homeAssetSummaryTitle
+{  
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    font-size: x-large;
+    background-color: rgb(114, 118, 125);
+    border-radius: 15px 15px 0px 0px;
+    min-width: 393px;
+    max-width: 715px;
+}
+
 #HomeAssetSummary
 {
     position: relative;
     padding-top: 5px;
     padding-bottom: 5px;
-    border-radius: 15px;
-    margin-top: 10px;
-    margin-left: 10px;
+    border-radius: 0px 0px 15px 15px;
     min-height: 141px;
     min-width: 393px;
     max-width: 715px;
@@ -118,17 +159,6 @@
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
-}
-#HomeAssetSummary p
-{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-family: "Proxima Nova Bold";
-    white-space: normal; 
 }
 
 .HomePanelAssetSummary
@@ -213,3 +243,107 @@
     background-color: rgb(66, 70, 77);
 }
 
+
+/* The Group Sumamry */
+.homeGroupSummary
+{
+    margin-top: 10px;
+    margin-left: 10px;
+    border-radius: 15px;
+}
+.homeGroupSummaryTitle
+{  
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    font-size: x-large;
+    background-color: rgb(114, 118, 125);
+    border-radius: 15px 15px 0px 0px;
+    min-width: 393px;
+    max-width: 715px;
+}
+
+#HomeGroupSummary
+{
+    position: relative;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 0px 0px 15px 15px;
+    min-height: 141px;
+    min-width: 393px;
+    max-width: 715px;
+    background-color: rgb(66, 70, 77);
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.HomePanelGroupSummary
+{
+    cursor: pointer;
+    z-index: 2;
+    flex-shrink: 0;
+    flex-grow: 0;
+    user-select: none;
+    position: relative;
+    margin: 5px;
+    border-radius: 15px;
+    width: 131px;
+    height: 131px;
+    background-color: rgb(114, 118, 125);
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0,0);
+    transition: border .1s ease-in-out;
+}
+.HomePanelGroupSummary:hover
+{
+    border: 2px solid rgb(200,200,200);
+}
+
+.HomePanelGroupSummaryName
+{
+    position: relative;
+    margin: auto;
+    margin-top: 5px;
+    font-family: 'Proxima Nova Regular';
+    line-height: 25px;
+    text-align: center;
+    border-radius: 15px;
+    width: calc(100% - 10px);
+    height: 25px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+}
+
+.HomePanelGroupSummaryAssets
+{
+    position: relative;
+    margin-left: 5px;
+    margin-top: 5px;
+    font-family: 'Proxima Nova Regular';
+    line-height: 60px;
+    text-align: center;
+    border-radius: 15px;
+    width: calc(100% - 10px);
+    height: 60px;
+    font-size: x-large;
+    color: rgb(200, 200, 200);
+    background-color: rgb(66, 70, 77);
+}
+
+
+.HomePanelGroupSummaryState
+{
+    position: relative;
+    margin: auto;
+    margin-top: 5px;
+    font-family: 'Proxima Nova Bold';
+    line-height: 25px;
+    text-align: center;
+    border-radius: 15px;
+    width: 50%;
+    height: 25px;
+    background-color: #f9a12f;
+    color: rgb(200, 200, 200);
+}
