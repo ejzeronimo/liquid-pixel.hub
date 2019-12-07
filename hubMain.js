@@ -51,7 +51,7 @@ function openHub() {
     //The part of the app that checks if in devlopment or not
     if (!isDev) {
         //check to see if settings exist
-        var filePath = app.getAppPath() + '\\' + "settings.json";
+        var filePath = './settings.json';
         if (!fs.existsSync(filePath)) {
             //make that file
             var settings = {};
@@ -97,6 +97,10 @@ function openHub() {
         //response that does install update
         ipcMain.on('download-update', (event, arg) => {
             autoUpdater.downloadUpdate(); //downloads the update
+        });
+
+        globalShortcut.register('f2', function () {
+            hubWindow.toggleDevTools();
         });
     }
     else {

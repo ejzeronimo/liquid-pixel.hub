@@ -81,7 +81,7 @@ function onWindowLoad() {
     })
 
     //update the settings
-    var filePath = remote.app.getAppPath() + '\\' + "settings.json";
+    var filePath = './settings.json';
     settings = JSON.parse(fs.readFileSync(filePath));
 
     //check to see if targetProject is set and it still exists

@@ -137,3 +137,5 @@ Hey guys its me back with another update and I have alot for you this time! This
 - DO NOT NAME ANY TWO OBJECTS THE SAME!!
 
 - Added the auto playlist button.
+
+- Fixed bug that was prodiced when calling settings.
