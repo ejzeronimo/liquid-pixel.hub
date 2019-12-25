@@ -1,44 +1,116 @@
-
 /* For the home panel only */
-.homePanelContent
-{
+.homePanelContent {
     transition: box-shadow .16s ease-out,
     transform .16s ease-out;
     transform-style: preserve-3d;
-    backface-visibility: hidden;
+    backface-visibility: visible;
 }
-.homePanelContent:hover
-{
+
+.homePanelContent:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* The overall styling for the home content panel */
-#HomeContentPanelHolder
-{
-    align-items: center;
-    width: calc(100% - 10px);
+#HomeContentPanelHolder {
+    margin: 10px;
+    width: calc(100% - 20px);
+    height: auto;
+    justify-content: center;
+    /*
+    align-items: flex-end;
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
+
+    column-count: 3;
+    column-width: 393px;
+    column-gap: 10px;
+
+    display: grid;
+    grid-gap: 10px 10px;
+    grid-template-columns: repeat(auto-fill, 393px);
+    grid-template-rows: min-content;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    */
+    display: grid;
+    grid-gap: 10px 10px;
+    grid-template-columns: repeat(auto, 393px);
+    grid-template-rows: auto;
+    grid-template-areas:
+        "log project project"
+        "log settings settings"
+        "log asset group"
+        "log command command";
+}
+
+@media screen and (max-width: calc(200px + 160px + 25px + 20px + 1179px)) {
+    #HomeContentPanelHolder {
+        grid-template-areas:
+            "log project"
+            "log asset"
+            "log group"
+            "settings settings"
+            "command command";
+    }
+}
+
+@media screen and (max-width: calc(200px + 160px + 25px + 10px + 786px)) {
+    #HomeContentPanelHolder {
+        grid-template-areas:
+            "project"
+            "log"
+            "settings"
+            "asset"
+            "group"
+            "command";
+    }
+}
+
+.grid-log {
+    grid-area: log;
+}
+
+.grid-project {
+    grid-area: project;
+}
+
+.grid-asset {
+    grid-area: asset;
+}
+
+.grid-group {
+    grid-area: group;
+}
+
+.grid-command {
+    grid-area: command;
+}
+
+.grid-settings {
+    grid-area: settings;
+}
+
+.extra {
+    grid-area: extra;
 }
 
 
 /* The home buttons */
-#GeneralTopBarHome
-{
+#GeneralTopBarHome {
     margin: auto;
-    margin-top: 10px;
     white-space: nowrap;
-    width: calc(100% - 20px);
+    width: 100%;
     height: 90px;
     background-color: rgb(66, 70, 77);
     border-radius: 15px;
-    max-width: 550px;
     min-width: 393px;
 }
-#GeneralTopBarHomeProject
-{
+
+#GeneralTopBarHomeProject {
     float: left;
     position: relative;
     margin: 5px;
@@ -52,8 +124,7 @@
     overflow: hidden;
 }
 
-.GeneralTopBarHomeProjectButton
-{
+.GeneralTopBarHomeProjectButton {
     cursor: pointer;
     margin-right: 5px;
     margin-top: 5px;
@@ -67,51 +138,64 @@
     background-color: rgb(66, 70, 77);
     border-radius: 10px;
 }
-.GeneralTopBarHomeProjectButton:hover
-{
+
+.GeneralTopBarHomeProjectButton:hover {
     border-color: rgb(200, 200, 200);
 }
-.GeneralTopBarHomeProjectButton:active
-{
+
+.GeneralTopBarHomeProjectButton:active {
     border-color: rgb(66, 70, 77);
 }
 
 /* The Changelog styling */
-#ChangelogHome
-{
-    white-space: wrap;
-    margin-top: 10px;
-    margin-left: 10px;
+#ChangelogHome {
+    margin: auto;
     user-select: none;
     background-color: rgb(66, 70, 77);
     border-radius: 15px;
     width: 393px;
-    height: 393px;
+    min-height: 393px;
+    height: 100%;
+    overflow: hidden;
 }
-#ChangelogText
-{
+
+#ChangelogTextWrapper {
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: calc(100% - 18px);
+    height: calc(100% - 130px - 9px);
+}
+
+#ChangelogText {
+    position: absolute;
+    left: 0px;
+    top: 0px;
     word-wrap: normal;
-    overflow: auto;
+    overflow: scroll;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
     font-size: .9rem;
     font-family: "Proxima Nova Light";
     margin-bottom: 9px;
     margin-left: 9px;
-    width: calc(100% - 18px);
-    height: calc(100% - 18px - 130px);
+    width: 100%;
+    height: 100%;
     color: rgb(200, 200, 200);
 }
 
 #ChangelogText::-webkit-scrollbar {
     width: 5px;
 }
-#ChangelogText::-webkit-scrollbar-thumb 
-{
+
+#ChangelogText::-webkit-scrollbar-thumb {
     background-color: rgb(200, 200, 200);
-    border: 1px solid rgba(0,0,0,0);
+    border: 1px solid rgba(0, 0, 0, 0);
     border-radius: 2.5px;
 }
-#ChangelogIcon
-{
+
+#ChangelogIcon {
+    display: block;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     font-family: 'Proxima Nova Extrabold';
@@ -127,14 +211,12 @@
 }
 
 /* The Asset Sumamry */
-.homeAssetSummary
-{
-    margin-top: 10px;
-    margin-left: 10px;
+.homeAssetSummary {
     border-radius: 15px;
+    max-width: 796px;
 }
-.homeAssetSummaryTitle
-{  
+
+.homeAssetSummaryTitle {
     text-align: center;
     height: 40px;
     line-height: 40px;
@@ -142,18 +224,18 @@
     background-color: rgb(114, 118, 125);
     border-radius: 15px 15px 0px 0px;
     min-width: 393px;
-    max-width: 715px;
+    max-width: 796px;
 }
 
-#HomeAssetSummary
-{
+#HomeAssetSummary {
     position: relative;
     padding-top: 5px;
     padding-bottom: 5px;
     border-radius: 0px 0px 15px 15px;
     min-height: 141px;
+    height: calc(100% - 50px);
     min-width: 393px;
-    max-width: 715px;
+    max-width: 796px;
     background-color: rgb(66, 70, 77);
     display: flex;
     flex-wrap: wrap;
@@ -161,8 +243,7 @@
     justify-content: center;
 }
 
-.HomePanelAssetSummary
-{
+.HomePanelAssetSummary {
     cursor: pointer;
     z-index: 2;
     flex-shrink: 0;
@@ -175,16 +256,16 @@
     height: 131px;
     background-color: rgb(114, 118, 125);
     border-radius: 10px;
-    border: 2px solid rgba(0, 0, 0,0);
+    border: 2px solid rgba(0, 0, 0, 0);
     transition: border .1s ease-in-out;
-}
-.HomePanelAssetSummary:hover
-{
-    border: 2px solid rgb(200,200,200);
+    overflow: auto;
 }
 
-.HomePanelAssetSummaryName
-{
+.HomePanelAssetSummary:hover {
+    border: 2px solid rgb(200, 200, 200);
+}
+
+.HomePanelAssetSummaryName {
     margin: auto;
     margin-top: 5px;
     font-family: 'Proxima Nova Regular';
@@ -197,8 +278,7 @@
     color: rgb(66, 70, 77);
 }
 
-.HomePanelAssetSummaryColor
-{
+.HomePanelAssetSummaryColor {
     float: left;
     position: relative;
     margin-left: 5px;
@@ -213,8 +293,7 @@
     color: rgb(66, 70, 77);
 }
 
-.HomePanelAssetSummaryState
-{   
+.HomePanelAssetSummaryState {
     display: block;
     position: relative;
     margin-left: calc(50% - 7.5px + 10px);
@@ -229,8 +308,7 @@
     color: rgb(200, 200, 200);
 }
 
-.HomePanelAssetSummaryPortStatus
-{
+.HomePanelAssetSummaryPortStatus {
     margin: auto;
     margin-top: 5px;
     font-family: 'Proxima Nova Regular';
@@ -245,14 +323,12 @@
 
 
 /* The Group Sumamry */
-.homeGroupSummary
-{
-    margin-top: 10px;
-    margin-left: 10px;
+.homeGroupSummary {
+    max-width: 796px;
     border-radius: 15px;
 }
-.homeGroupSummaryTitle
-{  
+
+.homeGroupSummaryTitle {
     text-align: center;
     height: 40px;
     line-height: 40px;
@@ -260,18 +336,18 @@
     background-color: rgb(114, 118, 125);
     border-radius: 15px 15px 0px 0px;
     min-width: 393px;
-    max-width: 715px;
+    max-width: 796px;
 }
 
-#HomeGroupSummary
-{
+#HomeGroupSummary {
     position: relative;
     padding-top: 5px;
     padding-bottom: 5px;
     border-radius: 0px 0px 15px 15px;
     min-height: 141px;
+    height: calc(100% - 50px);
     min-width: 393px;
-    max-width: 715px;
+    max-width: 796px;
     background-color: rgb(66, 70, 77);
     display: flex;
     flex-wrap: wrap;
@@ -279,8 +355,8 @@
     justify-content: center;
 }
 
-.HomePanelGroupSummary
-{
+.HomePanelGroupSummary {
+    overflow: auto;
     cursor: pointer;
     z-index: 2;
     flex-shrink: 0;
@@ -293,16 +369,15 @@
     height: 131px;
     background-color: rgb(114, 118, 125);
     border-radius: 10px;
-    border: 2px solid rgba(0, 0, 0,0);
+    border: 2px solid rgba(0, 0, 0, 0);
     transition: border .1s ease-in-out;
 }
-.HomePanelGroupSummary:hover
-{
-    border: 2px solid rgb(200,200,200);
+
+.HomePanelGroupSummary:hover {
+    border: 2px solid rgb(200, 200, 200);
 }
 
-.HomePanelGroupSummaryName
-{
+.HomePanelGroupSummaryName {
     position: relative;
     margin: auto;
     margin-top: 5px;
@@ -316,8 +391,7 @@
     color: rgb(66, 70, 77);
 }
 
-.HomePanelGroupSummaryAssets
-{
+.HomePanelGroupSummaryAssets {
     position: relative;
     margin-left: 5px;
     margin-top: 5px;
@@ -333,8 +407,7 @@
 }
 
 
-.HomePanelGroupSummaryState
-{
+.HomePanelGroupSummaryState {
     position: relative;
     margin: auto;
     margin-top: 5px;
@@ -346,4 +419,192 @@
     height: 25px;
     background-color: #f9a12f;
     color: rgb(200, 200, 200);
+}
+
+/* The Command Sumamry */
+.homeCommandSummary {
+    overflow: hidden;
+    border-radius: 15px;
+    background-color: rgb(66, 70, 77);
+}
+
+.homeCommandSummaryTitle {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    font-size: x-large;
+    background-color: rgb(114, 118, 125);
+    border-radius: 15px 15px 0px 0px;
+    min-width: 393px;
+}
+
+#HomeCommandSummary {
+    position: relative;
+    padding-right: 5px;
+    margin: 5px;
+    min-height: 141px;
+    max-height: 755px;
+    min-width: 373px;
+    background-color: rgb(66, 70, 77);
+    overflow: scroll;
+    overflow-x: hidden;
+    justify-content: center;
+}
+
+#HomeCommandSummary::-webkit-scrollbar {
+    width: 5px;
+    background-color: rgb(66, 70, 77);
+}
+
+#HomeCommandSummary::-webkit-scrollbar-thumb {
+    background-color: rgb(200, 200, 200);
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 2.5px;
+}
+
+.HomePanelCommandSummary {
+    box-sizing: border-box;
+    cursor: pointer;
+    z-index: 2;
+    flex-shrink: 0;
+    flex-grow: 0;
+    user-select: none;
+    position: relative;
+    margin-top: 5px;
+    border-radius: 15px;
+    width: 100%;
+    height: 70px;
+    background-color: rgb(114, 118, 125);
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0);
+    transition: border .1s ease-in-out;
+}
+
+.HomePanelCommandSummary:hover {
+    border: 2px solid rgb(200, 200, 200);
+}
+
+.HomePanelCommandSummaryName {
+    float: left;
+    margin-left: 5px;
+    margin-top: 3px;
+    margin-right: 3px;
+    font-family: 'Proxima Nova Regular';
+    line-height: 60px;
+    text-align: center;
+    border-radius: 15px;
+    width: calc(100% - 136px);
+    font-size: xx-large;
+    height: 60px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+}
+
+.HomePanelCommandSummaryColor {
+    float: left;
+    position: relative;
+    margin-left: 5px;
+    margin-top: 3px;
+    font-family: 'Proxima Nova Regular';
+    line-height: 60px;
+    text-align: center;
+    border-radius: 15px;
+    width: 60px;
+    height: 60px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+}
+
+.HomePanelCommandSummaryState {
+    float: left;
+    display: block;
+    position: relative;
+    margin-top: 3px;
+    margin-left: 3px;
+    font-family: 'Proxima Nova Bold';
+    line-height: 60px;
+    text-align: center;
+    border-radius: 15px;
+    width: 60px;
+    height: 60px;
+    background-color: #e35656;
+    color: rgb(200, 200, 200);
+}
+
+/* The Settings Window */
+.homeSettings {
+    max-height: 796px;
+    height: 100%;
+    border-radius: 15px;
+    background-color: rgb(66, 70, 77);
+    font-family: 'Proxima Nova Regular';
+    user-select: none;
+}
+
+.homeSettingsTitle {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    font-size: x-large;
+    color: rgb(66, 70, 77);
+    background-color: rgb(200, 200, 200);
+    border-radius: 15px 15px 0px 0px;
+    min-width: 393px;
+    font-family: 'Proxima Nova SemiBold';
+}
+
+.homeSettingsContentWrapper {
+    margin: 9px;
+    margin-top: 0px;
+    position: relative;
+    left: 0px;
+    top: 0px;
+    width: calc(100% - 18px);
+    height: calc(100% - 40px - 9px);
+}
+
+.homeSettingsContent
+{
+    width: 100%;
+    height: 100%;
+}
+
+.homeSettingsContent::-webkit-scrollbar {
+    width: 5px;
+}
+
+.homeSettingsContent::-webkit-scrollbar-thumb {
+    background-color: rgb(200, 200, 200);
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 2.5px;
+}
+
+.homeSettingsHeader
+{
+    width: 100%;
+    margin-bottom: 5px;
+    text-rendering: optimizeLegibility;
+    text-align: center;
+    font-family: 'Proxima Nova SemiBold';
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgb(91, 95, 102);
+}
+
+.homeSettingsBreak
+{
+    height: 5px;
+    margin: 0px;
+}
+
+kbd
+{
+    float: right;
+    padding-left: 3px;
+    padding-right: 3px;
+    text-align: center;
+    font-family: 'Proxima Nova Light';
+    background-color: rgb(114, 118, 125);
+    color: rgb(200, 200, 200);
+    border-radius: 5px;
 }

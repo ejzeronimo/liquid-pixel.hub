@@ -4,9 +4,11 @@
     position: relative;
     left: 0px;
     top: 0px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     width: 160px;
     min-width: 160px;
-    height: 220px;
+    height: auto;
 }
 .sectionbutton
 {
@@ -48,6 +50,7 @@
 /* Home Section special CSS*/
 #HomeTabLabel
 {
+    margin-top: 0px;
     border-left: 4px solid rgba(255, 255, 255,0);
 }
 #HomeTabLabel:hover, #HomeTabCheckbox:checked + #HomeTabLabel
@@ -140,4 +143,29 @@
 {
     color: rgb(114, 118, 125) !important; 
     fill: rgb(114, 118, 125) !important; 
+}
+
+/* Synamic part of the sidebar*/
+.leftSidebarWrapper
+{
+    position: relative;
+    height: calc(100% - 220px);
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+}
+
+
+/* The CSS for the command viewer*/
+.leftSidebarCommandViewer
+{
+    bottom: 0px;
+    left: 0px;
+    position: absolute;
+    margin: 5px;
+    border-radius: 15px;
+    min-width: 160px;
+    width: calc(100% - 10px);
+    height: 33%;
+    background-color: rgb(114, 118, 125);
 }

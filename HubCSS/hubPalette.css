@@ -1,13 +1,17 @@
-
 :focus {
     outline: 0;
-    }
-body 
-{
+}
+
+body {
+    margin: 0px;
     font-family: 'Proxima Nova Semibold';
     background-color: rgb(30, 30, 30);
     overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+
 }
+
 #background {
     position: fixed;
     height: 100vh;
@@ -22,9 +26,21 @@ body
 
 
 /* The three main sections of the app */
-#sidebarleft
-{
-    position: static;
+#maincontentwrapper {
+    position: absolute;
+    height: calc(100% - 26px - 16px);
+    width: 100%;
+    min-width: calc(200px + 418px + 160px);
+    top: 26px;
+    left: 0px;
+    max-height: 100vh;
+    background-color: rgba(30, 30, 30, 0);
+}
+
+#sidebarleft {
+    overflow: hidden;
+    float: left;
+    position: relative;
     height: 100%;
     width: 200px;
     min-width: 200px;
@@ -32,37 +48,32 @@ body
     top: 0px;
     background-color: rgb(47, 49, 54);
 }
-#middlecontent
-{
+
+#middlecontent {
+    float: left;
+    position: relative;
     overflow: hidden;
-    width: 100%;
+    top: 0px;
+    width: calc(100% - 200px - 160px);
+    height: 100%;
     min-width: 418px;
+
 }
-#maincontentwrapper
-{
-    position: absolute;
-    height: calc(100vh - 26px - 16px);
-    width: 100%;
-    min-width: calc(200px + 418px + 160px);
-    top: 26px;
-    left: 0px;
-    display: flex;
-    max-height: 100vh;
-    background-color: rgba(30, 30, 30,0);
-}
-#sidebarright
-{
+
+#sidebarright {
+    float: left;
+    position: relative;
     overflow: hidden;
     min-width: 160px;
-    min-width: 160px;
+    width: 160px;
     height: 100%;
     right: 0px;
     top: 0px;
     background-color: rgb(47, 49, 54);
 }
+
 /* General for each content panel */
-.middlecontentpanel
-{
+.middlecontentpanel {
     min-width: 418px;
     display: block;
     width: 100%;
@@ -85,4 +96,90 @@ body
     border: 1px solid rgba(0, 0, 0, 0);
     border-radius: 2.5px;
 }
+
 /* Styling that is used in more than one section of the app */
+#notificationCenter {
+    pointer-events: none;
+    bottom: 16px;
+    left: 200px;
+    z-index: 15;
+    position: fixed;
+    max-height: 33%;
+}
+
+.singleNotification {
+    pointer-events: all;
+    position: relative;
+    height: 28px;
+    width: max-content;
+    border-radius: 5px;
+    margin: 5px;
+    margin-top: 5px;
+    background-color: rgb(49, 52, 57);
+    color: rgb(200, 200, 200);
+    filter: drop-shadow(0 0 5px black);
+    opacity: 1;
+    animation-name: fadeIn;
+    animation-duration: .5s;
+}
+
+.singleNotificationText {
+    user-select: none;
+    padding-left: 4px;
+    position: relative;
+    float: left;
+    white-space: nowrap;
+    width: auto;
+    float: left;
+    text-align: center;
+    white-space: nowrap;
+    font-family: 'Proxima Nova Regular';
+    line-height: 28px;
+    font-size: 11px;
+}
+
+.singleNotificationCloseButton {
+    cursor: pointer;
+    position: relative;
+    border: 0px;
+    float: left;
+    background-color: rgba(0, 0, 0, 0);
+    margin: 8px;
+    margin-left: 4px;
+    margin-right: 4px;
+    width: 12px;
+    height: 12px;
+}
+
+.singleNotificationClose {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    fill: rgb(200, 200, 200);
+    height: 12px;
+    width: 12px;
+}
+
+@keyframes fadeOut {
+
+    /* flame pulses */
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+
+    /* flame pulses */
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

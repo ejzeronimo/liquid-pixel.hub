@@ -19,7 +19,7 @@
     font-family: 'Proxima Nova Regular';
     font-size: .75rem;
     top: 6px;
-    left: 19px;
+    left: 24px;
     color: rgb(144, 148, 155);
     position: inherit;
     width: auto;
@@ -30,10 +30,9 @@
     position: inherit;
     font-size: .67rem;
     top: 3px;
-    left: 1px;
+    left: 3px;
     width: 18px;
     height: 18px;
-    image-rendering: pixelated;
     user-select: none;
 }
 #titleitem

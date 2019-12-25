@@ -2,3 +2,4 @@ node_modules
 .gitignore
 dist
 settings.json
+NewIcon.svg

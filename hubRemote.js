@@ -4,6 +4,7 @@ const {
     BrowserWindow,
     remote,
     ipcRenderer,
+    globalShortcut,
     ipcMain,
     webContents
 } = require('electron');
@@ -20,11 +21,11 @@ let settings;
 function maximizeWindow() {
     if (remote.getCurrentWindow().isMaximized()) {
         remote.getCurrentWindow().unmaximize();
-        document.getElementById("maxbutton").textContent = '\u0031';
+        //document.getElementById("maxbutton").textContent = '\u0031';
     }
     else {
         remote.getCurrentWindow().maximize();
-        document.getElementById("maxbutton").textContent = '\u0032';
+        //document.getElementById("maxbutton").textContent = '\u0032';
     }
 }
 function minimizeWindow() {
@@ -95,6 +96,9 @@ function onWindowLoad() {
         document.getElementById("GeneralTopBarHomeText").innerText = openedProject.name + " Loaded";
     }
 
+    //set the keybinds here
+    generateShortcuts();
+
     //set all main content to be off except opening panel
     document.getElementById("HomeContentPanel").style.display = "block";
     document.getElementById("StageContentPanel").style.display = "none";
@@ -123,6 +127,8 @@ function onWindowClose() {
     for (var i = global.objectList._CommandList.length() - 1; 0 <= i; i--) {
         commands[i].Value.saveCommand();
     }
+
+    //remove all keybinds
 
     //save all project assets to the projects
     if (settings.targetProject != undefined && fs.existsSync(settings.targetProject)) {
@@ -161,6 +167,162 @@ function regeneratePanels() {
         }
     });
 }
+///////////////////////////////////////////////////////////////////       GLOBAL SAVE FUNCTION
+function globalSave() {
+    //save all changes to every object
+    var assets = global.objectList._AssetList.data();
+    for (var i = global.objectList._AssetList.length() - 1; 0 <= i; i--) {
+        assets[i].Value.saveAsset();
+    }
+    //then do groups first because assets are nested in groups
+    var groups = global.objectList._GroupList.data();
+    for (var i = global.objectList._GroupList.length() - 1; 0 <= i; i--) {
+        groups[i].Value.saveGroup();
+    }
+    //tdo commands because they nest both
+    var commands = global.objectList._CommandList.data();
+    for (var i = global.objectList._CommandList.length() - 1; 0 <= i; i--) {
+        commands[i].Value.saveCommand();
+    }
+    //save all project assets to the projects
+    if (settings.targetProject != undefined && fs.existsSync(settings.targetProject)) {
+        //open the project and assign it
+        openedObject = JSON.parse(fs.readFileSync(settings.targetProject));
+        openedProject = Object.assign(new classes.project, openedObject);
+        //save each project then close app
+        openedProject.importAllOpenObjects();
+        openedProject.saveAllProjectObjects(true);
+    }
+}
+///////////////////////////////////////////////////////////////////       CREATE THE SHORTCUTS
+function generateShortcuts() {
+
+    var pos = 0;
+    var foo = [
+        'HomeContentPanel',
+        'StageContentPanel',
+        'AssetContentPanel',
+        'GroupContentPanel',
+        'CommandContentPanel',
+        'ModeContentPanel'
+    ];
+
+    var template =
+        [
+            //The two shortcuts to sycle tabs
+            {
+                label: '',
+                accelerator: 'Ctrl+S',
+                click: () => {
+                    globalSave();
+                }
+            },
+            {
+                label: '',
+                accelerator: 'Shift+Up',
+                click: () => {
+                    //check current pos
+                    for (var i = 0; i < document.getElementsByClassName("middlecontentpanel").length; i++) {
+                        if (document.getElementsByClassName("middlecontentpanel")[i].style.display == "block") {
+                            pos = foo.indexOf(document.getElementsByClassName("middlecontentpanel")[i].id)
+                        }
+                    }
+                    pos = ((pos - 1) + 6) % 6;
+                    onTabChanged(foo[pos]);
+                }
+            },
+            {
+                label: '',
+                accelerator: 'Shift+Down',
+                click: () => {
+                    //check current pos
+                    for (var i = 0; i < document.getElementsByClassName("middlecontentpanel").length; i++) {
+                        if (document.getElementsByClassName("middlecontentpanel")[i].style.display == "block") {
+                            pos = foo.indexOf(document.getElementsByClassName("middlecontentpanel")[i].id)
+                        }
+                    }
+                    pos = (pos + 1) % 6;
+                    onTabChanged(foo[pos])
+                }
+            },
+            //opens and closes the searchbar
+            {
+                label: '',
+                accelerator: 'Shift+Space',
+                click: () => {
+                    toggleSearchBar();
+                }
+            },
+            //force reload the window
+            {
+                label: '',
+                accelerator: 'Ctrl+Shift+R',
+                click: () => {
+                    globalSave();
+                    remote.getCurrentWindow().reload();
+                }
+            },
+            //toggle the kiosk mode of the current window
+            {
+                label: '',
+                accelerator: 'F11',
+                click: () => {
+                    if (!remote.getCurrentWindow().isFullScreen()) {
+                        remote.getCurrentWindow().setFullScreen(true);
+                    }
+                    else {
+                        remote.getCurrentWindow().setFullScreen(false);
+                    }
+                }
+            },
+            //open and create an asset
+            {
+                label: '',
+                accelerator: 'Shift+A',
+                click: () => {
+                    newAssetPrompt(1);
+                }
+            },
+            {
+                label: '',
+                accelerator: 'Shift+Alt+A',
+                click: () => {
+                    newAssetPrompt(0);
+                }
+            },
+            //open and create a group
+            {
+                label: '',
+                accelerator: 'Shift+G',
+                click: () => {
+                    newGroupPrompt(1);
+                }
+            },
+            {
+                label: '',
+                accelerator: 'Shift+Alt+G',
+                click: () => {
+                    newGroupPrompt(0);
+                }
+            },
+            //open and create a command
+            {
+                label: '',
+                accelerator: 'Shift+C',
+                click: () => {
+                    newCommandPrompt(1);
+                }
+            },
+            {
+                label: '',
+                accelerator: 'Shift+Alt+C',
+                click: () => {
+                    newCommandPrompt(0);
+                }
+            }
+        ];
+    remote.getCurrentWindow().setMenu(remote.Menu.buildFromTemplate(template));
+}
 ///////////////////////////////////////////////////////////////////       REMOVE ALL OBJECTS
 function purgeAllObjects() {
     var assets = global.objectList._AssetList.data();
@@ -177,6 +339,9 @@ function purgeAllObjects() {
     for (var i = global.objectList._CommandList.length() - 1; 0 <= i; i--) {
         commands[i].Value.closePaneForCommand();
     }
+
+    //set the title to the projectname
+    document.title = "Liquid Pixel Hub - No Projects Opened";
 }
 ///////////////////////////////////////////////////////////////////       ON SECTION CLICK FUNCTIONS
 function onTabChanged(panelName) {
@@ -189,6 +354,8 @@ function onTabChanged(panelName) {
         }
         else {
             panels[i].style.display = "block";
+            foo = panels[i].id.substring(0, panels[i].id.length - 12) + "TabCheckbox";
+            document.getElementById(foo).checked = true;
         }
     }
 }
@@ -525,7 +692,7 @@ function newCommandPrompt(type) {
             });
     }
 }
-///////////////////////////////////////////////////////////////////       COMMAND PLAYLIST FUNCTION
+///////////////////////////////////////////////////////////////////       COMMAND PLAYLIST FUNCTIONS
 function sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
@@ -536,4 +703,15 @@ async function startCommandPlaylistAsync() {
         await sleep(global.objectList._CommandList.data()[i].Value.startDelay);
         global.objectList._CommandList.data()[i].Value.sendCommand();
     };
+}
+///////////////////////////////////////////////////////////////////       GLOBAL SEARCHBAR FUNCTIONS
+function toggleSearchBar() {
+    if (document.getElementById("globalBlackout").style.display == "none") {
+        //open
+        document.getElementById("globalBlackout").style.display = "block";
+    }
+    else {
+        //vice versa
+        document.getElementById("globalBlackout").style.display = "none";
+    }
 }

@@ -138,4 +138,32 @@ Hey guys its me back with another update and I have alot for you this time! This
 
 - Added the auto playlist button.
 
-- Fixed bug that was prodiced when calling settings.
+- Fixed bug that was produced when calling settings object.
+
+- Remade the Icon from both the tray and app.
+
+- Oh and I made an icon in the tray.
+
+- Made the home window much more organized and interlinked.
+
+- Made the settings pane that currently shows shortcuts.
+
+- Added all of the shown shortcuts except the search feature.
+
+- Added the state engine to assets.
+
+- Fixed a bug where groups would not remember which assets were selected when saved.
+
+- Fixed a bug where only one asset abstraction would change in each group panel.
+
+- Added the new state engine to groups.
+
+- Fixed a bug where Shift + Up/Down was not local to the clicked tab.
+
+- BEHOLD, all objects now have a bugless state engine. Truly a Christmas miracle!
+
+- Fixed a bug where assets and groups could not be removed from commands.
+
+- Added a fully function notification system.
+
+- Pushed 1.1.9 and made a Christmas miracle!

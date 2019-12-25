@@ -9,6 +9,7 @@ const {
 } = require('electron');
 var fs = require('fs');
 var SerialPort = require('serialport');
+var notification = require('./notification.js');
 const url = require('url');
 const path = require('path');
 
@@ -116,7 +117,7 @@ global.objectList = {
 };
 global.colorCustom = {
     ColorsCustom
-};
+};   
 ///////////////////////////////////////////////////////////////////       PROJECT CLASS
 class Project {
     constructor() {
@@ -270,6 +271,9 @@ class Project {
                 //say there was an error or the asset was opened
             }
         });
+
+        //set the title to the projectname
+        document.title = "Liquid Pixel Hub - " + this.name + " Loaded";
     }
 }
 ///////////////////////////////////////////////////////////////////       COMMAND CLASS
@@ -298,9 +302,66 @@ class Command {
     }
 
     //All COMMAND METHODS
+    setState(status = 0) {
+        var colorArray = [
+            '#e35656',//off
+            '#24c65b',//running
+            '#f9a12f'//next
+        ];
+        //get all of the changable objects 
+        var displays = [
+            document.getElementById(this.name + "CommandPanel").getElementsByClassName("viewableCommandNumber")[0],
+            document.getElementById(this.name + "CommandButton").getElementsByClassName("rightPanelCommandButtonThumbnail")[0]
+        ];
+        //change the of all of the static ones
+        for (var i = 0; i < displays.length; i++) {
+            //change the color
+            displays[i].style.backgroundColor = colorArray[status];
+        }
+        if(status == 1)
+        {
+            //then change the maset displays
+        }
+    }
+
+    callEvent(name) {
+        // a custom event handler that will be called locally from within the assets themselves
+        switch (name) {
+            case 'command-previous':
+                //set state
+                this.setState(0);
+                break;
+            case 'command-sent':
+                //set state
+                this.setState(1);
+                //then set the next in line to up next
+                for(var i = 0; i < document.getElementsByClassName("viewableCommandNumber").length; i++)
+                {
+                    if(parseInt(document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.substr(1,document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.length),10) == (this.position + 1))
+                    {
+                        //get the parent and call the set state
+                        global.objectList._CommandList.findKeyValuePair(document.getElementsByClassName("viewableCommandNumber")[i].parentElement.id.replace("CommandPanel","")).callEvent('command-next')
+                    }
+                    if(parseInt(document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.substr(1,document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.length),10) == (this.position - 1))
+                    {
+                        global.objectList._CommandList.findKeyValuePair(document.getElementsByClassName("viewableCommandNumber")[i].parentElement.id.replace("CommandPanel","")).callEvent('command-previous')
+                    }
+                }
+                break;
+            case 'command-next':
+                //set state
+                this.setState(2);
+                break;
+            default:
+            // do nothing if it defaults
+        }
+    }
+
     sendCommand() {
         //update the command itself
         this.updateCommand();
+        //send the event
+        this.callEvent('command-sent');
         //for each asset
         if (this.assetArray.length > 0) {
             for (var i = 0; i < this.assetArray.length; i++) {
@@ -351,22 +412,22 @@ class Command {
         this.generateCommand();
         //will update the assets activated
         var assetsTemp = document.getElementById(this.name + "CommandPanel").querySelector('div[name="objectHolder"]').querySelectorAll('label[id*="Asset"]');
+        this.assetArray = []
         for (var i = 0; i < assetsTemp.length; i++) {
             if (assetsTemp[i].querySelector("input").checked) {
                 var alias = assetsTemp[i].querySelector("input").id.replace('commandPanelAssetCheckbox', '');
                 this.assetArray.push(alias);
             }
         }
-        this.assetArray = Array.from(new Set(this.assetArray));
         //will update the groups activated
         var groupsTemp = document.getElementById(this.name + "CommandPanel").querySelector('div[name="objectHolder"]').querySelectorAll('label[id*="Group"]');
+        this.groupArray = []
         for (var i = 0; i < groupsTemp.length; i++) {
             if (groupsTemp[i].querySelector("input").checked) {
                 var alias = groupsTemp[i].querySelector("input").id.replace('commandPanelGroupCheckbox', '');
                 this.groupArray.push(alias);
             }
         }
-        this.groupArray = Array.from(new Set(this.groupArray));
     }
 
     commandSetup() {
@@ -400,8 +461,7 @@ class Command {
         for (var i = 0; i < assetsTemp.length; i++) {
             for (var j = 0; j < this.assetArray.length; j++) {
                 if (assetsTemp[i].querySelector("input").id == this.assetArray[j] + 'commandPanelAssetCheckbox') {
-                    if(!assetsTemp[i].querySelector("input").checked)
-                    {
+                    if (!assetsTemp[i].querySelector("input").checked) {
                         assetsTemp[i].click()
                     }
                 }
@@ -413,8 +473,7 @@ class Command {
         for (var i = 0; i < groupsTemp.length; i++) {
             for (var j = 0; j < this.groupArray.length; j++) {
                 if (groupsTemp[i].querySelector("input").id == this.groupArray[j] + 'commandPanelGroupCheckbox') {
-                    if(!groupsTemp[i].querySelector("input").checked)
-                    {
+                    if (!groupsTemp[i].querySelector("input").checked) {
                         groupsTemp[i].click()
                     }
                 }
@@ -440,6 +499,7 @@ class Command {
         //removes all HTML
         document.getElementById(this.name + "CommandPanel").remove();
         document.getElementById(this.name + "CommandButton").remove();
+        document.getElementById(this.name + "homePanelCommandPanel").remove();
 
         //then removes this asset from the global list
         global.objectList._CommandList.removeKeyValuePair(this.name);
@@ -516,6 +576,23 @@ class Command {
             <div class="rightPanelCommandButtonText">` + this.name + `</div>
             `;
         document.getElementById('RightPanelCommandHolder').appendChild(commandPanelForRightSidebar);
+
+        //make a microasset on the home panel
+        var commandPanelForHomePanel = document.createElement('div');
+        commandPanelForHomePanel.className = "HomePanelCommandSummary"; //gives it the proper styling
+        commandPanelForHomePanel.id = this.name + "homePanelCommandPanel"; //name of this specific asset
+        commandPanelForHomePanel.onclick = function () {
+            onTabChanged('CommandContentPanel');
+            var elmnt = document.getElementById(commandPanelForCommandTab.id);
+            elmnt.scrollIntoView();
+        };
+        commandPanelForHomePanel.innerHTML =
+            `
+            <div class="HomePanelCommandSummaryState">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+            <div class="HomePanelCommandSummaryColor">NULL</div>
+            <div class="HomePanelCommandSummaryName">` + this.name + `</div>
+         `;
+        document.getElementById('HomeCommandSummary').appendChild(commandPanelForHomePanel);
         //update content
         var test = this.name;
         setTimeout(function () {
@@ -529,15 +606,100 @@ class Group {
     constructor() {
         this.name = "";
         this.filePath = "";
-        this.state = "STBY"; //STBY BIND DISS RUN
+        this.isDisbanded = false;
+        this.state = 0; //STBY BIND DISS RUN
+        this.stateChanged = (newState) => this.state != newState;
         this.assetArray = new Array(); //keys instead of objects
     }
 
     //All GROUPS METHODS
+    setState(status = 0) {
+        var stateArray = [
+            'STBY',
+            'BIND',
+            'DISB',
+            'RUN',
+            'PAUS',
+            'STOP'
+        ];
+        var stateArrayColor = [
+            '#f9a12f',
+            '#24c65b',
+            '#e35656',
+            '#0075ac',
+            '#F75C03',
+            '#e35656'
+        ];
+        //get all of the changable objects 
+        var displays = [
+            document.getElementById(this.name + "GroupPanel").getElementsByClassName("viewableGroupTitlePaneStatus")[0],
+            document.getElementById(this.name + "GroupButton").getElementsByClassName("rightPanelGroupButtonThumbnail")[0],
+            document.getElementById(this.name + "homePanelGroupPanel").getElementsByClassName("HomePanelGroupSummaryState")[0],
+        ];
+        if (this.stateChanged(status)) {
+            //set the global status
+            this.state = status;
+            //change the of all of the static ones
+            for (var i = 0; i < displays.length; i++) {
+                //change the text 
+                displays[i].innerHTML = stateArray[status];
+                //change the color
+                displays[i].style.backgroundColor = stateArrayColor[status];
+            }
+        }
+    }
+
+    callEvent(name) {
+        // a custom event handler that will be called locally from within the assets themselves
+        switch (name) {
+            case 'group-standby':
+                //set state
+                this.setState(0);
+                //then send a notification
+                notification.send("NOTICE, THIS GROUP HAS BEEN REINSTATED AND IS ON STANDBY", this.name);
+                break;
+            case 'group-activated':
+                //set state
+                this.setState(1);
+                //then send a notification
+                notification.send("NOTICE, ASSETS SUCCESFULLY BINDED", this.name);
+                break;
+            case 'group-disbanded':
+                //set state
+                this.setState(2);
+                //then send a notification
+                notification.send("NOTICE, THIS GROUP IS DISBANDED", this.name);
+                break;
+            case 'command-sent':
+                //set state
+                this.setState(3);
+                break;
+            case 'command-pause':
+                //set state
+                this.setState(4);
+                break;
+            case 'command-stop':
+                //set state
+                this.setState(5);
+                break;
+            default:
+            // do nothing if it defaults
+        }
+    }
+
     sendCommand(commandString) {
         this.updateGroup();
         for (var i = 0; i < this.assetArray.length; i++) {
             global.objectList._AssetList.findKeyValuePair(this.assetArray[i]).sendCommand(commandString);
+        }
+        if (commandString.includes("M0")) {
+            this.callEvent('command-stop');
+        }
+        else if (commandString.includes("M23")) {
+            this.callEvent('command-pause');
+        }
+        else {
+            this.callEvent('command-sent');
         }
     }
 
@@ -559,12 +721,8 @@ class Group {
         //change the html of the command input
         document.getElementById(this.name + "GroupPanel").querySelector('input[name="generated_string"]').value = localCommand;
         //send it
-        this.updateGroup();
-        for (var i = 0; i < this.assetArray.length; i++) {
-            global.objectList._AssetList.findKeyValuePair(this.assetArray[i]).sendCommand(localCommand);
-        }
+        this.sendCommand(localCommand);
     }
-
 
     saveGroup() {
         this.updateGroup();
@@ -572,6 +730,14 @@ class Group {
         fs.writeFileSync(this.filePath, JSON.stringify(this, null, 1), (err) => {
             if (err) throw err;
         });
+    }
+
+    groupSetup() {
+        for (var i = 0; i < this.assetArray.length; i++) {
+            if (!document.getElementById(this.name + "GroupPanel").querySelector('*[id="' + this.assetArray[i] + "groupPanelAssetCheckbox" + '"]').checked) {
+                document.getElementById(this.name + "GroupPanel").querySelector('*[id="' + this.assetArray[i] + "groupPanelAssetCheckbox" + '"]').checked = true;
+            }
+        }
     }
 
     updateGroup() {
@@ -582,7 +748,6 @@ class Group {
             });
         }
         //will update everything about the group data 
-        this.assetArray = [];
         var test = document.getElementById(this.name + "GroupPanel").querySelector('div[name="selectedAssets"]').childNodes;
         for (var i = 1; i < test.length; i++) {
             if (test[i].querySelector("input").checked) {
@@ -591,6 +756,7 @@ class Group {
                 this.assetArray.push(alias);
             }
         }
+        this.assetArray = Array.from(new Set(this.assetArray));
     }
 
     closePaneForGroup() {
@@ -615,7 +781,7 @@ class Group {
             `
             <!--This will house various bits of information for this group-->
             <div class="viewableGroupTitlePane">
-                <div class="viewableGroupTitlePaneStatus">` + this.state + `</div>
+                <div class="viewableGroupTitlePaneStatus">` + "STBY" + `</div>
                 <div class="viewableGroupTitlePaneName">` + this.name + `</div>
                 <button type="button" class="viewableGroupTitlePaneDisband"> DISBAND </button>
             </div>
@@ -665,7 +831,7 @@ class Group {
         };
         groupPanelForRightSidebar.innerHTML =
             `
-                <div class="rightPanelGroupButtonThumbnail">` + this.state + `</div>
+                <div class="rightPanelGroupButtonThumbnail">` + "STBY" + `</div>
                 <div class="rightPanelGroupButtonText">` + this.name + `</div>
             `;
         document.getElementById('RightPanelGroupHolder').appendChild(groupPanelForRightSidebar);
@@ -675,7 +841,7 @@ class Group {
         groupPanelForHomePanel.className = "HomePanelGroupSummary"; //gives it the proper styling
         groupPanelForHomePanel.id = this.name + "homePanelGroupPanel"; //name of this specific asset
         groupPanelForHomePanel.onclick = function () {
-            onGroupTabOpen();
+            onTabChanged('GroupContentPanel');
             var elmnt = document.getElementById(groupPanelForGroupTab.id);
             elmnt.scrollIntoView();
         };
@@ -683,7 +849,7 @@ class Group {
             `
             <div class="HomePanelGroupSummaryName">` + this.name + `</div>
             <div class="HomePanelGroupSummaryAssets">` + this.assetArray.length + ` Assets</div>
-            <div class="HomePanelGroupSummaryState">` + this.state + `</div>
+            <div class="HomePanelGroupSummaryState">` + "STBY" + `</div>
          `;
         document.getElementById('HomeGroupSummary').appendChild(groupPanelForHomePanel);
 
@@ -705,7 +871,26 @@ class Group {
             elements[i].appendChild(groupPanelForCommandPanel.cloneNode(true));
         }
 
-        //at this point run all updat code so that the Group is fully up to date
+        //update the content of the group
+        var test = this.name;
+        setTimeout(function () {
+            global.objectList._GroupList.findKeyValuePair(test).groupSetup();
+        }, 200);
+
+        this.setState(0);
+        //at this point run all update code so that the Group is fully up to date
+        if(this.assetArray.length == 0)
+        {
+            this.setState(0);
+        }
+        else if(this.isDisbanded)
+        {
+            this.callEvent('group-disbanded');
+        }
+        else
+        {
+            this.callEvent('group-activated');
+        }
         this.updateGroup();
     }
 }
@@ -717,22 +902,149 @@ class Asset {
         this.filePath = ""; //filepath that is used
         this.comport = "COM#"; //the comport number used
         this.baudRate = 9600; //the baudrate of the comprt
-        this.state = "STBY"; //STBY RUN STOP SYNC
-        this.SerialPort; //the serialport
+        this.state = 0; //the current state of the asset
+        this.stateChanged = (newState) => this.state != newState;
+        this.SerialPort = null; //the serialport
         //command array that hold all colors()
         this.colorArray = new Array();
-
-
     }
 
     //All ASSET METHODS
+    setState(status = 0) {
+        var stateArray = [
+            'STBY',
+            'CON',
+            'DISS',
+            'RUN',
+            'PAUS',
+            'STOP',
+            'SYNC'
+        ];
+        var stateArrayColor = [
+            '#f9a12f',
+            '#24c65b',
+            '#e35656',
+            '#0075ac',
+            '#F75C03',
+            '#e35656',
+            '#966fd6'
+        ];
+        //get all of the changable objects 
+        var displays = [
+            document.getElementById(this.name + "AssetPanel").getElementsByClassName("viewableAssetCommandGraphState")[0],
+            document.getElementById(this.name + "AssetButton").getElementsByClassName("rightPanelAssetButtonThumbnail")[0],
+            document.getElementById(this.name + "homePanelAssetPanel").getElementsByClassName("HomePanelAssetSummaryState")[0],
+        ];
+        if (this.stateChanged(status)) {
+            //set the global status
+            this.state = status;
+            //change the of all of the static ones
+            for (var i = 0; i < displays.length; i++) {
+                //change the text 
+                displays[i].innerHTML = stateArray[status];
+                //change the color
+                displays[i].style.backgroundColor = stateArrayColor[status];
+            }
+            //change the states of the dynamic ones
+            try {
+                for (var i = 0; i < document.querySelectorAll('*[id="' + this.name + "groupPanelAssetPanel" + '"]').length; i++) {
+                    for (var j = 0; j < document.querySelectorAll('*[id="' + this.name + "groupPanelAssetPanel" + '"]')[i].getElementsByClassName("viewableGroupAssetButtonThumbnail").length; j++) {
+                        var blah = document.querySelectorAll('*[id="' + this.name + "groupPanelAssetPanel" + '"]')[i].getElementsByClassName("viewableGroupAssetButtonThumbnail")[j];
+                        //change the text 
+                        blah.innerHTML = stateArray[status];
+                        //change the color
+                        blah.style.backgroundColor = stateArrayColor[status];
+                    }
+                }
+            }
+            catch{ }
+        }
+    }
+
+    callEvent(name) {
+        // a custom event handler that will be called locally from within the assets themselves
+        switch (name) {
+            case 'serial-undefined':
+                //set state
+                this.setState(0);
+                //then send a notification
+                notification.send("ERROR, THIS ASSET DOES NOT HAVE A DEFINED PORT", this.name);
+                break;
+            case 'serial-active':
+                //set state
+                this.setState(1);
+                //then set the summary
+                document.getElementById(this.name + "homePanelAssetPanel").getElementsByClassName("HomePanelAssetSummaryPortStatus")[0].innerHTML = "Connected";
+                //then send a notification
+                notification.send("SERIALPORT CONNECTED", this.name);
+                break;
+            case 'serial-disconnected':
+                //set state
+                this.setState(2);
+                //then send a notification
+                notification.send("ERROR, THIS ASSET'S PORT IS NOT CONNECTED", this.name);
+                break;
+            case 'command-sent':
+                //set state
+                this.setState(3);
+                break;
+            case 'command-pause':
+                //set state
+                this.setState(4);
+                break;
+            case 'command-stop':
+                //set state
+                this.setState(5);
+                break;
+            case 'command-sync':
+                //set state
+                this.setState(6);
+                //then send a notification
+                notification.send("NOTICE, BEGINNING SOUND SYNC PROTOCOL", this.name);
+                break;
+            default:
+            // do nothing if it defaults
+        }
+    }
+
     openSerialPort() {
         this.SerialPort = new SerialPort(this.comport, { baudRate: parseInt(this.baudRate, 10) });
+
+        var test = this.name;
+        setTimeout(function () {
+            if (global.objectList._AssetList.findKeyValuePair(test).SerialPort.isOpen) {
+                global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-active');
+            }
+            else {
+                global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-disconnected');
+            }
+        }, 10);
     }
 
     sendCommand(commandString) {
-        if (this.SerialPort.isOpen) {
-            this.SerialPort.write(commandString);
+        if (this.SerialPort == null) {
+            this.callEvent('serial-undefined');
+        }
+        else {
+            if (this.SerialPort.isOpen) {
+                this.SerialPort.write(commandString);
+                //custom event here 24
+                if (commandString.includes("M24")) {
+                    this.callEvent('command-sync');
+                }
+                else if (commandString.includes("M0")) {
+                    this.callEvent('command-stop');
+                }
+                else if (commandString.includes("M23")) {
+                    this.callEvent('command-pause');
+                }
+                else {
+                    this.callEvent('command-sent');
+                }
+            }
+            else {
+                this.callEvent('serial-disconnected');
+            }
         }
     }
 
@@ -752,9 +1064,7 @@ class Asset {
         //generate a local command
         var localCommand = 'T0C0R' + colorClamped.returnColor()[0] + 'G' + colorClamped.returnColor()[1] + 'B' + colorClamped.returnColor()[2] + 'M' + modeClamped.Value + 'D' + delayClamped + 'X' + checkClamped + 'S0~\n';
         //send it
-        if (this.SerialPort.isOpen) {
-            this.SerialPort.write(localCommand);
-        }
+        this.sendCommand(localCommand);
         //change the html of the command input
         document.getElementById(this.name + "AssetPanel").querySelector('input[name="generated_string"]').value = localCommand;
         this.updateAsset();
@@ -827,7 +1137,7 @@ class Asset {
             </div>
             <!--This will house various bits of information for this asset and possible more-->
             <div class="viewableAssetCommandGraph">
-                <div class="viewableAssetCommandGraphState">` + this.state + `</div>
+                <div class="viewableAssetCommandGraphState">` + "STBY" + `</div>
                 <div class="viewableAssetCommandGraphLog">
                     <p>Console Log:</p>
                 </div>
@@ -874,7 +1184,7 @@ class Asset {
         };
         assetPanelForRightSidebar.innerHTML =
             `
-                <div class="rightPanelAssetButtonThumbnail">` + this.state + `</div>
+                <div class="rightPanelAssetButtonThumbnail">` + "STBY" + `</div>
                 <div class="rightPanelAssetButtonText">` + this.name + `</div>
             `;
         document.getElementById('RightPanelAssetHolder').appendChild(assetPanelForRightSidebar);
@@ -884,7 +1194,7 @@ class Asset {
         assetPanelForHomePanel.className = "HomePanelAssetSummary"; //gives it the proper styling
         assetPanelForHomePanel.id = this.name + "homePanelAssetPanel"; //name of this specific asset
         assetPanelForHomePanel.onclick = function () {
-            onAssetTabOpen();
+            onTabChanged('AssetContentPanel');
             var elmnt = document.getElementById(assetPanelForAssetTab.id);
             elmnt.scrollIntoView();
         };
@@ -892,7 +1202,7 @@ class Asset {
             `
             <div class="HomePanelAssetSummaryName">` + this.name + `</div>
             <div class="HomePanelAssetSummaryColor">NULL</div>
-            <div class="HomePanelAssetSummaryState">` + this.state + `</div>
+            <div class="HomePanelAssetSummaryState">` + "STBY" + `</div>
             <div class="HomePanelAssetSummaryPortStatus">Not Connected</div>
         `;
         document.getElementById('HomeAssetSummary').appendChild(assetPanelForHomePanel);
@@ -904,7 +1214,7 @@ class Asset {
             `
             <input type="checkbox" id="` + this.name + "groupPanelAssetCheckbox" + `" class="viewableGroupAssetButtonCheck">
             <span class="viewableGroupAssetButton">
-                <span class="viewableGroupAssetButtonThumbnail">` + this.state + `</span>
+                <span class="viewableGroupAssetButtonThumbnail">` + "STBY" + `</span>
                 <span class="viewableGroupAssetButtonText">` + this.name + `</span>
             </span>
         `;
@@ -929,7 +1239,10 @@ class Asset {
         for (var i = 0; i < elements.length; i++) {
             elements[i].appendChild(assetPanelForCommandPanel.cloneNode(true));
         }
-        //at this point run all updat code so that the asset is fully up to date
+        //set the base state
+        this.setState(0);
+
+        //at this point run all update code so that the asset is fully up to date
         this.updateAsset();
     }
 }

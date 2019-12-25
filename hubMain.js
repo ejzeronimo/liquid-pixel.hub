@@ -3,9 +3,13 @@ const {
     app,
     BrowserWindow,
     Menu,
+    MenuItem,
     ipcMain,
     webContents,
-    globalShortcut
+    globalShortcut,
+    Tray,
+    nativeImage,
+    shell
 } = electron;
 const url = require('url');
 const path = require('path');
@@ -14,17 +18,29 @@ const { autoUpdater } = require("electron-updater");
 const fs = require('fs');
 
 // only here to initiate globals
-
 let hubWindow;
+let trayIcon;
+const menu = new Menu();
+
+// the image globals
+let imageTray = nativeImage.createFromPath('./SvgIcons/TrayIcon.png');
+let imageIcon = nativeImage.createFromPath('./SvgIcons/AppIcon.png');
 
 //just the startup script, nothing besides that should go in here.
 app.on('ready', openHub);
 
 function openHub() {
+    //make the tray icon
+    trayIcon = new Tray(imageTray.resize({ width: 16, height: 16 }));
+    trayIcon.setContextMenu(contextMenu);
+    trayIcon.addListener("click", function () {
+        hubWindow.show();
+    })
+
     hubWindow = new BrowserWindow({
         width: 778,
         minWidth: 778,
-        icon: './SvgIcons/icon.ico',
+        icon: imageIcon.resize({ width: 32, height: 32 }),
         show: false,
         movable: true,
         frame: false,
@@ -39,11 +55,13 @@ function openHub() {
         protocol: 'file:',
         slashes: true
     }));
-    hubWindow.on('close', function () {
-        app.quit();
-        //hubWindow = null
+    hubWindow.on('close', function (event) {
+        //app.quit();
+        event.preventDefault();
+        hubWindow.hide();
     });
     hubWindow.on("ready-to-show", function () {
+        hubWindow.setMenu(menu)
         //openLoginWindow();
         hubWindow.show();
     });
@@ -62,7 +80,7 @@ function openHub() {
         //running production
         autoUpdater.autoDownload = false;
 
-        setInterval(() => {
+        var updaterSystem = setInterval(() => {
             autoUpdater.checkForUpdates();
         }, 60000);
 
@@ -80,6 +98,7 @@ function openHub() {
         });
 
         autoUpdater.on('download-progress', (progressObj) => {
+            clearInterval(updaterSystem);
             hubWindow.webContents.send('update_status_changed', "update found, downloading " + progressObj.percent.toFixed(1) + "%");
         });
 
@@ -98,20 +117,45 @@ function openHub() {
         ipcMain.on('download-update', (event, arg) => {
             autoUpdater.downloadUpdate(); //downloads the update
         });
-
-        globalShortcut.register('f2', function () {
-            hubWindow.toggleDevTools();
-        });
     }
     else {
         //shortcuts only in dev mode
-        globalShortcut.register('f1', function () {
-            hubWindow.reload();
-
-        });
-
         globalShortcut.register('f2', function () {
             hubWindow.toggleDevTools();
         });
     }
 }
+
+//menu for the tray
+var contextMenu = Menu.buildFromTemplate([
+    {
+        icon: imageIcon.resize({ width: 16, height: 16 }),
+        label: 'LiquidPixel Hub ' + app.getVersion(),
+        enabled: false
+    },
+    { type: 'separator' },
+    {
+        label: 'Check for Updates...', click: function () {
+            autoUpdater.checkForUpdates();
+        }
+    },
+    {
+        label: 'Email the Programmer', click: function () {
+            shell.openExternal("mailto:ejzeronik@gmail.com?subject=LPC_HELPDESK&body=");
+        }
+    },
+    { type: 'separator' },
+    {
+        label: 'Restart', click: function () {
+            hubWindow.destroy();
+            app.relaunch();
+        }
+    },
+    {
+        label: 'Quit LpcHub', click: function () {
+            //app.isQuiting = true;
+            hubWindow.destroy();
+            app.quit();
+        }
+    },
+]);

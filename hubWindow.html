@@ -5,14 +5,12 @@
     <!--Font Inclusion-->
     <link href="fonts/gotham/style.css" rel="stylesheet">
     <link href="fonts/proximaNova/style.css" rel="stylesheet">
-
     <!-- General Hub CSS -->
     <link href="HubCSS/hubPalette.css" rel="stylesheet">
     <link href="HubCSS/titlebarPalette.css" rel="stylesheet">
     <link href="HubCSS/leftSidebarPalette.css" rel="stylesheet">
     <link href="HubCSS/rightSidebarPalette.css" rel="stylesheet">
     <link href="HubCSS/bottombarPalette.css" rel="stylesheet">
-
     <!-- CSS Sheets for specific panels only -->
     <link href="HubCSS/homePanelPalette.css" rel="stylesheet">
     <link href="HubCSS/stagePanelPalette.css" rel="stylesheet">
@@ -20,18 +18,22 @@
     <link href="HubCSS/groupPanelPalette.css" rel="stylesheet">
     <link href="HubCSS/commandPanelPalette.css" rel="stylesheet">
     <!--Hub JS Scripts that must be included-->
-
     <script src="hubRemote.js"></script>
-
+    <!--The title used by the apps-->
     <title>Liquid Pixel Hub</title>
 </head>
 
 <body onload="onWindowLoad()">
+    <!--The globally positioned notifications-->
+    <div id="notificationCenter">
+        <!--where the notifications sit to be seen-->
+    </div>
+    <!--The top part of the app-->
     <div id="topbar">
         <!--This is the custom TitleBar and will be transparent-->
         <div id="titleitem">
             <!--The icon and the name of the app, maybe a build version later on-->
-            <img id="icon" src="SvgIcons/icon.ico">
+            <img id="icon" src="./SvgIcons/CustomBarIcon.png">
             <div id="titleTopbar">LpcHub</div>
         </div>
 
@@ -42,13 +44,14 @@
             <button id="closebutton" class="titlebutton" onclick="closeWindow()">&#x072;</button>
         </div>
     </div>
+    <!--The actaul main content-->
     <div id="maincontentwrapper">
         <!--This is a wrapper for the middle contents-->
         <div id="sidebarleft">
             <!--This is the main sidebar that will navigate a filetree layout of functions and windows-->
             <div id="sectionHeader">
-                <input type="radio" id="HomeTabCheckbox" class="sectionbuttoncheck" onchange="onTabChanged('HomeContentPanel')"
-                    checked="true" />
+                <input type="radio" id="HomeTabCheckbox" class="sectionbuttoncheck"
+                    onchange="onTabChanged('HomeContentPanel')" checked="true" />
                 <label id="HomeTabLabel" for="HomeTabCheckbox" class="sectionbutton">
                     <svg id="HomeSectionIcon" class="sectionimage">
                         <use class="sectionimage" xlink:href="SvgIcons/home.svg#home"></use>
@@ -56,7 +59,8 @@
                     <b id="HomeSectionText" class="sectionbuttontext">Home View</b>
                 </label>
 
-                <input type="radio" id="StageTabCheckbox" class="sectionbuttoncheck" onchange="onTabChanged('StageContentPanel')" />
+                <input type="radio" id="StageTabCheckbox" class="sectionbuttoncheck"
+                    onchange="onTabChanged('StageContentPanel')" />
                 <label id="StageTabLabel" for="StageTabCheckbox" class="sectionbutton">
                     <svg id="StageSectionIcon" class="sectionimage">
                         <use class="sectionimage" xlink:href="SvgIcons/theater-audience.svg#theater"></use>
@@ -64,7 +68,8 @@
                     <b id="StageSectionText" class="sectionbuttontext">Stage View</b>
                 </label>
 
-                <input type="radio" id="AssetTabCheckbox" class="sectionbuttoncheck" onchange="onTabChanged('AssetContentPanel')" />
+                <input type="radio" id="AssetTabCheckbox" class="sectionbuttoncheck"
+                    onchange="onTabChanged('AssetContentPanel')" />
                 <label id="AssetTabLabel" for="AssetTabCheckbox" class="sectionbutton">
                     <svg id="AssetSectionIcon" class="sectionimage">
                         <use class="sectionimage" xlink:href="SvgIcons/arduino.svg#arduino"></use>
@@ -72,7 +77,8 @@
                     <b id="AssetSectionText" class="sectionbuttontext">Asset Cluster</b>
                 </label>
 
-                <input type="radio" id="GroupTabCheckbox" class="sectionbuttoncheck" onchange="onTabChanged('GroupContentPanel')" />
+                <input type="radio" id="GroupTabCheckbox" class="sectionbuttoncheck"
+                    onchange="onTabChanged('GroupContentPanel')" />
                 <label id="GroupTabLabel" for="GroupTabCheckbox" class="sectionbutton">
                     <svg id="GroupSectionIcon" class="sectionimage">
                         <use class="sectionimage" xlink:href="SvgIcons/folder.svg#folder"></use>
@@ -80,7 +86,8 @@
                     <b id="GroupSectionText" class="sectionbuttontext">Group Cluster</b>
                 </label>
 
-                <input type="radio" id="CommandTabCheckbox" class="sectionbuttoncheck" onchange="onTabChanged('CommandContentPanel')" />
+                <input type="radio" id="CommandTabCheckbox" class="sectionbuttoncheck"
+                    onchange="onTabChanged('CommandContentPanel')" />
                 <label id="CommandTabLabel" for="CommandTabCheckbox" class="sectionbutton">
                     <svg id="CommandSectionIcon" class="sectionimage">
                         <use class="sectionimage" xlink:href="SvgIcons/left-text-alignment-option.svg#lines"></use>
@@ -88,7 +95,8 @@
                     <b id="CommandSectionText" class="sectionbuttontext">Commands</b>
                 </label>
 
-                <input type="radio" id="ModeTabCheckbox" class="sectionbuttoncheck" onchange="onTabChanged('ModeContentPanel')" />
+                <input type="radio" id="ModeTabCheckbox" class="sectionbuttoncheck"
+                    onchange="onTabChanged('ModeContentPanel')" />
                 <label id="ModeTabLabel" for="ModeTabCheckbox" class="sectionbutton">
                     <svg id="ModeSectionIcon" class="sectionimage">
                         <use class="sectionimage" xlink:href="SvgIcons/contract.svg#mode"></use>
@@ -96,28 +104,38 @@
                     <b id="ModeSectionText" class="sectionbuttontext">Mode Creator</b>
                 </label>
             </div>
+            <!--The Dynamic part of the sidebar-->
+            <div class="leftSidebarWrapper">
+                <!--The Command Viewer and searcher-->
+                <!-- <div class="leftSidebarCommandViewer">
+                    Soon to be command center
+                </div>-->               
+            </div>
         </div>
+        <!--The dynamic part of the app-->
         <div id="middlecontent">
             <!--Dynamic pane to allow for multiple mini panes for summaries and other content that makes sense to show when you open the app-->
             <div id="HomeContentPanel" class="middlecontentpanel">
-                <div id="GeneralTopBarHome" class="homePanelContent">
-                    <div id="GeneralTopBarHomeProject">
-                        <span id="GeneralTopBarHomeText" style="user-select: none;">No Projects Opened</span>
-                        <button id="projectCreateButton" class="GeneralTopBarHomeProjectButton" onclick="createProject()">
-                            Create
-                            <br>
-                            Project
-                        </button>
-                        <button id="projectSetButton" class="GeneralTopBarHomeProjectButton" onclick="setProject()">
-                            Set
-                            <br>
-                            Project
-                        </button>
-                    </div>
-                </div>
                 <div id="HomeContentPanelHolder">
+                    <!--The Project tab-->
+                    <div id="GeneralTopBarHome" class="homePanelContent grid-project">
+                        <div id="GeneralTopBarHomeProject">
+                            <span id="GeneralTopBarHomeText" style="user-select: none;">No Projects Opened</span>
+                            <button id="projectCreateButton" class="GeneralTopBarHomeProjectButton"
+                                onclick="createProject()">
+                                Create
+                                <br>
+                                Project
+                            </button>
+                            <button id="projectSetButton" class="GeneralTopBarHomeProjectButton" onclick="setProject()">
+                                Set
+                                <br>
+                                Project
+                            </button>
+                        </div>
+                    </div>
                     <!--The home page update panel-->
-                    <div id="ChangelogHome" class="homePanelContent">
+                    <div id="ChangelogHome" class="homePanelContent grid-log">
                         <svg id="ChangelogIcon">
                             <defs>
                                 <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -132,10 +150,54 @@
                                 <tspan x="70" y="45">update</tspan>
                             </text>
                         </svg>
-                        <div id="ChangelogText"></div>
+                        <div id="ChangelogTextWrapper">
+                            <div id="ChangelogText">
+                            </div>
+                        </div>
+
+                    </div>
+                    <!--Home panel for showing all of the settings in the settings .json, from keybinds to filepaths etc-->
+                    <div class="homeSettings homePanelContent grid-settings">
+                        <!--title of the sumamry-->
+                        <div class="homeSettingsTitle">
+                            App Settings:
+                        </div>
+                        <!--the content-->
+                        <div class="homeSettingsContentWrapper">
+                            <div class="homeSettingsContent">
+                                <div class="homeSettingsHeader">
+                                    GENERAL
+                                </div>
+                                Save <kbd>Ctrl + S</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Next tab up <kbd>Shift + Up</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Next tab down <kbd>Shift + Down</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Search objects <kbd>Shift + Space</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Force reload window <kbd>Ctrl + Shift + R</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Toggle kiosk mode <kbd>F11</kbd>
+                                <div class="homeSettingsHeader">
+                                    OBJECT CREATION / MANIPULATION
+                                </div>
+                                Open existing asset <kbd>Shift + A</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Create new asset <kbd>Shift + Alt + A</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Open existing group <kbd>Shift + G</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Create new group <kbd>Shift + Alt + G</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Open existing command <kbd>Shift + C</kbd>
+                                <p class="homeSettingsBreak"></p>
+                                Create new command <kbd>Shift + Alt + C</kbd>
+                            </div>
+                        </div>
                     </div>
                     <!--Home panel for showing small asset summaries-->
-                    <div class="homeAssetSummary homePanelContent">
+                    <div class="homeAssetSummary homePanelContent grid-asset">
                         <!--title of the sumamry-->
                         <div class="homeAssetSummaryTitle">
                             Opened Assets:
@@ -145,7 +207,7 @@
                         </div>
                     </div>
                     <!--Home panel for showing small group summaries-->
-                    <div class="homeGroupSummary homePanelContent">
+                    <div class="homeGroupSummary homePanelContent grid-group">
                         <!--title of the sumamry-->
                         <div class="homeGroupSummaryTitle">
                             Opened Groups:
@@ -154,10 +216,21 @@
                         <div id="HomeGroupSummary">
                         </div>
                     </div>
+                    <!--Home panel for showing small command summaries-->
+                    <div class="homeCommandSummary homePanelContent grid-command">
+                        <!--title of the sumamry-->
+                        <div class="homeCommandSummaryTitle">
+                            Opened Commands:
+                        </div>
+                        <!-- summary content holder-->
+                        <div id="HomeCommandSummary">
+                        </div>
+                    </div>
                 </div>
             </div>
-
+            <!-- A dedicated Stage panel for the showtime-->
             <div id="StageContentPanel" class="middlecontentpanel">
+                <!-- A stage abstraction-->
                 <div class="stageTheaterAbstractionContainer">
                     <div class="stagePanelContent stageTheaterAbstraction">
                         <div class="stagePanelContent stageTheaterAbstractionSection">
@@ -171,10 +244,11 @@
                         </div>
                     </div>
                 </div>
+                <!-- The searchbar that allows you to search commands-->
+                <div class="stageSearchPane">
 
-                STAGE TEXT YES
+                </div>
             </div>
-
             <!--The Dedicated Asset panel meant for only assets and the add/ remove asset buttons-->
             <div id="AssetContentPanel" class="middlecontentpanel">
                 <div id="GeneralTopBarAsset" class="assetPanelContent">
@@ -208,14 +282,14 @@
                     <!--The data of the groups-->
                 </div>
             </div>
-
             <!--The Panel where all commands made will be stored, there will also be an autosaved file-->
             <div id="CommandContentPanel" class="middlecontentpanel">
                 <div class="commandPanelContent commandTopStickyBar">
                     <div class="commandTopBarCurrentCommand">
                         #NULL
                     </div>
-                    <button type="button" class="StickyBarCommandButtonPlaylist" onclick="startCommandPlaylistAsync()" title="Start Playlist">
+                    <button type="button" class="StickyBarCommandButtonPlaylist" onclick="startCommandPlaylistAsync()"
+                        title="Start Playlist">
                         <svg id="viewableCommandControlPaneSendIcon">
                             <use xlink:href="SvgIcons/play.svg#play"></use>
                         </svg>
@@ -238,7 +312,7 @@
                 MODE TEXT YES
             </div>
         </div>
-
+        <!--The sidebar that shows all of the assets-->
         <div id="sidebarright">
             <!--This is for temp testing and maybe other customizable information-->
             <div id="RightPanelAssetHolder" class="rightpanelbuttonholder">
@@ -252,7 +326,7 @@
             </div>
         </div>
     </div>
-
+    <!--The bottom part of the app-->
     <div id="bottombar">
         <!--This is the bottom bar that will be used for notifications and quickaccess-->
         <button class="bottomBarButton rightBottomBarButton">
@@ -266,6 +340,9 @@
         </button>
         <button class="bottomBarButton leftBottomBarButton" onclick="purgeAllObjects()">
             purge
+        </button>
+        <button class="bottomBarButton leftBottomBarButton" id="saveEntireAppButton" onclick="globalSave()">
+            save
         </button>
     </div>
 </body>

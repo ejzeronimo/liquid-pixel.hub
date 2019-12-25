@@ -3,6 +3,7 @@
         transform .16s ease-out;
     transform-style: preserve-3d;
     backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .commandPanelContent:hover {
@@ -36,8 +37,7 @@
     min-width: 70px;
 }
 
-.StickyBarCommandButtonPlaylist
-{
+.StickyBarCommandButtonPlaylist {
     float: left;
     position: relative;
     margin: 5px;
@@ -51,9 +51,11 @@
     text-align: center;
     min-width: 70px;
 }
+
 .StickyBarCommandButtonPlaylist:hover {
     border-width: 3px;
 }
+
 .StickyBarCommandButtonPlaylist:active {
     border-width: 0px;
 }
@@ -266,7 +268,7 @@
     cursor: pointer;
 }
 
-.viewableCommandMessageGenerationInputCheckbox:checked ~ .viewableCommandMessageGenerationInputCheckVisible {
+.viewableCommandMessageGenerationInputCheckbox:checked~.viewableCommandMessageGenerationInputCheckVisible {
     color: #0075ac;
     width: 5px;
     height: 5px;
@@ -282,7 +284,7 @@
     flex: 1 1 150px;
     height: 60px;
     overflow: hidden;
-    background-color:rgb(114, 118, 125);
+    background-color: rgb(114, 118, 125);
     color: rgb(200, 200, 200);
     text-align: center;
     border-radius: 15px;
@@ -294,8 +296,7 @@
     padding: 5px;
 }
 
-.viewableCommandControlPaneControls
-{
+.viewableCommandControlPaneControls {
     float: left;
     width: 50%;
     height: 100%;
@@ -309,7 +310,7 @@
 
 .viewableCommandControlPaneControls::-webkit-scrollbar {
     width: 5px;
-    background-color: rgba(0,0,0,0);
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .viewableCommandControlPaneControls::-webkit-scrollbar-thumb {
@@ -318,8 +319,7 @@
     border-radius: 2.5px;
 }
 
-.viewableCommandControlPaneControlsNumber
-{
+.viewableCommandControlPaneControlsNumber {
     background-color: rgb(200, 200, 200);
     font-family: 'Proxima Nova Regular';
     font-size: 1em;
@@ -334,22 +334,21 @@
 }
 
 /* The asset and groups for the command */
-.viewableCommandObjectButton
-{
+.viewableCommandObjectButton {
     float: left;
     padding: 0px;
     left: 0px;
     display: block;
     text-align: center;
     user-select: none;
-    transform: translate3d(0,0,0);
+    transform: translate3d(0, 0, 0);
     margin-bottom: 5px;
     cursor: pointer;
     position: relative;
     border-radius: 10px;
-    border: 2px solid rgba(0, 0, 0,0);
+    border: 2px solid rgba(0, 0, 0, 0);
     padding: 0px;
-    background-color: rgba(0, 0, 0,0);
+    background-color: rgba(0, 0, 0, 0);
     color: rgb(200, 200, 200);
     line-height: 24px;
     letter-spacing: normal;
@@ -359,29 +358,26 @@
     overflow: hidden;
 }
 
-.viewableCommandObjectButton:hover
-{
-    background-color: rgb(200, 200, 200);
-    border: 2px solid rgb(200, 200, 200);
-}
-.viewableCommandObjectButton:active
-{
-    background-color: rgba(0, 0, 0,0);
-    border: 2px solid rgba(0, 0, 0,0);
-}
-.viewableCommandObjectButtonCheck:checked + .viewableCommandObjectButton
-{
+.viewableCommandObjectButton:hover {
     background-color: rgb(200, 200, 200);
     border: 2px solid rgb(200, 200, 200);
 }
 
-.viewableCommandObjectButtonCheck
-{
+.viewableCommandObjectButton:active {
+    background-color: rgba(0, 0, 0, 0);
+    border: 2px solid rgba(0, 0, 0, 0);
+}
+
+.viewableCommandObjectButtonCheck:checked+.viewableCommandObjectButton {
+    background-color: rgb(200, 200, 200);
+    border: 2px solid rgb(200, 200, 200);
+}
+
+.viewableCommandObjectButtonCheck {
     display: none;
 }
 
-.viewableCommandObjectButtonThumbnail
-{
+.viewableCommandObjectButtonThumbnail {
     display: block;
     line-height: 24px;
     float: left;
@@ -396,8 +392,7 @@
     box-sizing: border-box;
 }
 
-.viewableCommandObjectButtonText
-{
+.viewableCommandObjectButtonText {
     float: right;
     line-height: 24px;
     display: block;
@@ -418,8 +413,7 @@
 }
 
 /* Send button */
-.viewableCommandControlPaneSend
-{
+.viewableCommandControlPaneSend {
     float: left;
     position: relative;
     margin: 5px;
@@ -437,17 +431,15 @@
     fill: rgb(200, 200, 200);
 }
 
-.viewableCommandControlPaneSend:hover
-{
+.viewableCommandControlPaneSend:hover {
     border: 3px solid rgb(200, 200, 200);
 }
-.viewableCommandControlPaneSend:active
-{
+
+.viewableCommandControlPaneSend:active {
     border: 0px;
 }
 
-#viewableCommandControlPaneSendIcon
-{
+#viewableCommandControlPaneSendIcon {
     display: block;
     height: 35px;
     width: 35px;
