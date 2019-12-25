@@ -1,6 +1,6 @@
 {
   "name": "lpc_hub",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "LPC but crossplatform",
   "author": "Ethan Zeronik",
   "main": "hubMain.js",
@@ -22,7 +22,7 @@
       "createStartMenuShortcut": true
     },
     "win": {
-      "icon": "./SvgIcons/icon.ico"
+      "icon": "./SvgIcons/AppIcon.png"
     },
     "mac": {
       "icon": "build/icon.icn",
