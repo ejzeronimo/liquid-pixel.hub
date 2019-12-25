@@ -1,6 +1,6 @@
 {
   "name": "lpc_hub",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "LPC but crossplatform",
   "author": "Ethan Zeronik",
   "main": "hubMain.js",
@@ -29,7 +29,9 @@
       "category": "public.app-category.developer-tools"
     },
     "extraFiles": [
-      "./changelog.txt"
+      "./changelog.txt",
+      "./SvgIcons/TrayIcon.png",
+      "./SvgIcons/AppIcon.png"
     ],
     "publish": [
       {
