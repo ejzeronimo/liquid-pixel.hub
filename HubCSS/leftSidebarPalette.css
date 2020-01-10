@@ -154,11 +154,11 @@
     left: 0px;
     overflow: hidden;
 }
-
-
 /* The CSS for the command viewer*/
 .leftSidebarCommandViewer
 {
+    font-family: 'Proxima Nova Regular';
+    user-select: none;
     bottom: 0px;
     left: 0px;
     position: absolute;
@@ -167,5 +167,206 @@
     min-width: 160px;
     width: calc(100% - 10px);
     height: 33%;
+    max-height: 393px;
     background-color: rgb(114, 118, 125);
+    color: rgb(200, 200, 200);
+    overflow: hidden;
+    transition: box-shadow .16s ease-out,
+    transform .16s ease-out, height 350ms ease-in-out;
+}
+.leftSidebarCommandViewerCollapse
+{
+    position: relative;
+    height: 30px;
+    width: calc(100% - 5px);
+    text-align: start;
+    padding-left: 5px;
+    line-height: 30px;
+    transition: border-radius 350ms ease-in-out;
+
+}
+.leftSidebarCommandViewerCollapseButton
+{
+    font-family: 'Proxima Nova Regular';
+    color: rgb(200, 200, 200);
+    cursor: pointer;
+    user-select: none;
+    line-height: 25px;
+    position: absolute;
+    right: 2.5px;
+    top: 2.5px;
+    height: 25px;
+    width: 50px;
+    border-radius: 12.5px;
+    border: 0px solid;
+    background-color: rgb(49, 52, 57);
+}
+#leftSidebarCommandViewerCollapsible
+{
+    display: block;
+    width: 100%;
+    height: calc(100% - 70px); /*calc(100% - 60px)*/
+    overflow: scroll;
+    overflow-x: hidden;
+    background-color: rgb(66, 70, 77);
+}
+#leftSidebarCommandViewerCollapsible::-webkit-scrollbar {
+    width: 5px;
+    background-color: rgb(66, 70, 77);
+}
+#leftSidebarCommandViewerCollapsible::-webkit-scrollbar-thumb {
+    background-color: rgb(200, 200, 200);
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 2.5px;
+}
+.leftSidebarCommandViewerController
+{
+    overflow: hidden;
+    bottom: 0px;
+    height: 40px;
+    transition: border-radius 350ms ease-in-out;
+}
+.leftSidebarCommandViewerControllerProgressHolder
+{
+    height: 10px;
+    width: 100%;
+}
+.leftSidebarCommandViewerControllerOutsideProgress
+{
+    position: relative;
+    width: 95%;
+    margin-left: 2.5%;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 5px;
+    top: 2.5px;
+    background-color: rgb(49, 52, 57);
+}
+#leftSidebarCommandViewerControllerInsideProgress
+{
+    position: relative;
+    height: 100%;
+    width: 0%;
+    float: left;
+    background-color: rgb(200, 200, 200);
+    border-radius: 5px;
+}
+
+.leftSidebarCommandViewerControllerOutsideButton
+{
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0,0);
+    padding: 0px;
+    float: left;
+    width: 35%;
+    height: 30px;
+    background-color: #0075ac;
+    fill: rgb(200, 200, 200);
+}
+.leftSidebarCommandViewerControllerOutsideButtonIcon
+{
+    position: relative;
+    padding: 0px;
+    margin: calc((66.5px - 38px - 4px) /2);
+    margin-top: calc((30px - 4px - 22px) / 2);
+    margin-bottom: calc((30px - 4px - 22px) / 2);
+    max-width: 38px;
+    max-height: 22px;
+}
+.leftSidebarCommandViewerControllerInsideButton
+{
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0,0);
+    padding: 0px;
+    float: left;
+    width: 30%;
+    height: 30px;
+    background-color: #24c65b;
+    fill: rgb(200, 200, 200);
+}
+.leftSidebarCommandViewerControllerInsideButtonIcon
+{
+    position: relative;
+    padding: 0px;
+    margin: auto;
+    margin-top: calc((30px - 4px - 22px) / 2);
+    margin-bottom: calc((30px - 4px - 22px) / 2);
+    width: 22px;
+    height: 22px;
+}
+.leftSidebarCommandViewerControllerInsideButton:hover , .leftSidebarCommandViewerControllerOutsideButton:hover 
+{
+    border: 2px solid rgb(200, 200, 200);
+}
+.leftSidebarCommandViewerControllerInsideButton:active , .leftSidebarCommandViewerControllerOutsideButton:active 
+{
+    border: 2px solid rgba(0, 0, 0,0);
+}
+/* The geneneral styling fot the microcommands */
+.leftPanelCommandButton
+{
+    transform: translate3d(0,0,0);
+    margin: auto;
+    margin-top: 5px;
+    cursor: pointer;
+    position: relative;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0,0);
+    padding: 0px;
+    background-color: rgba(0, 0, 0,0);
+    color: rgb(200, 200, 200);
+    line-height: 24px;
+    letter-spacing: normal;
+    width: calc(100% - 10px);
+    height: 24px;
+    transition: border .1s ease-in-out;
+    overflow: hidden;
+}
+.leftPanelCommandButton:hover
+{
+    background-color: rgb(200, 200, 200);
+    border: 2px solid rgb(200, 200, 200);
+}
+
+.leftPanelCommandButton:active
+{
+    background-color: rgba(0, 0, 0,0);
+    border: 2px solid rgba(0, 0, 0,0);
+}
+
+.leftPanelCommandButtonThumbnail
+{
+    line-height: 24px;
+    float: left;
+    text-align: center;
+    position: relative;
+    border-radius: 8px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    background-color: #e35656;
+    height: 24px;
+    width: 27%;
+    box-sizing: border-box;
+}
+
+.leftPanelCommandButtonText
+{
+    text-align: center;
+    line-height: 24px;
+    display: block;
+    margin-left: calc(27%);
+    box-sizing: border-box;
+    font-family: 'Proxima Nova Regular';
+    padding-left: 2px;
+    padding-right: 2px;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    background-color: rgb(114, 118, 125);
+    height: 24px;
+    width: 73%;
 }

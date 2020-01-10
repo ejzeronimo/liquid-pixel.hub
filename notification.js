@@ -31,7 +31,7 @@ async function killNotification(title)
         document.getElementById(title).style.animation = 'fadeOut .5s';
         setTimeout(function () {
             document.getElementById(title).parentNode.removeChild(document.getElementById(title));
-        }, 500);
+        }, 450);
         
     }, 5000);
 }

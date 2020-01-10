@@ -1,16 +1,3 @@
-.groupPanelContent 
-{
-    transition: box-shadow .16s ease-out,
-        transform .16s ease-out;
-        transform-style: preserve-3d;
-        backface-visibility: hidden;
-}
-
-.groupPanelContent:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
 /* The top sticky bar css */
 #GeneralTopBarGroup
 {

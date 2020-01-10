@@ -107,9 +107,39 @@
             <!--The Dynamic part of the sidebar-->
             <div class="leftSidebarWrapper">
                 <!--The Command Viewer and searcher-->
-                <!-- <div class="leftSidebarCommandViewer">
-                    Soon to be command center
-                </div>-->               
+                <div class="leftSidebarCommandViewer hoverPanelContent">
+                    <div class="leftSidebarCommandViewerCollapse">
+                        Command Playlist
+                        <button class="leftSidebarCommandViewerCollapseButton" onclick="hideOrShow()">
+                            Close
+                        </button>
+                    </div>
+                    <div id="leftSidebarCommandViewerCollapsible">
+                        <!--Where the mircocommands are held-->
+                    </div>
+                    <div class="leftSidebarCommandViewerController">
+                        <div class="leftSidebarCommandViewerControllerProgressHolder">
+                            <div class="leftSidebarCommandViewerControllerOutsideProgress">
+                                <div id="leftSidebarCommandViewerControllerInsideProgress"></div>
+                            </div>
+                        </div>
+                        <button class="leftSidebarCommandViewerControllerOutsideButton" style="border-bottom-left-radius: 15px; border-top-left-radius: 0px;" onclick="jumpBackwardInPlaylist()" title="Rewind">
+                            <svg class="leftSidebarCommandViewerControllerOutsideButtonIcon" transform="scale(-1,1)">
+                                <use xlink:href="SvgIcons/fastforward.svg#fast_forward_smaller"></use>
+                            </svg>
+                        </button>
+                        <button class="leftSidebarCommandViewerControllerInsideButton" onclick="startCommandPlaylistAsync()" title="Start Playlist">
+                            <svg class="leftSidebarCommandViewerControllerInsideButtonIcon">
+                                <use xlink:href="SvgIcons/play.svg#play_smaller"></use>
+                            </svg>
+                        </button>
+                        <button class="leftSidebarCommandViewerControllerOutsideButton" style="border-bottom-right-radius: 15px; border-top-right-radius: 0px;" onclick="jumpForwardInPlaylist()" title="Fast Forward">
+                            <svg class="leftSidebarCommandViewerControllerOutsideButtonIcon" >
+                                <use xlink:href="SvgIcons/fastforward.svg#fast_forward_smaller" ></use>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
         <!--The dynamic part of the app-->
@@ -118,7 +148,7 @@
             <div id="HomeContentPanel" class="middlecontentpanel">
                 <div id="HomeContentPanelHolder">
                     <!--The Project tab-->
-                    <div id="GeneralTopBarHome" class="homePanelContent grid-project">
+                    <div id="GeneralTopBarHome" class="hoverPanelContent grid-project">
                         <div id="GeneralTopBarHomeProject">
                             <span id="GeneralTopBarHomeText" style="user-select: none;">No Projects Opened</span>
                             <button id="projectCreateButton" class="GeneralTopBarHomeProjectButton"
@@ -135,7 +165,7 @@
                         </div>
                     </div>
                     <!--The home page update panel-->
-                    <div id="ChangelogHome" class="homePanelContent grid-log">
+                    <div id="ChangelogHome" class="hoverPanelContent grid-log">
                         <svg id="ChangelogIcon">
                             <defs>
                                 <linearGradient id="linear" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -157,7 +187,7 @@
 
                     </div>
                     <!--Home panel for showing all of the settings in the settings .json, from keybinds to filepaths etc-->
-                    <div class="homeSettings homePanelContent grid-settings">
+                    <div class="homeSettings hoverPanelContent grid-settings">
                         <!--title of the sumamry-->
                         <div class="homeSettingsTitle">
                             App Settings:
@@ -197,7 +227,7 @@
                         </div>
                     </div>
                     <!--Home panel for showing small asset summaries-->
-                    <div class="homeAssetSummary homePanelContent grid-asset">
+                    <div class="homeAssetSummary hoverPanelContent grid-asset">
                         <!--title of the sumamry-->
                         <div class="homeAssetSummaryTitle">
                             Opened Assets:
@@ -207,7 +237,7 @@
                         </div>
                     </div>
                     <!--Home panel for showing small group summaries-->
-                    <div class="homeGroupSummary homePanelContent grid-group">
+                    <div class="homeGroupSummary hoverPanelContent grid-group">
                         <!--title of the sumamry-->
                         <div class="homeGroupSummaryTitle">
                             Opened Groups:
@@ -217,7 +247,7 @@
                         </div>
                     </div>
                     <!--Home panel for showing small command summaries-->
-                    <div class="homeCommandSummary homePanelContent grid-command">
+                    <div class="homeCommandSummary hoverPanelContent grid-command">
                         <!--title of the sumamry-->
                         <div class="homeCommandSummaryTitle">
                             Opened Commands:
@@ -232,26 +262,27 @@
             <div id="StageContentPanel" class="middlecontentpanel">
                 <!-- A stage abstraction-->
                 <div class="stageTheaterAbstractionContainer">
-                    <div class="stagePanelContent stageTheaterAbstraction">
-                        <div class="stagePanelContent stageTheaterAbstractionSection">
+                    <div class="hoverPanelContent stageTheaterAbstraction">
+                        <div class="hoverPanelContent stageTheaterAbstractionSection">
 
                         </div>
-                        <div class="stagePanelContent stageTheaterAbstractionSection">
+                        <div class="hoverPanelContent stageTheaterAbstractionSection">
 
                         </div>
-                        <div class="stagePanelContent stageTheaterAbstractionSection">
+                        <div class="hoverPanelContent stageTheaterAbstractionSection">
 
                         </div>
                     </div>
                 </div>
                 <!-- The searchbar that allows you to search commands-->
-                <div class="stageSearchPane">
-
+                <div class="stageSearchPane hoverPanelContent">
+                    <input class="stageSearchPaneInput" type="text" oninput="searchOnChange(this.value,'stageSearchPaneResults')" placeholder="Search...">
+                    <div id="stageSearchPaneResults"></div>
                 </div>
             </div>
             <!--The Dedicated Asset panel meant for only assets and the add/ remove asset buttons-->
             <div id="AssetContentPanel" class="middlecontentpanel">
-                <div id="GeneralTopBarAsset" class="assetPanelContent">
+                <div id="GeneralTopBarAsset" class="hoverPanelContent">
                     <button type="button" id="StickyBarAssetButton" onclick="newAssetPrompt(0)">
                         Create Asset
                     </button>
@@ -259,7 +290,6 @@
                         Open Asset
                     </button>
                 </div>
-
                 <!--A flexbox that hold all of the assets-->
                 <div id="assetPanelAssetHolder">
                     <!--The data of the assets-->
@@ -268,7 +298,7 @@
             <!--The Dedicated Group panel meant for only groups and the add/ remove groups buttons-->
             <div id="GroupContentPanel" class="middlecontentpanel">
                 <!--The header of the group tab- meant for overall commands-->
-                <div id="GeneralTopBarGroup" class="groupPanelContent">
+                <div id="GeneralTopBarGroup" class="hoverPanelContent">
                     <button type="button" id="StickyBarGroupButton" onclick="newGroupPrompt(0)">
                         Create Group
                     </button>
@@ -276,7 +306,6 @@
                         Open Group
                     </button>
                 </div>
-
                 <!--A flexbox designed to hold all groups-->
                 <div id="groupPanelGroupHolder">
                     <!--The data of the groups-->
@@ -284,14 +313,26 @@
             </div>
             <!--The Panel where all commands made will be stored, there will also be an autosaved file-->
             <div id="CommandContentPanel" class="middlecontentpanel">
-                <div class="commandPanelContent commandTopStickyBar">
+                <div class="hoverPanelContent commandTopStickyBar">
                     <div class="commandTopBarCurrentCommand">
                         #NULL
                     </div>
+                    <button type="button" class="StickyBarCommandButtonPlaylist"
+                        onclick="jumpBackwardInPlaylist()" title="Rewind">
+                        <svg class="StickyBarCommandButtonIcon" transform="scale(-1,1)">
+                            <use xlink:href="SvgIcons/fastforward.svg#fast_forward" ></use>
+                        </svg>
+                    </button>
                     <button type="button" class="StickyBarCommandButtonPlaylist" onclick="startCommandPlaylistAsync()"
                         title="Start Playlist">
                         <svg id="viewableCommandControlPaneSendIcon">
                             <use xlink:href="SvgIcons/play.svg#play"></use>
+                        </svg>
+                    </button>
+                    <button type="button" class="StickyBarCommandButtonPlaylist" onclick="jumpForwardInPlaylist()"
+                        title="Fast Forward">
+                        <svg class="StickyBarCommandButtonIcon">
+                            <use xlink:href="SvgIcons/fastforward.svg#fast_forward" ></use>
                         </svg>
                     </button>
                     <button type="button" class="StickyBarCommandButton" onclick="newCommandPrompt(1)">
@@ -307,7 +348,7 @@
                 </div>
                 <!--The command data shown-->
             </div>
-
+            <!-- This tab for will be for creating shader like modes that can act on certain properties-->
             <div id="ModeContentPanel" class="middlecontentpanel">
                 MODE TEXT YES
             </div>

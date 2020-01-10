@@ -56,7 +56,6 @@ class Color {
         };
     }
 }
-
 ///////////////////////////////////////////////////////////////////       GLOBAL VARIABLES
 var _GroupList = new dictionary.Dictionary;
 
@@ -117,7 +116,7 @@ global.objectList = {
 };
 global.colorCustom = {
     ColorsCustom
-};   
+};
 ///////////////////////////////////////////////////////////////////       PROJECT CLASS
 class Project {
     constructor() {
@@ -158,6 +157,8 @@ class Project {
                 this.assetArray.push({ Name: element.Value.name, Path: element.Value.filePath });
             }
         });
+
+        notification.send("NOTICE, ALL OBJECTS IMPORTED", this.name);
     }
 
     saveAllProjectObjects(isSync = false) {
@@ -227,6 +228,7 @@ class Project {
                 if (err) throw err;
             });
         }
+        notification.send("NOTICE, PROJECT SAVED", this.name);
     }
 
     openAllProjectObjects() {
@@ -274,6 +276,8 @@ class Project {
 
         //set the title to the projectname
         document.title = "Liquid Pixel Hub - " + this.name + " Loaded";
+
+        notification.send("NOTICE, PROJECT OPENED", this.name);
     }
 }
 ///////////////////////////////////////////////////////////////////       COMMAND CLASS
@@ -311,16 +315,17 @@ class Command {
         //get all of the changable objects 
         var displays = [
             document.getElementById(this.name + "CommandPanel").getElementsByClassName("viewableCommandNumber")[0],
-            document.getElementById(this.name + "CommandButton").getElementsByClassName("rightPanelCommandButtonThumbnail")[0]
+            document.getElementById(this.name + "CommandButton").getElementsByClassName("rightPanelCommandButtonThumbnail")[0],
+            document.getElementById(this.name + "CommandHighlightButton").getElementsByClassName("leftPanelCommandButtonThumbnail")[0],
+            document.getElementById(this.name + "homePanelCommandPanel").getElementsByClassName("HomePanelCommandSummaryState")[0]
         ];
         //change the of all of the static ones
         for (var i = 0; i < displays.length; i++) {
             //change the color
             displays[i].style.backgroundColor = colorArray[status];
         }
-        if(status == 1)
-        {
-            //then change the maset displays
+        if (status == 1) {
+            //then change the master displays
         }
     }
 
@@ -335,18 +340,17 @@ class Command {
                 //set state
                 this.setState(1);
                 //then set the next in line to up next
-                for(var i = 0; i < document.getElementsByClassName("viewableCommandNumber").length; i++)
-                {
-                    if(parseInt(document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.substr(1,document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.length),10) == (this.position + 1))
-                    {
+                for (var i = 0; i < document.getElementsByClassName("viewableCommandNumber").length; i++) {
+                    if (parseInt(document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.substr(1, document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.length), 10) == (this.position + 1)) {
                         //get the parent and call the set state
-                        global.objectList._CommandList.findKeyValuePair(document.getElementsByClassName("viewableCommandNumber")[i].parentElement.id.replace("CommandPanel","")).callEvent('command-next')
+                        global.objectList._CommandList.findKeyValuePair(document.getElementsByClassName("viewableCommandNumber")[i].parentElement.id.replace("CommandPanel", "")).callEvent('command-next')
                     }
-                    if(parseInt(document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.substr(1,document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.length),10) == (this.position - 1))
-                    {
-                        global.objectList._CommandList.findKeyValuePair(document.getElementsByClassName("viewableCommandNumber")[i].parentElement.id.replace("CommandPanel","")).callEvent('command-previous')
+                    if (parseInt(document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.substr(1, document.getElementsByClassName("viewableCommandNumber")[i].innerHTML.length), 10) == (this.position - 1)) {
+                        global.objectList._CommandList.findKeyValuePair(document.getElementsByClassName("viewableCommandNumber")[i].parentElement.id.replace("CommandPanel", "")).callEvent('command-previous')
                     }
                 }
+                //then send a notification
+                notification.send("COMMAND " + this.command + " SENT", this.name)
                 break;
             case 'command-next':
                 //set state
@@ -360,8 +364,9 @@ class Command {
     sendCommand() {
         //update the command itself
         this.updateCommand();
-        //send the event
-        this.callEvent('command-sent');
+        //scroll it into view on the command highlight
+        var elmnt = document.getElementById(this.name + "CommandHighlightButton");
+        elmnt.scrollIntoView();
         //for each asset
         if (this.assetArray.length > 0) {
             for (var i = 0; i < this.assetArray.length; i++) {
@@ -386,6 +391,9 @@ class Command {
         }
         //update message specific items
         this.color = new Color("Custom", document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor);
+        //set the home asset summary
+        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.backgroundColor = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
+        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.color = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
 
         var temp = document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]').value;
         if (temp == "") {
@@ -443,6 +451,9 @@ class Command {
         this.color = temp;
         document.getElementById(this.name + "CommandPanel").querySelector('input[name="colorData"]').value = this.color.fullColorHex();
         document.getElementById(this.name + "CommandPanel").querySelector('input[name="colorData"]').onchange();
+        //set the home asset summary
+        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.backgroundColor = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
+        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.color = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
         if (this.delay != 0) {
             document.getElementById(this.name + "CommandPanel").querySelector('input[name="delay"]').value = this.delay;
         }
@@ -505,10 +516,31 @@ class Command {
         global.objectList._CommandList.removeKeyValuePair(this.name);
     }
 
+    generateSearchResult(containerId) {
+        var fooName = this.name + "CommandPanel"
+        var commandPanelForSearch = document.createElement('div');
+        commandPanelForSearch.className = "stageSearchPaneResult"; //gives it the proper styling
+        commandPanelForSearch.id = this.name + "CommandSearchButton"; //name of this specific asset
+        commandPanelForSearch.onclick = function () {
+            onTabChanged('CommandContentPanel');
+            var elmnt = document.getElementById(fooName);
+            elmnt.scrollIntoView();
+        };
+        commandPanelForSearch.innerHTML =
+            `
+                <div class="stageSearchPaneResultState" style="background-color: #e35656;">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+                <div class="stageSearchPaneResultSpacer"></div>
+                <div class="stageSearchPaneResultCommandType" style="background-color: #0075ac; color: rgb(200,200,200);">` + "COMMAND" + `</div>
+                <div class="stageSearchPaneResultCommand">` + this.name + `</div>
+                <div class="stageSearchPaneResultCommandObjects">` + (this.assetArray.length + this.groupArray.length) + ` Objects</div>
+            `;
+        document.getElementById(containerId).appendChild(commandPanelForSearch);
+    }
+
     createPaneForCommand() {
         //this creates the group pane in the group tab
         var commandPanelForCommandTab = document.createElement('div');
-        commandPanelForCommandTab.className = "viewableCommand commandPanelContent"; //gives it the proper styling
+        commandPanelForCommandTab.className = "viewableCommand hoverPanelContent"; //gives it the proper styling
         commandPanelForCommandTab.id = this.name + "CommandPanel"; //name of this specific asset
         commandPanelForCommandTab.innerHTML =
             `
@@ -520,7 +552,7 @@ class Command {
             <div class="viewableCommandMessageGeneration">
                 <!--The color for the command-->
                 <label class="viewableCommandMessageGenerationColor" name="colorPicker">
-                    <input type="color" style="display: none;" name="colorData" onchange="this.parentElement.style.backgroundColor = this.value;  this.parentElement.style.color = this.value;" onchange="global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()"/>
+                    <input type="color" style="display: none;" name="colorData" onchange="this.parentElement.style.backgroundColor = this.value;  this.parentElement.style.color = this.value; global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()"/>
                     No Color
                 </label>
                 <!--The string update button-->
@@ -577,7 +609,23 @@ class Command {
             `;
         document.getElementById('RightPanelCommandHolder').appendChild(commandPanelForRightSidebar);
 
-        //make a microasset on the home panel
+        //make a microcommand in the command highlighter leftSidebarCommandViewerCollapsible
+        var commandPanelForCommandHighlighter = document.createElement('div');
+        commandPanelForCommandHighlighter.className = "leftPanelCommandButton"; //gives it the proper styling
+        commandPanelForCommandHighlighter.id = this.name + "CommandHighlightButton"; //name of this specific group
+        commandPanelForCommandHighlighter.onclick = function () {
+            onTabChanged('CommandContentPanel');
+            var elmnt = document.getElementById(commandPanelForCommandTab.id);
+            elmnt.scrollIntoView();
+        };
+        commandPanelForCommandHighlighter.innerHTML =
+            `
+            <div class="leftPanelCommandButtonThumbnail">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+            <div class="leftPanelCommandButtonText">` + this.name + `</div>
+            `;
+        document.getElementById('leftSidebarCommandViewerCollapsible').appendChild(commandPanelForCommandHighlighter);
+
+        //make a microcommand on the home panel
         var commandPanelForHomePanel = document.createElement('div');
         commandPanelForHomePanel.className = "HomePanelCommandSummary"; //gives it the proper styling
         commandPanelForHomePanel.id = this.name + "homePanelCommandPanel"; //name of this specific asset
@@ -748,6 +796,7 @@ class Group {
             });
         }
         //will update everything about the group data 
+        this.assetArray = [];
         var test = document.getElementById(this.name + "GroupPanel").querySelector('div[name="selectedAssets"]').childNodes;
         for (var i = 1; i < test.length; i++) {
             if (test[i].querySelector("input").checked) {
@@ -756,7 +805,9 @@ class Group {
                 this.assetArray.push(alias);
             }
         }
-        this.assetArray = Array.from(new Set(this.assetArray));
+
+        //update the amount of element shown on the home screen number
+        document.getElementById(this.name + "homePanelGroupPanel").getElementsByClassName("HomePanelGroupSummaryAssets")[0].innerHTML = this.assetArray.length + " Assets";
     }
 
     closePaneForGroup() {
@@ -772,10 +823,31 @@ class Group {
         global.objectList._GroupList.removeKeyValuePair(this.name);
     }
 
+    generateSearchResult(containerId) {
+        var fooName = this.name + "GroupPanel"
+        var groupPanelForSearch = document.createElement('div');
+        groupPanelForSearch.className = "stageSearchPaneResult"; //gives it the proper styling
+        groupPanelForSearch.id = this.name + "GroupSearchButton"; //name of this specific asset
+        groupPanelForSearch.onclick = function () {
+            onTabChanged('GroupContentPanel');
+            var elmnt = document.getElementById(fooName);
+            elmnt.scrollIntoView();
+        };
+        groupPanelForSearch.innerHTML =
+            `
+                <div class="stageSearchPaneResultState">` + "STBY" + `</div>
+                <div class="stageSearchPaneResultSpacer"></div>
+                <div class="stageSearchPaneResultType" style="background-color: #00c3dd; color: rgb(66, 70, 77);">` + "GROUP" + `</div>
+                <div class="stageSearchPaneResultGroup">` + this.name + `</div>
+                <div class="stageSearchPaneResultGroupAssets">` + this.assetArray.length + ` Assets</div>
+            `;
+        document.getElementById(containerId).appendChild(groupPanelForSearch);
+    }
+
     createPaneForGroup() {
         //this creates the group pane in the group tab
         var groupPanelForGroupTab = document.createElement('div');
-        groupPanelForGroupTab.className = "viewableGroup groupPanelContent"; //gives it the proper styling
+        groupPanelForGroupTab.className = "viewableGroup hoverPanelContent"; //gives it the proper styling
         groupPanelForGroupTab.id = this.name + "GroupPanel"; //name of this specific asset
         groupPanelForGroupTab.innerHTML =
             `
@@ -875,23 +947,21 @@ class Group {
         var test = this.name;
         setTimeout(function () {
             global.objectList._GroupList.findKeyValuePair(test).groupSetup();
+            global.objectList._GroupList.findKeyValuePair(test).updateGroup();
         }, 200);
 
         this.setState(0);
         //at this point run all update code so that the Group is fully up to date
-        if(this.assetArray.length == 0)
-        {
+        if (this.assetArray.length == 0) {
             this.setState(0);
         }
-        else if(this.isDisbanded)
-        {
+        else if (this.isDisbanded) {
             this.callEvent('group-disbanded');
         }
-        else
-        {
+        else {
             this.callEvent('group-activated');
         }
-        this.updateGroup();
+        //this.updateGroup();
     }
 }
 ///////////////////////////////////////////////////////////////////       ASSET CLASS
@@ -1008,17 +1078,25 @@ class Asset {
     }
 
     openSerialPort() {
-        this.SerialPort = new SerialPort(this.comport, { baudRate: parseInt(this.baudRate, 10) });
+        //BluetoothSerial
+        //check to see if the bt prefix is there
+        if (this.comport.includes("bt")) {
+            //connect to the bt
+        }
+        else {
+            //connect to the plain serial
+            this.SerialPort = new SerialPort(this.comport, { baudRate: parseInt(this.baudRate, 10) });
 
-        var test = this.name;
-        setTimeout(function () {
-            if (global.objectList._AssetList.findKeyValuePair(test).SerialPort.isOpen) {
-                global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-active');
-            }
-            else {
-                global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-disconnected');
-            }
-        }, 10);
+            var test = this.name;
+            setTimeout(function () {
+                if (global.objectList._AssetList.findKeyValuePair(test).SerialPort.isOpen) {
+                    global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-active');
+                }
+                else {
+                    global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-disconnected');
+                }
+            }, 10);
+        }
     }
 
     sendCommand(commandString) {
@@ -1111,10 +1189,31 @@ class Asset {
         global.objectList._AssetList.removeKeyValuePair(this.name);
     }
 
+    generateSearchResult(containerId) {
+        var fooName = this.name + "AssetPanel"
+        var assetPanelForSearch = document.createElement('div');
+        assetPanelForSearch.className = "stageSearchPaneResult"; //gives it the proper styling
+        assetPanelForSearch.id = this.name + "AssetSearchButton"; //name of this specific asset
+        assetPanelForSearch.onclick = function () {
+            onTabChanged('AssetContentPanel');
+            var elmnt = document.getElementById(fooName);
+            elmnt.scrollIntoView();
+        };
+        assetPanelForSearch.innerHTML =
+            `
+                <div class="stageSearchPaneResultState">` + "STBY" + `</div>
+                <div class="stageSearchPaneResultSpacer"></div>
+                <div class="stageSearchPaneResultType" style="background-color: #00eccc; color: rgb(66, 70, 77);">` + "ASSET" + `</div>
+                <div class="stageSearchPaneResultAsset">` + this.name + `</div>
+                <div class="stageSearchPaneResultAssetConnection">` + "Not Connected" + `</div>
+            `;
+        document.getElementById(containerId).appendChild(assetPanelForSearch);
+    }
+
     createPaneForAsset() {
         //this creates the asset pane in the asset tab
         var assetPanelForAssetTab = document.createElement('div');
-        assetPanelForAssetTab.className = "viewableAsset assetPanelContent"; //gives it the proper styling
+        assetPanelForAssetTab.className = "viewableAsset hoverPanelContent"; //gives it the proper styling
         assetPanelForAssetTab.id = this.name + "AssetPanel"; //name of this specific asset
         assetPanelForAssetTab.innerHTML =
             `
@@ -1208,11 +1307,12 @@ class Asset {
         document.getElementById('HomeAssetSummary').appendChild(assetPanelForHomePanel);
 
         //make the nanoasset for each group in the group tab
+        //global.objectList._GroupList.findKeyValuePair(this.parentElement.parentElement.parentElement.parentElement.id.replace('GroupPanel','')).updateGroup()
         var assetPanelForGroupPanel = document.createElement('label');
         assetPanelForGroupPanel.id = this.name + "groupPanelAssetPanel";
         assetPanelForGroupPanel.innerHTML =
             `
-            <input type="checkbox" id="` + this.name + "groupPanelAssetCheckbox" + `" class="viewableGroupAssetButtonCheck">
+            <input type="checkbox" id="` + this.name + "groupPanelAssetCheckbox" + `" class="viewableGroupAssetButtonCheck" onchange="global.objectList._GroupList.findKeyValuePair(this.parentElement.parentElement.parentElement.parentElement.id.replace('GroupPanel','')).updateGroup()">
             <span class="viewableGroupAssetButton">
                 <span class="viewableGroupAssetButtonThumbnail">` + "STBY" + `</span>
                 <span class="viewableGroupAssetButtonText">` + this.name + `</span>

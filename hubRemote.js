@@ -13,6 +13,7 @@ const path = require('path');
 const fs = require('fs');
 const SerialPort = require('serialport');
 const isDev = require('electron-is-dev');
+var notification = require('./notification.js');
 
 //global settings and project yolo
 let settings;
@@ -108,7 +109,7 @@ function onWindowLoad() {
     document.getElementById("ModeContentPanel").style.display = "none";
 
     //put to console for dev issues
-    console.log("Done");
+    console.log("Done")
 }
 ///////////////////////////////////////////////////////////////////       ON WINDOW END FUNCTION
 function onWindowClose() {
@@ -194,9 +195,28 @@ function globalSave() {
         openedProject.saveAllProjectObjects(true);
     }
 }
+///////////////////////////////////////////////////////////////////       REMOVE ALL OBJECTS
+function purgeAllObjects() {
+    var assets = global.objectList._AssetList.data();
+    for (var i = global.objectList._AssetList.length() - 1; 0 <= i; i--) {
+        assets[i].Value.closePaneForAsset();
+    }
+    //then do groups first because assets are nested in groups
+    var groups = global.objectList._GroupList.data();
+    for (var i = global.objectList._GroupList.length() - 1; 0 <= i; i--) {
+        groups[i].Value.closePaneForGroup();
+    }
+    //tdo commands because they nest both
+    var commands = global.objectList._CommandList.data();
+    for (var i = global.objectList._CommandList.length() - 1; 0 <= i; i--) {
+        commands[i].Value.closePaneForCommand();
+    }
+
+    //set the title to the projectname
+    document.title = "Liquid Pixel Hub - No Projects Opened";
+}
 ///////////////////////////////////////////////////////////////////       CREATE THE SHORTCUTS
 function generateShortcuts() {
-
     var pos = 0;
     var foo = [
         'HomeContentPanel',
@@ -206,7 +226,6 @@ function generateShortcuts() {
         'CommandContentPanel',
         'ModeContentPanel'
     ];
-
     var template =
         [
             //The two shortcuts to sycle tabs
@@ -322,26 +341,6 @@ function generateShortcuts() {
             }
         ];
     remote.getCurrentWindow().setMenu(remote.Menu.buildFromTemplate(template));
-}
-///////////////////////////////////////////////////////////////////       REMOVE ALL OBJECTS
-function purgeAllObjects() {
-    var assets = global.objectList._AssetList.data();
-    for (var i = global.objectList._AssetList.length() - 1; 0 <= i; i--) {
-        assets[i].Value.closePaneForAsset();
-    }
-    //then do groups first because assets are nested in groups
-    var groups = global.objectList._GroupList.data();
-    for (var i = global.objectList._GroupList.length() - 1; 0 <= i; i--) {
-        groups[i].Value.closePaneForGroup();
-    }
-    //tdo commands because they nest both
-    var commands = global.objectList._CommandList.data();
-    for (var i = global.objectList._CommandList.length() - 1; 0 <= i; i--) {
-        commands[i].Value.closePaneForCommand();
-    }
-
-    //set the title to the projectname
-    document.title = "Liquid Pixel Hub - No Projects Opened";
 }
 ///////////////////////////////////////////////////////////////////       ON SECTION CLICK FUNCTIONS
 function onTabChanged(panelName) {
@@ -473,7 +472,7 @@ function setProjectInSettings(p) {
     var data = { targetProject: targetProject };
 
     //the global filepath for setting
-    var filePath = remote.app.getAppPath() + '\\' + "settings.json";
+    var filePath = "./settings.json";
 
     if (filePath === undefined) return;
     fs.writeFile(filePath, JSON.stringify(data, null, 1), (err) => {
@@ -693,16 +692,111 @@ function newCommandPrompt(type) {
     }
 }
 ///////////////////////////////////////////////////////////////////       COMMAND PLAYLIST FUNCTIONS
+var commandPlaylist = [];
+var commandPlaylistFinished = [];
+var playlistInterupted = false;
+var currentTimeout;
+var currentInterval;
+
+function jumpForwardInPlaylist() {
+
+    clearTimeout(currentTimeout);
+    currentTimeout = 0;
+    //playlistInterupted = true;
+}
+function jumpBackwardInPlaylist() {
+    //jump forward
+    clearTimeout(currentTimeout);
+    currentTimeout = 0;
+
+    //then start a new cycle
+    playlistInterupted = true;
+}
+
 function sleep(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
+    currentPercent = 0;
+    //return new Promise(resolve => setTimeout(resolve, milliseconds));
+    return new Promise(function (resolve, reject) {
+        currentTimeout = setTimeout(resolve, milliseconds);
+        //run different code to check the time
+        currentInterval = setInterval(function () {
+            //set the progress bar
+            currentPercent = currentPercent + ((10 / milliseconds) * 100);
+            document.getElementById("leftSidebarCommandViewerControllerInsideProgress").style.width = currentPercent + "%";
+            if (currentTimeout == 0) {
+                resolve();
+            }
+        }, 10);
+    });
 }
 
 async function startCommandPlaylistAsync() {
-
+    //after running chnage all of the states of each command
     for (var i = 0; i < global.objectList._CommandList.data().length; i++) {
-        await sleep(global.objectList._CommandList.data()[i].Value.startDelay);
-        global.objectList._CommandList.data()[i].Value.sendCommand();
+        global.objectList._CommandList.data()[i].Value.callEvent('command-previous');
     };
+    //take every single element and push it into an array
+    commandPlaylist = [...global.objectList._CommandList.data()];
+    commandPlaylistFinished = [];
+    //then for the length of the array count through
+
+    while (commandPlaylist.length > 0) {
+        //clean up the async code
+        clearTimeout(currentTimeout);
+        currentTimeout = 0;
+        clearInterval(currentInterval);
+        currentInterval = 0;
+        //make a sleep and set it to global namespace
+        var sleeper = sleep(commandPlaylist[0].Value.startDelay);
+        await sleeper;
+        //then jump backward
+        if (playlistInterupted) {
+            playlistInterupted = false;
+            for (var i = 0; i < global.objectList._CommandList.data().length; i++) {
+                global.objectList._CommandList.data()[i].Value.callEvent('command-previous');
+            };
+            if (commandPlaylistFinished.length > 1) {
+                //then move the past to the current
+                commandPlaylist.unshift(commandPlaylistFinished[0]);
+                commandPlaylist.unshift(commandPlaylistFinished[1]);
+                commandPlaylistFinished.shift();
+                commandPlaylistFinished.shift();
+            }
+            else {
+            }
+        }
+        //then send the command
+        commandPlaylist[0].Value.sendCommand();
+        //then set the state
+        commandPlaylist[0].Value.callEvent('command-sent');
+        //then remove this item from the command array and continue
+        commandPlaylistFinished.unshift(commandPlaylist[0]);
+        commandPlaylist.shift();
+    }
+    //clean up the async code
+    clearTimeout(currentTimeout);
+    currentTimeout = 0;
+    clearInterval(currentInterval);
+    currentInterval = 0;
+}
+
+///////////////////////////////////////////////////////////////////       COMMAND VIEWER FUNCTIONS
+function hideOrShow() {
+    //if showing close
+    if (document.getElementById("leftSidebarCommandViewerCollapsible").style.display != "none") {
+        //close the object
+        document.getElementById("leftSidebarCommandViewerCollapsible").parentElement.getElementsByClassName("leftSidebarCommandViewerCollapseButton")[0].innerText = "Open";
+        document.getElementById("leftSidebarCommandViewerCollapsible").parentElement.style.height = "70px";
+        window.setTimeout(function () {
+            document.getElementById("leftSidebarCommandViewerCollapsible").style.display = "none";
+        }, 350);
+    }
+    else {
+        //open the object
+        document.getElementById("leftSidebarCommandViewerCollapsible").parentElement.getElementsByClassName("leftSidebarCommandViewerCollapseButton")[0].innerText = "Close";
+        document.getElementById("leftSidebarCommandViewerCollapsible").style.display = "block";
+        document.getElementById("leftSidebarCommandViewerCollapsible").parentElement.style.height = "33%";
+    }
 }
 ///////////////////////////////////////////////////////////////////       GLOBAL SEARCHBAR FUNCTIONS
 function toggleSearchBar() {
@@ -713,5 +807,40 @@ function toggleSearchBar() {
     else {
         //vice versa
         document.getElementById("globalBlackout").style.display = "none";
+    }
+}
+///////////////////////////////////////////////////////////////////       STAGE VIEW FUNCTIONS
+function searchOnChange(searchTerm, containerId, caseSensitive = false)
+{
+    //clear the conatiner id before we put new items into it
+    var container = document.getElementById(containerId);
+    container.innerHTML = "";
+    //then adhere to the case
+    if(!caseSensitive)
+    {
+        searchTerm = searchTerm.toLowerCase();
+    }
+    //make a giant array containing every object
+    var fullArray = global.objectList._AssetList.data().concat(global.objectList._GroupList.data().concat(global.objectList._CommandList.data()));
+    //sort the array alphabetically
+    fullArray.sort(function(a,b)
+    {
+        return a.Key.localeCompare(b.Key);
+    });
+    //search for the searchTerm supplied and display results in the container id
+    for(var i = 0; i < fullArray.length; i++)
+    {
+        
+        var tempKey = fullArray[i].Key;
+        if(!caseSensitive)
+        {
+            tempKey = tempKey.toLowerCase();
+        }        
+        //check toi see if the string is equal to the key
+        if(tempKey.includes(searchTerm))
+        {
+            //adds a suctom search reult
+            fullArray[i].Value.generateSearchResult(containerId);
+        }
     }
 }

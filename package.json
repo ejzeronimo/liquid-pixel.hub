@@ -1,6 +1,6 @@
 {
   "name": "lpc_hub",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "LPC but crossplatform",
   "author": "Ethan Zeronik",
   "main": "hubMain.js",
@@ -24,10 +24,6 @@
     "win": {
       "icon": "./SvgIcons/AppIcon.png"
     },
-    "mac": {
-      "icon": "build/icon.icn",
-      "category": "public.app-category.developer-tools"
-    },
     "extraFiles": [
       "./changelog.txt",
       "./SvgIcons/TrayIcon.png",
@@ -43,7 +39,7 @@
   "dependencies": {
     "electron-is-dev": "^1.1.0",
     "electron-updater": "^4.2.0",
-    "serialport": "^8.0.5"
+    "serialport": "^8.0.6"
   },
   "devDependencies": {
     "electron": "^6.1.5",

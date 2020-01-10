@@ -167,3 +167,27 @@ Hey guys its me back with another update and I have alot for you this time! This
 - Added a fully function notification system.
 
 - Pushed 1.1.9 and made a Christmas miracle!
+
+- Pushed up to 1.2.1 fixing minor bugs.
+
+- Fixed a bug where the project would not stay open once set.
+
+- Started work on the Stage tab.
+
+- Also started work on adding more control to the command playlist.
+
+- Added something to the left sidebar so that commands will always be onscreen.
+
+- Began research for the mode creator tab, its gonna be crazy powerful.
+
+- Finished the command playlist in the left sidebar.
+
+- Started work on the stage tab.
+
+- Added a search feature to the stage tab that took quite a bit of time.
+
+- Changed the version number to 1.2.2 so its ready to push.
+
+- Added a youtube video of getting started into the tray.
+
+- Pushed 1.2.2

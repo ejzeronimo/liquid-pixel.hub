@@ -144,6 +144,11 @@ var contextMenu = Menu.buildFromTemplate([
             shell.openExternal("mailto:ejzeronik@gmail.com?subject=LPC_HELPDESK&body=");
         }
     },
+    {
+        label: 'Getting started', click: function () {
+            shell.openExternal("https://www.youtube.com/watch?v=X7A7kmjybwA")
+        }
+    },
     { type: 'separator' },
     {
         label: 'Restart', click: function () {

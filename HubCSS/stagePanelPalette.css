@@ -1,22 +1,14 @@
-/* For the stage panel only */
-.stagePanelContent
-{
-    transition: box-shadow .16s ease-out,
-    transform .16s ease-out;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-}
-.stagePanelContent:hover
-{
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-
 /* for the stage representation in the stage tab */
-.stageTheaterAbstractionContainer { 
+.stageTheaterAbstractionContainer {
+    display: block; 
     position: relative; 
     width: 100%;
     padding-top: 40%;
+}
+@media screen and (max-width: calc(200px + 160px + 25px + 20px + 786px)) {
+    .stageTheaterAbstractionContainer {
+        display: none;
+    }
 }
 
 .stageTheaterAbstraction
@@ -51,6 +43,161 @@
     margin: 10px;
     margin-top: 0px;
     width: 393px;
-    height: 393px;
+    height: auto;
+    max-height: 393px;
     background-color: rgb(66, 70, 77);
+    overflow: hidden;
+}
+.stageSearchPaneInput
+{
+    font-family: 'Proxima Nova Semibold';
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+    font-size: 25px;
+    padding: 0px;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: calc(100% - 40px);
+    height: 50px;
+    border-radius: 10px;
+    border: 0px solid;
+    margin: 5px;
+}
+#stageSearchPaneResults
+{
+    margin-left: 5px;
+    margin-right: 5px;
+    width: calc(100% - 10px);
+    max-height: calc(393px - 60px);
+    overflow: scroll;
+    overflow-x: hidden;
+}
+#stageSearchPaneResults::-webkit-scrollbar {
+    width: 5px;
+    background-color: rgb(66, 70, 77);
+}
+#stageSearchPaneResults::-webkit-scrollbar-thumb {
+    background-color: rgb(200, 200, 200);
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-radius: 2.5px;
+}
+/* for the generated search results */
+.stageSearchPaneResult
+{
+    user-select: none;
+    cursor: pointer;
+    width: calc(100% - 5px);
+    height: 50px;
+    margin-bottom: 5px;
+    border: 2px solid rgba(0, 0, 0,0);
+    overflow: hidden;
+    border-radius: 10px;
+}
+.stageSearchPaneResult:hover
+{
+    border: 2px solid rgb(200, 200, 200);
+}
+.stageSearchPaneResult:active
+{
+    border: 2px solid rgba(0, 0, 0,0);
+}
+.stageSearchPaneResultState
+{
+    float: left;
+    height: 100%;
+    width: 50px;
+    background-color: #f9a12f;
+    text-align: center;
+    line-height: 50px;
+}
+.stageSearchPaneResultType
+{
+    float: left;
+    height: 100%;
+    width: 60px;
+    background-color: #f9a12f;
+    text-align: center;
+    line-height: 50px;
+}
+.stageSearchPaneResultSpacer
+{
+    float: left;
+    height: 100%;
+    width: 5px;
+    background-color: rgb(114, 118, 125);
+}
+/* for the asset specific result */
+.stageSearchPaneResultAsset
+{
+    padding-left: 5px;
+    padding-right: 5px;
+    float: left;
+    height: 100%;
+    width: calc((100% - 125px) / 2);
+    background-color: rgb(114, 118, 125);
+    line-height: 50px;
+    text-align: center;
+}
+.stageSearchPaneResultAssetConnection
+{
+    float: left;
+    height: 100%;
+    width: calc((100% - 125px) / 2);
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+    line-height: 50px;
+    text-align: center;
+}
+/* for the group specific result */
+.stageSearchPaneResultGroup
+{
+    padding-left: 5px;
+    padding-right: 5px;
+    float: left;
+    height: 100%;
+    width: calc(((100% - 125px) / 3) * 2);
+    background-color: rgb(114, 118, 125);
+    line-height: 50px;
+    text-align: center;
+}
+.stageSearchPaneResultGroupAssets
+{
+    float: left;
+    height: 100%;
+    width: calc((100% - 125px) / 3);
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+    line-height: 50px;
+    text-align: center;
+}
+/* for the command specific result */
+.stageSearchPaneResultCommandType
+{
+    float: left;
+    height: 100%;
+    width: 90px;
+    background-color: #f9a12f;
+    text-align: center;
+    line-height: 50px;
+}
+.stageSearchPaneResultCommand
+{
+    padding-left: 5px;
+    padding-right: 5px;
+    float: left;
+    height: 100%;
+    width: 95px;
+    background-color: rgb(114, 118, 125);
+    line-height: 50px;
+    text-align: center;
+}
+.stageSearchPaneResultCommandObjects
+{
+    float: left;
+    height: 100%;
+    width: calc(100% - 50px - 5px - 90px - 105px);
+    background-color: rgb(200, 200, 200);
+    color: rgb(66, 70, 77);
+    line-height: 50px;
+    text-align: center;
 }
