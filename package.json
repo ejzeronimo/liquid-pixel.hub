@@ -1,6 +1,6 @@
 {
   "name": "lpc_hub",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "LPC but crossplatform",
   "author": "Ethan Zeronik",
   "main": "hubMain.js",
@@ -37,13 +37,16 @@
     ]
   },
   "dependencies": {
+    "@electron/remote": "^1.1.0",
     "electron-is-dev": "^1.1.0",
     "electron-updater": "^4.2.0",
-    "serialport": "^8.0.6"
+    "mousetrap": "^1.6.5",
+    "node-gyp": "^6.1.0",
+    "webbluetooth": "^2.1.0"
   },
   "devDependencies": {
-    "electron": "^6.1.5",
+    "electron": "^12.0.2",
     "electron-builder": "^20.44.4",
-    "electron-rebuild": "^1.8.8"
+    "electron-rebuild": "^1.11.0"
   }
 }

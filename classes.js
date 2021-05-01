@@ -8,10 +8,13 @@ const {
     webContents
 } = require('electron');
 var fs = require('fs');
-var SerialPort = require('serialport');
+//var SerialPort = require('serialport');
 var notification = require('./notification.js');
 const url = require('url');
 const path = require('path');
+const {
+    callbackify
+} = require('util');
 
 
 ///////////////////////////////////////////////////////////////////       BASE CLASSES
@@ -30,8 +33,7 @@ class Color {
             if (this.Value != "") {
                 var result = this.Value.substring(4, this.Value.length - 1).replace(/\s/g, '');
                 return result.split(',');
-            }
-            else {
+            } else {
                 return ["0", "0", "0"];
             }
         };
@@ -41,8 +43,7 @@ class Color {
             if (this.Value != "") {
                 var result = this.Value.substring(4, this.Value.length - 1).replace(/\s/g, '');
                 colorArray = result.split(',');
-            }
-            else {
+            } else {
                 colorArray = ["0", "0", "0"];
             }
             for (var i = 0; i < colorArray.length; i++) {
@@ -62,6 +63,8 @@ var _GroupList = new dictionary.Dictionary;
 var _AssetList = new dictionary.Dictionary;
 
 var _PortList = new dictionary.Dictionary;
+
+var _SocketList = [];
 
 var _CommandList = new dictionary.Dictionary;
 
@@ -84,7 +87,7 @@ var _ModeList = new Array(
     new Mode("Solid", 1),
     new Mode("Random Cloudy", 2),
     new Mode("Flash", 3),
-    new Mode("Sweep", 4),
+    new Mode("Rainbow Waterfall", 4),
     new Mode("Twinkle", 5),
     new Mode("Random Twinkle", 6),
     new Mode("Random Flash", 7),
@@ -104,15 +107,18 @@ var _ModeList = new Array(
     new Mode("Levels", 21),
     new Mode("Rain", 22),
     new Mode("Pause", 23),
-    new Mode("Sound Sync", 24)
+    new Mode("Sound Sync", 24),
+    new Mode("Portal", 25),
+    new Mode("Tree", 26)
 );
 
 global.objectList = {
     _AssetList,
     _GroupList,
     _PortList,
+    _SocketList,
     _CommandList,
-    _ModeList
+    _ModeList,
 };
 global.colorCustom = {
     ColorsCustom
@@ -136,7 +142,10 @@ class Project {
         commandArray.forEach(element => {
             element.Value.filePath = this.folderPath + "\\" + element.Value.name + ".json";
             if (!this.commandArray.some(e => e.Name === element.Value.name)) {
-                this.commandArray.push({ Name: element.Value.name, Path: element.Value.filePath });
+                this.commandArray.push({
+                    Name: element.Value.name,
+                    Path: element.Value.filePath
+                });
             }
         });
 
@@ -145,7 +154,10 @@ class Project {
         groupArray.forEach(element => {
             element.Value.filePath = this.folderPath + "\\" + element.Value.name + ".json";
             if (!this.groupArray.some(e => e.Name === element.Value.name)) {
-                this.groupArray.push({ Name: element.Key, Path: element.Value.filePath });
+                this.groupArray.push({
+                    Name: element.Key,
+                    Path: element.Value.filePath
+                });
             }
         });
 
@@ -154,7 +166,10 @@ class Project {
         assetArray.forEach(element => {
             element.Value.filePath = this.folderPath + "\\" + element.Value.name + ".json";
             if (!this.assetArray.some(e => e.Name === element.Value.name)) {
-                this.assetArray.push({ Name: element.Value.name, Path: element.Value.filePath });
+                this.assetArray.push({
+                    Name: element.Value.name,
+                    Path: element.Value.filePath
+                });
             }
         });
 
@@ -172,8 +187,7 @@ class Project {
                     fs.writeFileSync(obj.filePath, JSON.stringify(obj, null, 1), (err) => {
                         if (err) throw err;
                     });
-                }
-                else {
+                } else {
                     fs.writeFile(obj.filePath, JSON.stringify(obj, null, 1), (err) => {
                         if (err) throw err;
                     });
@@ -190,8 +204,7 @@ class Project {
                     fs.writeFileSync(obj.filePath, JSON.stringify(obj, null, 1), (err) => {
                         if (err) throw err;
                     });
-                }
-                else {
+                } else {
                     fs.writeFile(obj.filePath, JSON.stringify(obj, null, 1), (err) => {
                         if (err) throw err;
                     });
@@ -208,8 +221,7 @@ class Project {
                     fs.writeFileSync(obj.filePath, JSON.stringify(obj, null, 1), (err) => {
                         if (err) throw err;
                     });
-                }
-                else {
+                } else {
                     fs.writeFile(obj.filePath, JSON.stringify(obj, null, 1), (err) => {
                         if (err) throw err;
                     });
@@ -222,8 +234,7 @@ class Project {
             fs.writeFileSync(this.folderPath + '\\' + this.name + ".json", JSON.stringify(this, null, 1), (err) => {
                 if (err) throw err;
             });
-        }
-        else {
+        } else {
             fs.writeFile(this.folderPath + '\\' + this.name + ".json", JSON.stringify(this, null, 1), (err) => {
                 if (err) throw err;
             });
@@ -240,8 +251,7 @@ class Project {
             if (global.objectList._CommandList.findKeyValuePair(openedCommand.name) == 0) {
                 global.objectList._CommandList.addKeyValuePair(openedCommand.name, openedCommand);
                 openedCommand.createPaneForCommand();
-            }
-            else {
+            } else {
                 //say there was an error or the asset was opened
             }
         });
@@ -254,8 +264,7 @@ class Project {
             if (global.objectList._GroupList.findKeyValuePair(openedGroup.name) == 0) {
                 global.objectList._GroupList.addKeyValuePair(openedGroup.name, openedGroup);
                 openedGroup.createPaneForGroup();
-            }
-            else {
+            } else {
                 //say there was an error or the asset was opened
             }
         });
@@ -264,12 +273,12 @@ class Project {
         this.assetArray.forEach(element => {
             openedObject = JSON.parse(fs.readFileSync(element.Path));
             var openedAsset = Object.assign(new Asset, openedObject);
+            openedAsset.protocol = Object.assign(new classes.protocol, openedAsset.protocol);
             //chuck the asset into the asset list and lode it on the screen
             if (global.objectList._AssetList.findKeyValuePair(openedAsset.name) == 0) {
                 global.objectList._AssetList.addKeyValuePair(openedAsset.name, openedAsset);
                 openedAsset.createPaneForAsset();
-            }
-            else {
+            } else {
                 //say there was an error or the asset was opened
             }
         });
@@ -278,6 +287,52 @@ class Project {
         document.title = "Liquid Pixel Hub - " + this.name + " Loaded";
 
         notification.send("NOTICE, PROJECT OPENED", this.name);
+    }
+}
+///////////////////////////////////////////////////////////////////       PROTOCOL CLASS
+class Protocol {
+    constructor() {
+        this.type = 2;
+        this.isConnected = false;
+
+        //SERIAL
+        this.comport = "COM#";
+        this.baudrate = 9600;
+
+        //BLUETOOTH
+        this.id = null;
+
+        //WIFI
+        this.ip = null;
+    }
+
+
+    openConnection(callback) {
+        for (let i = 0; i < global.objectList._SocketList.length; i++) {
+            if (global.objectList._SocketList[i].ip = this.ip) {
+                this.isConnected = true;
+                break;
+            } else if (i = global.objectList._SocketList.length - 1) {
+                this.isConnected = false;
+                break;
+            }
+        }
+        if (global.objectList._SocketList.length == 0) {
+            this.isConnected = false;
+        }
+        callback(this.isConnected);
+    }
+
+    closeConnection() {
+
+    }
+
+    transmitString(str) {
+        for (let i = 0; i < global.objectList._SocketList.length; i++) {
+            if (global.objectList._SocketList[i].ip = this.ip) {
+                global.objectList._SocketList[i].socket.write(Buffer.from(str));
+            }
+        }
     }
 }
 ///////////////////////////////////////////////////////////////////       COMMAND CLASS
@@ -308,9 +363,9 @@ class Command {
     //All COMMAND METHODS
     setState(status = 0) {
         var colorArray = [
-            '#e35656',//off
-            '#24c65b',//running
-            '#f9a12f'//next
+            '#e35656', //off
+            '#24c65b', //running
+            '#f9a12f' //next
         ];
         //get all of the changable objects 
         var displays = [
@@ -357,7 +412,7 @@ class Command {
                 this.setState(2);
                 break;
             default:
-            // do nothing if it defaults
+                // do nothing if it defaults
         }
     }
 
@@ -398,8 +453,7 @@ class Command {
         var temp = document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]').value;
         if (temp == "") {
             this.mode = global.objectList._ModeList[0];
-        }
-        else {
+        } else {
             this.mode = global.objectList._ModeList[temp];
         }
 
@@ -494,7 +548,9 @@ class Command {
     }
 
     generateCommand() {
-        this.command = 'T' + this.type + 'C' + this.cubePosition + 'R' + this.color.returnColor()[0] + 'G' + this.color.returnColor()[1] + 'B' + this.color.returnColor()[2] + 'M' + this.mode.Value + 'D' + this.delay + 'X' + this.debug + 'S' + this.sound + '~';
+        //I0T0{43,218,82}M25D0~
+        this.command = 'I' + this.cubePosition + 'T' + this.type + '{' + this.color.returnColor()[0] + ',' + this.color.returnColor()[1] + ',' + this.color.returnColor()[2] + '}M' + this.mode.Value + 'D' + this.delay + '~';
+        //this.command = 'T' + this.type + 'C' + this.cubePosition + 'R' + this.color.returnColor()[0] + 'G' + this.color.returnColor()[1] + 'B' + this.color.returnColor()[2] + 'M' + this.mode.Value + 'D' + this.delay + 'X' + this.debug + 'S' + this.sound + '~';
         document.getElementById(this.name + "CommandPanel").querySelector('input[name="generated_string"]').value = this.command;
     }
 
@@ -528,7 +584,10 @@ class Command {
         };
         commandPanelForSearch.innerHTML =
             `
-                <div class="stageSearchPaneResultState" style="background-color: #e35656;">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+                <div class="stageSearchPaneResultState" style="background-color: #e35656;">#` + (this.position).toLocaleString('en-US', {
+                minimumIntegerDigits: 3,
+                useGrouping: false
+            }) + `</div>
                 <div class="stageSearchPaneResultSpacer"></div>
                 <div class="stageSearchPaneResultCommandType" style="background-color: #0075ac; color: rgb(200,200,200);">` + "COMMAND" + `</div>
                 <div class="stageSearchPaneResultCommand">` + this.name + `</div>
@@ -545,7 +604,10 @@ class Command {
         commandPanelForCommandTab.innerHTML =
             `
             <!--The autonumber in the order of commands-->
-            <div class="viewableCommandNumber">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+            <div class="viewableCommandNumber">#` + (this.position).toLocaleString('en-US', {
+                minimumIntegerDigits: 3,
+                useGrouping: false
+            }) + `</div>
             <!--The command name-->
             <input class="viewableCommandInput" type="text" name="commandName" value="` + this.name + `" readonly="readonly">
             <!--The command generation pane-->
@@ -604,7 +666,10 @@ class Command {
         };
         commandPanelForRightSidebar.innerHTML =
             `
-            <div class="rightPanelCommandButtonThumbnail">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+            <div class="rightPanelCommandButtonThumbnail">#` + (this.position).toLocaleString('en-US', {
+                minimumIntegerDigits: 3,
+                useGrouping: false
+            }) + `</div>
             <div class="rightPanelCommandButtonText">` + this.name + `</div>
             `;
         document.getElementById('RightPanelCommandHolder').appendChild(commandPanelForRightSidebar);
@@ -620,7 +685,10 @@ class Command {
         };
         commandPanelForCommandHighlighter.innerHTML =
             `
-            <div class="leftPanelCommandButtonThumbnail">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+            <div class="leftPanelCommandButtonThumbnail">#` + (this.position).toLocaleString('en-US', {
+                minimumIntegerDigits: 3,
+                useGrouping: false
+            }) + `</div>
             <div class="leftPanelCommandButtonText">` + this.name + `</div>
             `;
         document.getElementById('leftSidebarCommandViewerCollapsible').appendChild(commandPanelForCommandHighlighter);
@@ -636,7 +704,10 @@ class Command {
         };
         commandPanelForHomePanel.innerHTML =
             `
-            <div class="HomePanelCommandSummaryState">#` + (this.position).toLocaleString('en-US', { minimumIntegerDigits: 3, useGrouping: false }) + `</div>
+            <div class="HomePanelCommandSummaryState">#` + (this.position).toLocaleString('en-US', {
+                minimumIntegerDigits: 3,
+                useGrouping: false
+            }) + `</div>
             <div class="HomePanelCommandSummaryColor">NULL</div>
             <div class="HomePanelCommandSummaryName">` + this.name + `</div>
          `;
@@ -731,7 +802,7 @@ class Group {
                 this.setState(5);
                 break;
             default:
-            // do nothing if it defaults
+                // do nothing if it defaults
         }
     }
 
@@ -742,11 +813,9 @@ class Group {
         }
         if (commandString.includes("M0")) {
             this.callEvent('command-stop');
-        }
-        else if (commandString.includes("M23")) {
+        } else if (commandString.includes("M23")) {
             this.callEvent('command-pause');
-        }
-        else {
+        } else {
             this.callEvent('command-sent');
         }
     }
@@ -765,7 +834,8 @@ class Group {
             checkClamped = 1;
         }
         //generate a local command
-        var localCommand = 'T0C0R' + colorClamped.returnColor()[0] + 'G' + colorClamped.returnColor()[1] + 'B' + colorClamped.returnColor()[2] + 'M' + modeClamped.Value + 'D' + delayClamped + 'X' + checkClamped + 'S0~\n';
+        var localCommand = 'I0T0{' + colorClamped.returnColor()[0] + ',' + colorClamped.returnColor()[1] + ',' + colorClamped.returnColor()[2] + '}M' + modeClamped.Value + 'D' + delayClamped + '~';
+        //var localCommand = 'T0C0R' + colorClamped.returnColor()[0] + 'G' + colorClamped.returnColor()[1] + 'B' + colorClamped.returnColor()[2] + 'M' + modeClamped.Value + 'D' + delayClamped + 'X' + checkClamped + 'S0~\n';
         //change the html of the command input
         document.getElementById(this.name + "GroupPanel").querySelector('input[name="generated_string"]').value = localCommand;
         //send it
@@ -954,11 +1024,9 @@ class Group {
         //at this point run all update code so that the Group is fully up to date
         if (this.assetArray.length == 0) {
             this.setState(0);
-        }
-        else if (this.isDisbanded) {
+        } else if (this.isDisbanded) {
             this.callEvent('group-disbanded');
-        }
-        else {
+        } else {
             this.callEvent('group-activated');
         }
         //this.updateGroup();
@@ -970,13 +1038,9 @@ class Asset {
         this.type = ""; //this is the type of the box being run
         this.name = ""; //the name
         this.filePath = ""; //filepath that is used
-        this.comport = "COM#"; //the comport number used
-        this.baudRate = 9600; //the baudrate of the comprt
-        this.state = 0; //the current state of the asset
+        this.state = 0; //the current state of the asset 
         this.stateChanged = (newState) => this.state != newState;
-        this.SerialPort = null; //the serialport
-        //command array that hold all colors()
-        this.colorArray = new Array();
+        this.protocol = new Protocol();
     }
 
     //All ASSET METHODS
@@ -1001,7 +1065,7 @@ class Asset {
         ];
         //get all of the changable objects 
         var displays = [
-            document.getElementById(this.name + "AssetPanel").getElementsByClassName("viewableAssetCommandGraphState")[0],
+            document.getElementById(this.name + "AssetPanel").getElementsByClassName("viewableAssetTopBarState")[0],
             document.getElementById(this.name + "AssetButton").getElementsByClassName("rightPanelAssetButtonThumbnail")[0],
             document.getElementById(this.name + "homePanelAssetPanel").getElementsByClassName("HomePanelAssetSummaryState")[0],
         ];
@@ -1026,33 +1090,32 @@ class Asset {
                         blah.style.backgroundColor = stateArrayColor[status];
                     }
                 }
-            }
-            catch{ }
+            } catch {}
         }
     }
 
     callEvent(name) {
         // a custom event handler that will be called locally from within the assets themselves
         switch (name) {
-            case 'serial-undefined':
+            case 'connection-undefined':
                 //set state
                 this.setState(0);
                 //then send a notification
-                notification.send("ERROR, THIS ASSET DOES NOT HAVE A DEFINED PORT", this.name);
+                notification.send("ERROR, THIS ASSET DOES NOT HAVE A DEFINED CONNECTION", this.name);
                 break;
-            case 'serial-active':
+            case 'connection-active':
                 //set state
                 this.setState(1);
                 //then set the summary
                 document.getElementById(this.name + "homePanelAssetPanel").getElementsByClassName("HomePanelAssetSummaryPortStatus")[0].innerHTML = "Connected";
                 //then send a notification
-                notification.send("SERIALPORT CONNECTED", this.name);
+                notification.send("CONNECTED", this.name);
                 break;
-            case 'serial-disconnected':
+            case 'connection-disconnected':
                 //set state
                 this.setState(2);
                 //then send a notification
-                notification.send("ERROR, THIS ASSET'S PORT IS NOT CONNECTED", this.name);
+                notification.send("ERROR, THIS ASSET IS NOT CONNECTED", this.name);
                 break;
             case 'command-sent':
                 //set state
@@ -1073,56 +1136,36 @@ class Asset {
                 notification.send("NOTICE, BEGINNING SOUND SYNC PROTOCOL", this.name);
                 break;
             default:
-            // do nothing if it defaults
+                // do nothing if it defaults
         }
     }
 
-    openSerialPort() {
-        //BluetoothSerial
-        //check to see if the bt prefix is there
-        if (this.comport.includes("bt")) {
-            //connect to the bt
-        }
-        else {
-            //connect to the plain serial
-            this.SerialPort = new SerialPort(this.comport, { baudRate: parseInt(this.baudRate, 10) });
-
-            var test = this.name;
-            setTimeout(function () {
-                if (global.objectList._AssetList.findKeyValuePair(test).SerialPort.isOpen) {
-                    global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-active');
-                }
-                else {
-                    global.objectList._AssetList.findKeyValuePair(test).callEvent('serial-disconnected');
-                }
-            }, 10);
-        }
+    checkConnection() {
+        var temp = this.name
+        this.protocol.openConnection(function (worked) {
+            if (worked) {
+                global.objectList._AssetList.findKeyValuePair(temp).callEvent("connection-active")
+            } else {
+                global.objectList._AssetList.findKeyValuePair(temp).callEvent("connection-disconnected")
+            }
+        })
     }
 
     sendCommand(commandString) {
-        if (this.SerialPort == null) {
-            this.callEvent('serial-undefined');
-        }
-        else {
-            if (this.SerialPort.isOpen) {
-                this.SerialPort.write(commandString);
-                //custom event here 24
-                if (commandString.includes("M24")) {
-                    this.callEvent('command-sync');
-                }
-                else if (commandString.includes("M0")) {
-                    this.callEvent('command-stop');
-                }
-                else if (commandString.includes("M23")) {
-                    this.callEvent('command-pause');
-                }
-                else {
-                    this.callEvent('command-sent');
-                }
+        if (this.protocol.isConnected) {
+            this.protocol.transmitString(commandString);
+            //custom event here 24
+            if (commandString.includes("M24")) {
+                this.callEvent('command-sync');
+            } else if (commandString.includes("M0")) {
+                this.callEvent('command-stop');
+            } else if (commandString.includes("M23")) {
+                this.callEvent('command-pause');
+            } else {
+                this.callEvent('command-sent');
             }
-            else {
-                this.callEvent('serial-disconnected');
-            }
+        } else {
+            this.callEvent('connection-disconnected');
         }
     }
 
@@ -1135,12 +1178,9 @@ class Asset {
         if (!isNaN(document.getElementById(this.name + "AssetPanel").querySelector('input[name="delay"]').value)) {
             delayClamped = document.getElementById(this.name + "AssetPanel").querySelector('input[name="delay"]').value;
         }
-        //clamp the debug value
-        if (document.getElementById(this.name + "AssetPanel").querySelector('input[name="debug"]').checked) {
-            checkClamped = 1;
-        }
         //generate a local command
-        var localCommand = 'T0C0R' + colorClamped.returnColor()[0] + 'G' + colorClamped.returnColor()[1] + 'B' + colorClamped.returnColor()[2] + 'M' + modeClamped.Value + 'D' + delayClamped + 'X' + checkClamped + 'S0~\n';
+        var localCommand = 'I0T0{' + colorClamped.returnColor()[0] + ',' + colorClamped.returnColor()[1] + ',' + colorClamped.returnColor()[2] + '}M' + modeClamped.Value + 'D' + delayClamped + '~';
+        //var localCommand = 'T0C0R' + colorClamped.returnColor()[0] + 'G' + colorClamped.returnColor()[1] + 'B' + colorClamped.returnColor()[2] + 'M' + modeClamped.Value + 'D' + delayClamped + 'XS0~\n';
         //send it
         this.sendCommand(localCommand);
         //change the html of the command input
@@ -1165,13 +1205,10 @@ class Asset {
 
             });
         }
-        for (var i = 0; i < this.colorArray.length; i++) {
-
-        }
         //will update everything about the asset data
-        this.type = document.getElementById(this.name + "AssetPanel").querySelector('select[name="assetType"]').value;
-        this.comport = document.getElementById(this.name + "AssetPanel").querySelector('input[name="comport"]').value;
-        this.baudRate = document.getElementById(this.name + "AssetPanel").querySelector('input[name="baudrate"]').value;
+        //this.type = document.getElementById(this.name + "AssetPanel").querySelector('select[name="assetType"]').value;
+        //this.comport = document.getElementById(this.name + "AssetPanel").querySelector('input[name="comport"]').value;
+        //this.baudRate = document.getElementById(this.name + "AssetPanel").querySelector('input[name="baudrate"]').value;
     }
 
     closePaneForAsset() {
@@ -1217,47 +1254,36 @@ class Asset {
         assetPanelForAssetTab.id = this.name + "AssetPanel"; //name of this specific asset
         assetPanelForAssetTab.innerHTML =
             `
-            <!--This will hold all of the colors the asset has in its queue-->
-            <div class="viewableAssetColorTable">
-                <p>No Commands Yet!</p>
-            </div>
-            <!--This is the basic data for the asset-->
-            <div class="viewableAssetDataTable">
-                <input class="viewableAssetInput" type="text" name="assetName" value="` + this.name + `" readonly="readonly" onchange="global.objectList._AssetList.findKeyValuePair('` + this.name + `').updateAsset()"> 
-                <input class="viewableAssetInput" type="text" name="comport" value="` + this.comport + `" onchange="global.objectList._AssetList.findKeyValuePair('` + this.name + `').updateAsset()">
-                <input class="viewableAssetInput" type="text" name="baudrate" value="` + this.baudRate + `">
-                <input class="viewableAssetInput" type="text" name="filePath" value="` + this.filePath + `" readonly="readonly" onchange="global.objectList._AssetList.findKeyValuePair('` + this.name + `').updateAsset()">
-                <select class="viewableAssetInput selectAssetInput" name="assetType" onchange="global.objectList._AssetList.findKeyValuePair('`+ this.name + `').updateAsset()">
-                    <option value="0">Alone</option>
-                    <option value="1">Master</option>
-                    <option value="2">Slave</option>
-                    <option value="3">Beacon</option>
-                </select>
+            <!--This will be the top bar of the asset for name, communication and basic status-->
+            <div class="viewableAssetTopBar">
+                ` + this.name + `
+                <button class="viewableAssetTopBarConnect" onclick="global.objectList._AssetList.findKeyValuePair('` + this.name + `').checkConnection()">CONNECT</button>
+                <div class="viewableAssetTopBarState">STBY</div>
             </div>
             <!--This will house various bits of information for this asset and possible more-->
-            <div class="viewableAssetCommandGraph">
-                <div class="viewableAssetCommandGraphState">` + "STBY" + `</div>
+            <div class="viewableAssetCommandGraph">          
                 <div class="viewableAssetCommandGraphLog">
-                    <p>Console Log:</p>
-                </div>
-            <button class="viewableAssetCommandGraphPortConnect" onclick="global.objectList._AssetList.findKeyValuePair('` + this.name + `').openSerialPort()">CONNECT</button>
+                </div>         
             </div>
             <!--This is a basic command panel in the asset panel so that test commands can be sent-->
             <div class="viewableAssetCommandConstruction">
-                <!--The color for the command-->
-                <label class="viewableAssetCommandConstructionColor" name="colorPicker">
-                    <input type="color"  style="display: none;" onchange="this.parentElement.style.backgroundColor = this.value;  this.parentElement.style.color = this.value;" />
-                    No Color
-                </label>
+                <!--Select the specific type of command-->
+                <select class="viewableAssetCommandConstructionTypeSelect" name="typeDropdown">
+                    <option value="0">Single Color RGB</option>
+                    <option value="1">Dual Color RGB</option>
+                </select>
+                <!--The color pane that allows multiple colors>-->
+                <div class="viewableAssetCommandConstructionColorPane">
+                    <!--The colors for the command-->
+                    <label class="viewableAssetCommandConstructionColor" name="colorPicker">
+                        <input type="color" style="display: none;" onchange="this.parentElement.style.backgroundColor = this.value;  this.parentElement.style.color = this.value;" />
+                        No Color
+                    </label>
+                </div>
                 <!--The mode dropdown-->
                 <select class="viewableAssetCommandConstructionModeSelect" name="modeDropdown">
                     <option value="0">Select Mode</option>
                 </select>
-                <!--The debug boolean of the command-->
-                <label class="viewableAssetCommandConstructionDebug">
-                    Debug
-                    <input class="viewableAssetCommandConstructionDebugCheckbox" name="debug" type="checkbox" onclick="this.parentElement.childNodes[0].nodeValue = 'Debug ' + this.checked;">
-                </label>
                 <!--The delay of the command-->
                 <input class="viewableAssetCommandConstructionDelay" type="text" name="delay" value="Set Delay (ms)">
                 <!--The generated string-->
@@ -1265,7 +1291,7 @@ class Asset {
                 <!--The send button-->
                 <button type="button" class="viewableAssetCommandConstructionSend" onclick="global.objectList._AssetList.findKeyValuePair('` + this.name + `').generateAndSendLocalCommand()">
                     <svg id="viewableSlimCommandPlayIcon">
-                        <use xlink:href="SvgIcons/play.svg#play_small"></use>
+                    <use xlink:href="SvgIcons/play.svg#play_smallest"></use>
                     </svg>
                 </button>
             </div>
@@ -1353,5 +1379,6 @@ module.exports = {
     command: Command,
     color: Color,
     group: Group,
-    project: Project
+    project: Project,
+    protocol: Protocol
 };

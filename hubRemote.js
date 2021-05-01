@@ -2,18 +2,36 @@ const classes = require('./classes.js');
 const {
     app,
     BrowserWindow,
-    remote,
     ipcRenderer,
     globalShortcut,
     ipcMain,
     webContents
 } = require('electron');
+const remote = require('@electron/remote');
 const url = require('url');
 const path = require('path');
 const fs = require('fs');
-const SerialPort = require('serialport');
+var net = require('net');
+//const SerialPort = require('serialport');
 const isDev = require('electron-is-dev');
+var mouseTrap = require('mousetrap');
 var notification = require('./notification.js');
+
+var server = net.createServer(function (socket) {
+    for (let i = 0; i < global.objectList._SocketList.length; i++) {
+        if (global.objectList._SocketList[i].ip = socket.remoteAddress) {
+            global.objectList._SocketList[i].splice(i,1);
+        }
+    }
+    global.objectList._SocketList.push({
+        ip: socket.remoteAddress,
+        socket: socket
+    });
+});
+
+server.listen(742, '172.16.17.57');
+
+//remote.getCurrentWindow().webContents.on("select-serial-port",function(){console.log("here")})
 
 //global settings and project yolo
 let settings;
@@ -23,15 +41,18 @@ function maximizeWindow() {
     if (remote.getCurrentWindow().isMaximized()) {
         remote.getCurrentWindow().unmaximize();
         //document.getElementById("maxbutton").textContent = '\u0031';
-    }
-    else {
+    } else {
         remote.getCurrentWindow().maximize();
         //document.getElementById("maxbutton").textContent = '\u0032';
     }
 }
+
 function minimizeWindow() {
+    var SerialPort = navigator.serial.requestPort();
+
     remote.getCurrentWindow().minimize();
 }
+
 function closeWindow() {
     //run on window close here
     onWindowClose();
@@ -226,121 +247,43 @@ function generateShortcuts() {
         'CommandContentPanel',
         'ModeContentPanel'
     ];
-    var template =
-        [
-            //The two shortcuts to sycle tabs
-            {
-                label: '',
-                accelerator: 'Ctrl+S',
-                click: () => {
-                    globalSave();
-                }
-            },
-            {
-                label: '',
-                accelerator: 'Shift+Up',
-                click: () => {
-                    //check current pos
-                    for (var i = 0; i < document.getElementsByClassName("middlecontentpanel").length; i++) {
-                        if (document.getElementsByClassName("middlecontentpanel")[i].style.display == "block") {
-                            pos = foo.indexOf(document.getElementsByClassName("middlecontentpanel")[i].id)
-                        }
-                    }
-                    pos = ((pos - 1) + 6) % 6;
-                    onTabChanged(foo[pos]);
-                }
-            },
-            {
-                label: '',
-                accelerator: 'Shift+Down',
-                click: () => {
-                    //check current pos
-                    for (var i = 0; i < document.getElementsByClassName("middlecontentpanel").length; i++) {
-                        if (document.getElementsByClassName("middlecontentpanel")[i].style.display == "block") {
-                            pos = foo.indexOf(document.getElementsByClassName("middlecontentpanel")[i].id)
-                        }
-                    }
-                    pos = (pos + 1) % 6;
-                    onTabChanged(foo[pos])
-                }
-            },
-            //opens and closes the searchbar
-            {
-                label: '',
-                accelerator: 'Shift+Space',
-                click: () => {
-                    toggleSearchBar();
-                }
-            },
-            //force reload the window
-            {
-                label: '',
-                accelerator: 'Ctrl+Shift+R',
-                click: () => {
-                    globalSave();
-                    remote.getCurrentWindow().reload();
-                }
-            },
-            //toggle the kiosk mode of the current window
-            {
-                label: '',
-                accelerator: 'F11',
-                click: () => {
-                    if (!remote.getCurrentWindow().isFullScreen()) {
-                        remote.getCurrentWindow().setFullScreen(true);
-                    }
-                    else {
-                        remote.getCurrentWindow().setFullScreen(false);
-                    }
-                }
-            },
-            //open and create an asset
-            {
-                label: '',
-                accelerator: 'Shift+A',
-                click: () => {
-                    newAssetPrompt(1);
-                }
-            },
-            {
-                label: '',
-                accelerator: 'Shift+Alt+A',
-                click: () => {
-                    newAssetPrompt(0);
-                }
-            },
-            //open and create a group
-            {
-                label: '',
-                accelerator: 'Shift+G',
-                click: () => {
-                    newGroupPrompt(1);
-                }
-            },
-            {
-                label: '',
-                accelerator: 'Shift+Alt+G',
-                click: () => {
-                    newGroupPrompt(0);
-                }
-            },
-            //open and create a command
-            {
-                label: '',
-                accelerator: 'Shift+C',
-                click: () => {
-                    newCommandPrompt(1);
-                }
-            },
-            {
-                label: '',
-                accelerator: 'Shift+Alt+C',
-                click: () => {
-                    newCommandPrompt(0);
-                }
+
+    mouseTrap.bind('ctrl+s', function () {
+        globalSave();
+    });
+    mouseTrap.bind('shift+up', function () {
+        //check current pos
+        for (var i = 0; i < document.getElementsByClassName("middlecontentpanel").length; i++) {
+            if (document.getElementsByClassName("middlecontentpanel")[i].style.display == "block") {
+                pos = foo.indexOf(document.getElementsByClassName("middlecontentpanel")[i].id)
             }
-        ];
-    remote.getCurrentWindow().setMenu(remote.Menu.buildFromTemplate(template));
+        }
+        pos = ((pos - 1) + 6) % 6;
+        onTabChanged(foo[pos]);
+    });
+    mouseTrap.bind('shift+down', function () { //check current pos
+        //check current pos
+        for (var i = 0; i < document.getElementsByClassName("middlecontentpanel").length; i++) {
+            if (document.getElementsByClassName("middlecontentpanel")[i].style.display == "block") {
+                pos = foo.indexOf(document.getElementsByClassName("middlecontentpanel")[i].id)
+            }
+        }
+        pos = (pos + 1) % 6;
+        onTabChanged(foo[pos])
+    });
+
+    mouseTrap.bind('ctrl+r', function () {
+        globalSave();
+        remote.getCurrentWindow().reload();
+    });
+
+    mouseTrap.bind('f11', function () {
+        if (!remote.getCurrentWindow().isFullScreen()) {
+            remote.getCurrentWindow().setFullScreen(true);
+        } else {
+            remote.getCurrentWindow().setFullScreen(false);
+        }
+    });
 }
 ///////////////////////////////////////////////////////////////////       ON SECTION CLICK FUNCTIONS
 function onTabChanged(panelName) {
@@ -350,8 +293,7 @@ function onTabChanged(panelName) {
             panels[i].style.display = "none";
             foo = panels[i].id.substring(0, panels[i].id.length - 12) + "TabCheckbox";
             document.getElementById(foo).checked = false;
-        }
-        else {
+        } else {
             panels[i].style.display = "block";
             foo = panels[i].id.substring(0, panels[i].id.length - 12) + "TabCheckbox";
             document.getElementById(foo).checked = true;
@@ -372,17 +314,17 @@ function setProject() {
         if (response == 0) {
             //proceed to set
             remote.dialog.showOpenDialog({
-                title: "Set Project",
-                filters: [{
-                    name: 'Json Files',
-                    extensions: ['json']
+                    title: "Set Project",
+                    filters: [{
+                            name: 'Json Files',
+                            extensions: ['json']
+                        },
+                        {
+                            name: 'All Files',
+                            extensions: ['*']
+                        }
+                    ]
                 },
-                {
-                    name: 'All Files',
-                    extensions: ['*']
-                }
-                ]
-            },
                 function (fileName) {
                     if (fileName != undefined) {
                         //set project and refresh
@@ -398,12 +340,13 @@ function setProject() {
                         setProjectInSettings(openedProject);
                     }
                 });
-        }
-        else {
+        } else {
             //remove from settings
             var targetProject = "";
 
-            var data = { targetProject: targetProject };
+            var data = {
+                targetProject: targetProject
+            };
 
             //the global filepath for setting
             var filePath = remote.app.getAppPath() + '\\' + "settings.json";
@@ -419,21 +362,22 @@ function setProject() {
         }
     });
 }
+
 function createProject() {
     //will create a project.json and a repo and add it to auto open
     //create an empty asset with the same name as the chosen filename
     remote.dialog.showSaveDialog({
-        title: "Create Project",
-        filters: [{
-            name: 'Json Files',
-            extensions: ['json']
+            title: "Create Project",
+            filters: [{
+                    name: 'Json Files',
+                    extensions: ['json']
+                },
+                {
+                    name: 'All Files',
+                    extensions: ['*']
+                }
+            ]
         },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
-        ]
-    },
         function (fileName) {
 
             folderPath = path.parse(fileName).dir + "\\" + path.parse(fileName).name;
@@ -442,7 +386,9 @@ function createProject() {
             //console.log(folderPath)
             try {
                 if (!fs.existsSync(folderPath)) {
-                    fs.mkdirSync(folderPath, { recursive: false })
+                    fs.mkdirSync(folderPath, {
+                        recursive: false
+                    })
                 }
             } catch (err) {
                 console.error(err)
@@ -465,11 +411,14 @@ function createProject() {
             setProjectInSettings(project);
         });
 }
+
 function setProjectInSettings(p) {
     //put path of p into settings
     var targetProject = p.folderPath + '\\' + p.name + ".json";
 
-    var data = { targetProject: targetProject };
+    var data = {
+        targetProject: targetProject
+    };
 
     //the global filepath for setting
     var filePath = "./settings.json";
@@ -480,13 +429,10 @@ function setProjectInSettings(p) {
     });
 }
 ///////////////////////////////////////////////////////////////////       OPENING OR GENERATION OF NEW ASSETS, GROUPS, AND COMMANDS
-function newAssetPrompt(type) {
-    if (type == 0) //CREATE NEW ASSET
-    {
-        //create an empty asset with the same name as the chosen filename
-        remote.dialog.showSaveDialog({
-            title: "Save Asset",
-            filters: [{
+function createAssetDialog() {
+    remote.dialog.showSaveDialog({
+        title: "Save Asset",
+        filters: [{
                 name: 'Json Files',
                 extensions: ['json']
             },
@@ -494,68 +440,33 @@ function newAssetPrompt(type) {
                 name: 'All Files',
                 extensions: ['*']
             }
-            ]
-        },
-            function (fileName) {
-                //make an empty asset
-                createdAsset = new classes.asset();
-                createdAsset.name = path.parse(fileName).base.replace(".json", "");
-                createdAsset.filePath = path.dirname(fileName) + '\\' + createdAsset.name + ".json";
+        ]
+    }).then(function (result) {
+        //make an empty asset
+        createdAsset = new classes.asset();
+        createdAsset.name = path.parse(result.filePath).base.replace(".json", "");
+        createdAsset.filePath = path.dirname(result.filePath) + '\\' + createdAsset.name + ".json";
 
-                if (fileName === undefined) return;
-                fs.writeFile(fileName, JSON.stringify(createdAsset, null, 1), (err) => {
-                    if (err) throw err;
-                });
+        if (result.filePath === undefined) return;
+        fs.writeFile(result.filePath, JSON.stringify(createdAsset, null, 1), (err) => {
+            if (err) throw err;
+        });
 
-                //chuck the asset into the asset list and lode it on the screen
-                if (global.objectList._AssetList.findKeyValuePair(createdAsset.name) == 0) {
-                    global.objectList._AssetList.addKeyValuePair(createdAsset.name, createdAsset);
-                    createdAsset.createPaneForAsset();
-                }
-                else {
-                    //say there was an error with the name
-                }
-            });
-    }
-    else if (type == 1)//OPEN ASSET
-    {
-        remote.dialog.showOpenDialog({
-            title: "Open Assets",
-            properties: ['multiSelections'],
-            filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }
-            ]
-        },
-            function (fileNames) {
-                if (fileNames === undefined) return;
-                for (i = 0; i < fileNames.length; i++) {
-                    openedObject = JSON.parse(fs.readFileSync(fileNames[i]));
-                    openedAsset = Object.assign(new classes.asset, openedObject);
-                    //chuck the asset into the asset list and lode it on the screen
-                    if (global.objectList._AssetList.findKeyValuePair(openedAsset.name) == 0) {
-                        global.objectList._AssetList.addKeyValuePair(openedAsset.name, openedAsset);
-                        openedAsset.createPaneForAsset();
-                    }
-                    else {
-                        //say there was an error or the asset was opened
-                    }
-                }
-            });
-    }
+        //chuck the asset into the asset list and load it on the screen
+        if (global.objectList._AssetList.findKeyValuePair(createdAsset.name) == 0) {
+            global.objectList._AssetList.addKeyValuePair(createdAsset.name, createdAsset);
+            createdAsset.createPaneForAsset();
+        } else {
+            //say there was an error with the name
+        }
+    });
 }
-function newGroupPrompt(type) {
-    if (type == 0) //CREATE NEW GROUP
-    {
-        //create an empty asset with the same name as the chosen filename
-        remote.dialog.showSaveDialog({
-            title: "Save Group",
-            filters: [{
+
+function openAssetDialog() {
+    remote.dialog.showOpenDialog({
+        title: "Open Assets",
+        properties: ['multiSelections'],
+        filters: [{
                 name: 'Json Files',
                 extensions: ['json']
             },
@@ -563,68 +474,28 @@ function newGroupPrompt(type) {
                 name: 'All Files',
                 extensions: ['*']
             }
-            ]
-        },
-            function (fileName) {
-                //make an empty group
-                createdGroup = new classes.group();
-                createdGroup.name = path.parse(fileName).base.replace(".json", "");
-                createdGroup.filePath = path.dirname(fileName) + '\\' + createdGroup.name + ".json";
-
-                if (fileName === undefined) return;
-                fs.writeFile(fileName, JSON.stringify(createdGroup, null, 1), (err) => {
-                    if (err) throw err;
-                });
-
-                //chuck the asset into the asset list and lode it on the screen
-                if (global.objectList._GroupList.findKeyValuePair(createdGroup.name) == 0) {
-                    global.objectList._GroupList.addKeyValuePair(createdGroup.name, createdGroup);
-                    createdGroup.createPaneForGroup();
-                }
-                else {
-                    //say there was an error with the name
-                }
-            });
-    }
-    else if (type == 1)//OPEN GROUP
-    {
-        remote.dialog.showOpenDialog({
-            title: "Open Assets",
-            properties: ['multiSelections'],
-            filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
+        ]
+    }).then(function (result) {
+        if (result.filePaths === undefined) return;
+        for (i = 0; i < result.filePaths.length; i++) {
+            openedObject = JSON.parse(fs.readFileSync(result.filePaths[i]));
+            openedAsset = Object.assign(new classes.asset, openedObject);
+            openedAsset.protocol = Object.assign(new classes.protocol,openedAsset.protocol);
+            //chuck the asset into the asset list and lode it on the screen
+            if (global.objectList._AssetList.findKeyValuePair(openedAsset.name) == 0) {
+                global.objectList._AssetList.addKeyValuePair(openedAsset.name, openedAsset);
+                openedAsset.createPaneForAsset();
+            } else {
+                //say there was an error or the asset was opened
             }
-            ]
-        },
-            function (fileNames) {
-                if (fileNames === undefined) return;
-                for (i = 0; i < fileNames.length; i++) {
-                    openedObject = JSON.parse(fs.readFileSync(fileNames[i]));
-                    openedGroup = Object.assign(new classes.group, openedObject);
-                    //chuck the asset into the asset list and lode it on the screen
-                    if (global.objectList._GroupList.findKeyValuePair(openedGroup.name) == 0) {
-                        global.objectList._GroupList.addKeyValuePair(openedGroup.name, openedGroup);
-                        openedGroup.createPaneForGroup();
-                    }
-                    else {
-                        //say there was an error or the asset was opened
-                    }
-                }
-            });
-    }
+        }
+    });
 }
-function newCommandPrompt(type) {
-    if (type == 0) //CREATE NEW COMMAND
-    {
-        //create an empty asset with the same name as the chosen filename
-        remote.dialog.showSaveDialog({
-            title: "Save Command",
-            filters: [{
+
+function createGroupDialog() {
+    remote.dialog.showSaveDialog({
+        title: "Save Group",
+        filters: [{
                 name: 'Json Files',
                 extensions: ['json']
             },
@@ -632,36 +503,33 @@ function newCommandPrompt(type) {
                 name: 'All Files',
                 extensions: ['*']
             }
-            ]
-        },
-            function (fileName) {
-                //make an empty group
-                createdCommand = new classes.command();
-                createdCommand.name = path.parse(fileName).base.replace(".json", "");
-                createdCommand.filePath = path.dirname(fileName) + '\\' + createdCommand.name + ".json";
-                createdCommand.position = global.objectList._CommandList.length();
+        ]
+    }).then(function (result) {
+        //make an empty group
+        createdGroup = new classes.group();
+        createdGroup.name = path.parse(result.filePath).base.replace(".json", "");
+        createdGroup.filePath = path.dirname(result.filePath) + '\\' + createdGroup.name + ".json";
 
-                if (fileName === undefined) return;
-                fs.writeFile(fileName, JSON.stringify(createdCommand, null, 1), (err) => {
-                    if (err) throw err;
-                });
+        if (result.filePath === undefined) return;
+        fs.writeFile(result.filePath, JSON.stringify(createdGroup, null, 1), (err) => {
+            if (err) throw err;
+        });
 
-                //chuck the asset into the asset list and lode it on the screen
-                if (global.objectList._CommandList.findKeyValuePair(createdCommand.name) == 0) {
-                    global.objectList._CommandList.addKeyValuePair(createdCommand.name, createdCommand);
-                    createdCommand.createPaneForCommand();
-                }
-                else {
-                    //say there was an error with the name
-                }
-            });
-    }
-    else if (type == 1)//OPEN COMMAND
-    {
-        remote.dialog.showOpenDialog({
-            title: "Open Commands",
-            properties: ['multiSelections'],
-            filters: [{
+        //chuck the asset into the asset list and lode it on the screen
+        if (global.objectList._GroupList.findKeyValuePair(createdGroup.name) == 0) {
+            global.objectList._GroupList.addKeyValuePair(createdGroup.name, createdGroup);
+            createdGroup.createPaneForGroup();
+        } else {
+            //say there was an error with the name
+        }
+    });
+}
+
+function openGroupDialog() {
+    remote.dialog.showOpenDialog({
+        title: "Open Assets",
+        properties: ['multiSelections'],
+        filters: [{
                 name: 'Json Files',
                 extensions: ['json']
             },
@@ -669,27 +537,87 @@ function newCommandPrompt(type) {
                 name: 'All Files',
                 extensions: ['*']
             }
-            ]
-        },
-            function (fileNames) {
-                if (fileNames === undefined) return;
-                for (i = 0; i < fileNames.length; i++) {
-                    openedObject = JSON.parse(fs.readFileSync(fileNames[i]));
-                    openedCommand = Object.assign(new classes.command, openedObject);
-                    openedCommand.color = Object.assign(new classes.color, openedCommand.color);
+        ]
+    }).then(function (result) {
+        if (result.filePaths === undefined) return;
+        for (i = 0; i < result.filePaths.length; i++) {
+            openedObject = JSON.parse(fs.readFileSync(result.filePaths[i]));
+            openedGroup = Object.assign(new classes.group, openedObject);
+            //chuck the asset into the asset list and lode it on the screen
+            if (global.objectList._GroupList.findKeyValuePair(openedGroup.name) == 0) {
+                global.objectList._GroupList.addKeyValuePair(openedGroup.name, openedGroup);
+                openedGroup.createPaneForGroup();
+            } else {
+                //say there was an error or the asset was opened
+            }
+        }
+    });
+}
 
-                    //chuck the asset into the asset list and lode it on the screen
-                    if (global.objectList._CommandList.findKeyValuePair(openedCommand.name) == 0) {
-                        openedCommand.position = global.objectList._CommandList.length();
-                        global.objectList._CommandList.addKeyValuePair(openedCommand.name, openedCommand);
-                        openedCommand.createPaneForCommand();
-                    }
-                    else {
-                        //say there was an error or the asset was opened
-                    }
-                }
-            });
-    }
+function createCommandDialog() {
+    remote.dialog.showSaveDialog({
+        title: "Save Command",
+        filters: [{
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
+        ]
+    }).then(function (result) {
+        //make an empty group
+        createdCommand = new classes.command();
+        createdCommand.name = path.parse(result.filePath).base.replace(".json", "");
+        createdCommand.filePath = path.dirname(result.filePath) + '\\' + createdCommand.name + ".json";
+        createdCommand.position = global.objectList._CommandList.length();
+
+        if (result.filePath === undefined) return;
+        fs.writeFile(result.filePath, JSON.stringify(createdCommand, null, 1), (err) => {
+            if (err) throw err;
+        });
+
+        //chuck the asset into the asset list and lode it on the screen
+        if (global.objectList._CommandList.findKeyValuePair(createdCommand.name) == 0) {
+            global.objectList._CommandList.addKeyValuePair(createdCommand.name, createdCommand);
+            createdCommand.createPaneForCommand();
+        } else {
+            //say there was an error with the name
+        }
+    });
+}
+
+function openCommandDialog() {
+    remote.dialog.showOpenDialog({
+        title: "Open Commands",
+        properties: ['multiSelections'],
+        filters: [{
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
+        ]
+    }).then(function (result) {
+        if (result.filePaths === undefined) return;
+        for (i = 0; i < result.filePaths.length; i++) {
+            openedObject = JSON.parse(fs.readFileSync(result.filePaths[i]));
+            openedCommand = Object.assign(new classes.command, openedObject);
+            openedCommand.color = Object.assign(new classes.color, openedCommand.color);
+
+            //chuck the asset into the asset list and lode it on the screen
+            if (global.objectList._CommandList.findKeyValuePair(openedCommand.name) == 0) {
+                openedCommand.position = global.objectList._CommandList.length();
+                global.objectList._CommandList.addKeyValuePair(openedCommand.name, openedCommand);
+                openedCommand.createPaneForCommand();
+            } else {
+                //say there was an error or the asset was opened
+            }
+        }
+    });
 }
 ///////////////////////////////////////////////////////////////////       COMMAND PLAYLIST FUNCTIONS
 var commandPlaylist = [];
@@ -699,13 +627,12 @@ var currentTimeout;
 var currentInterval;
 
 function jumpForwardInPlaylist() {
-
     clearTimeout(currentTimeout);
     currentTimeout = 0;
     //playlistInterupted = true;
 }
+
 function jumpBackwardInPlaylist() {
-    //jump forward
     clearTimeout(currentTimeout);
     currentTimeout = 0;
 
@@ -761,9 +688,7 @@ async function startCommandPlaylistAsync() {
                 commandPlaylist.unshift(commandPlaylistFinished[1]);
                 commandPlaylistFinished.shift();
                 commandPlaylistFinished.shift();
-            }
-            else {
-            }
+            } else {}
         }
         //then send the command
         commandPlaylist[0].Value.sendCommand();
@@ -790,55 +715,37 @@ function hideOrShow() {
         window.setTimeout(function () {
             document.getElementById("leftSidebarCommandViewerCollapsible").style.display = "none";
         }, 350);
-    }
-    else {
+    } else {
         //open the object
         document.getElementById("leftSidebarCommandViewerCollapsible").parentElement.getElementsByClassName("leftSidebarCommandViewerCollapseButton")[0].innerText = "Close";
         document.getElementById("leftSidebarCommandViewerCollapsible").style.display = "block";
         document.getElementById("leftSidebarCommandViewerCollapsible").parentElement.style.height = "33%";
     }
 }
-///////////////////////////////////////////////////////////////////       GLOBAL SEARCHBAR FUNCTIONS
-function toggleSearchBar() {
-    if (document.getElementById("globalBlackout").style.display == "none") {
-        //open
-        document.getElementById("globalBlackout").style.display = "block";
-    }
-    else {
-        //vice versa
-        document.getElementById("globalBlackout").style.display = "none";
-    }
-}
 ///////////////////////////////////////////////////////////////////       STAGE VIEW FUNCTIONS
-function searchOnChange(searchTerm, containerId, caseSensitive = false)
-{
+function searchOnChange(searchTerm, containerId, caseSensitive = false) {
     //clear the conatiner id before we put new items into it
     var container = document.getElementById(containerId);
     container.innerHTML = "";
     //then adhere to the case
-    if(!caseSensitive)
-    {
+    if (!caseSensitive) {
         searchTerm = searchTerm.toLowerCase();
     }
     //make a giant array containing every object
     var fullArray = global.objectList._AssetList.data().concat(global.objectList._GroupList.data().concat(global.objectList._CommandList.data()));
     //sort the array alphabetically
-    fullArray.sort(function(a,b)
-    {
+    fullArray.sort(function (a, b) {
         return a.Key.localeCompare(b.Key);
     });
     //search for the searchTerm supplied and display results in the container id
-    for(var i = 0; i < fullArray.length; i++)
-    {
-        
+    for (var i = 0; i < fullArray.length; i++) {
+
         var tempKey = fullArray[i].Key;
-        if(!caseSensitive)
-        {
+        if (!caseSensitive) {
             tempKey = tempKey.toLowerCase();
-        }        
+        }
         //check toi see if the string is equal to the key
-        if(tempKey.includes(searchTerm))
-        {
+        if (tempKey.includes(searchTerm)) {
             //adds a suctom search reult
             fullArray[i].Value.generateSearchResult(containerId);
         }

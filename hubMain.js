@@ -11,10 +11,13 @@ const {
     nativeImage,
     shell
 } = electron;
+const remote = require('@electron/remote/main').initialize()
 const url = require('url');
 const path = require('path');
 const isDev = require('electron-is-dev');
-const { autoUpdater } = require("electron-updater");
+const {
+    autoUpdater
+} = require("electron-updater");
 const fs = require('fs');
 
 // only here to initiate globals
@@ -31,7 +34,10 @@ app.on('ready', openHub);
 
 function openHub() {
     //make the tray icon
-    trayIcon = new Tray(imageTray.resize({ width: 16, height: 16 }));
+    trayIcon = new Tray(imageTray.resize({
+        width: 16,
+        height: 16
+    }));
     trayIcon.setContextMenu(contextMenu);
     trayIcon.addListener("click", function () {
         hubWindow.show();
@@ -40,14 +46,21 @@ function openHub() {
     hubWindow = new BrowserWindow({
         width: 778,
         minWidth: 778,
-        icon: imageIcon.resize({ width: 32, height: 32 }),
+        icon: imageIcon.resize({
+            width: 32,
+            height: 32
+        }),
         show: false,
         movable: true,
         frame: false,
         closable: true,
         backgroundColor: '#FFF',
+        worldSafeExecuteJavaScript: false,
         webPreferences: {
-            nodeIntegration: true
+            contextIsolation: false,
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            experimentalFeatures: true
         }
     });
     hubWindow.loadURL(url.format({
@@ -56,9 +69,9 @@ function openHub() {
         slashes: true
     }));
     hubWindow.on('close', function (event) {
-        //app.quit();
-        event.preventDefault();
-        hubWindow.hide();
+        app.quit();
+        //event.preventDefault();
+        //hubWindow.hide();
     });
     hubWindow.on("ready-to-show", function () {
         hubWindow.setMenu(menu)
@@ -117,8 +130,7 @@ function openHub() {
         ipcMain.on('download-update', (event, arg) => {
             autoUpdater.downloadUpdate(); //downloads the update
         });
-    }
-    else {
+    } else {
         //shortcuts only in dev mode
         globalShortcut.register('f2', function () {
             hubWindow.toggleDevTools();
@@ -127,37 +139,48 @@ function openHub() {
 }
 
 //menu for the tray
-var contextMenu = Menu.buildFromTemplate([
-    {
-        icon: imageIcon.resize({ width: 16, height: 16 }),
+var contextMenu = Menu.buildFromTemplate([{
+        icon: imageIcon.resize({
+            width: 16,
+            height: 16
+        }),
         label: 'LiquidPixel Hub ' + app.getVersion(),
         enabled: false
     },
-    { type: 'separator' },
     {
-        label: 'Check for Updates...', click: function () {
+        type: 'separator'
+    },
+    {
+        label: 'Check for Updates...',
+        click: function () {
             autoUpdater.checkForUpdates();
         }
     },
     {
-        label: 'Email the Programmer', click: function () {
+        label: 'Email the Programmer',
+        click: function () {
             shell.openExternal("mailto:ejzeronik@gmail.com?subject=LPC_HELPDESK&body=");
         }
     },
     {
-        label: 'Getting started', click: function () {
+        label: 'Getting started',
+        click: function () {
             shell.openExternal("https://www.youtube.com/watch?v=X7A7kmjybwA")
         }
     },
-    { type: 'separator' },
     {
-        label: 'Restart', click: function () {
+        type: 'separator'
+    },
+    {
+        label: 'Restart',
+        click: function () {
             hubWindow.destroy();
             app.relaunch();
         }
     },
     {
-        label: 'Quit LpcHub', click: function () {
+        label: 'Quit LpcHub',
+        click: function () {
             //app.isQuiting = true;
             hubWindow.destroy();
             app.quit();

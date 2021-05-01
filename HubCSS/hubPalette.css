@@ -180,3 +180,31 @@ body {
         opacity: 1;
     }
 }
+
+/* Top caution bar */
+.cautionBar {
+    position: sticky;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 30px;
+    font-family: Arial Black; 
+    background-image: linear-gradient(135deg, #000000 25%, #ffee00 25%, #ffee00 50%, #000000 50%, #000000 75%, #ffee00 75%, #ffee00 100%);
+    background-size: 42.43px 42.43px;
+    box-shadow: 0px 0px 5px black inset;
+  }
+  .cautionBar div {
+    position: relative;
+    width: fit-content;
+    height: 28px;
+    left: 50%;
+    transform: translate(-50%,0%);
+    padding-top: 2px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #ffee00;
+    color: #000000;
+    box-shadow: 0px 0px 5px black inset;
+    clip-path: polygon(28px 0, 100% 0, 600px 100%, 0 100%);
+    font-size: 18px;
+  }

@@ -44,6 +44,7 @@
             <button id="closebutton" class="titlebutton" onclick="closeWindow()">&#x072;</button>
         </div>
     </div>
+
     <!--The actaul main content-->
     <div id="maincontentwrapper">
         <!--This is a wrapper for the middle contents-->
@@ -123,19 +124,24 @@
                                 <div id="leftSidebarCommandViewerControllerInsideProgress"></div>
                             </div>
                         </div>
-                        <button class="leftSidebarCommandViewerControllerOutsideButton" style="border-bottom-left-radius: 15px; border-top-left-radius: 0px;" onclick="jumpBackwardInPlaylist()" title="Rewind">
+                        <button class="leftSidebarCommandViewerControllerOutsideButton"
+                            style="border-bottom-left-radius: 15px; border-top-left-radius: 0px;"
+                            onclick="jumpBackwardInPlaylist()" title="Rewind">
                             <svg class="leftSidebarCommandViewerControllerOutsideButtonIcon" transform="scale(-1,1)">
                                 <use xlink:href="SvgIcons/fastforward.svg#fast_forward_smaller"></use>
                             </svg>
                         </button>
-                        <button class="leftSidebarCommandViewerControllerInsideButton" onclick="startCommandPlaylistAsync()" title="Start Playlist">
+                        <button class="leftSidebarCommandViewerControllerInsideButton"
+                            onclick="startCommandPlaylistAsync()" title="Start Playlist">
                             <svg class="leftSidebarCommandViewerControllerInsideButtonIcon">
                                 <use xlink:href="SvgIcons/play.svg#play_smaller"></use>
                             </svg>
                         </button>
-                        <button class="leftSidebarCommandViewerControllerOutsideButton" style="border-bottom-right-radius: 15px; border-top-right-radius: 0px;" onclick="jumpForwardInPlaylist()" title="Fast Forward">
-                            <svg class="leftSidebarCommandViewerControllerOutsideButtonIcon" >
-                                <use xlink:href="SvgIcons/fastforward.svg#fast_forward_smaller" ></use>
+                        <button class="leftSidebarCommandViewerControllerOutsideButton"
+                            style="border-bottom-right-radius: 15px; border-top-right-radius: 0px;"
+                            onclick="jumpForwardInPlaylist()" title="Fast Forward">
+                            <svg class="leftSidebarCommandViewerControllerOutsideButtonIcon">
+                                <use xlink:href="SvgIcons/fastforward.svg#fast_forward_smaller"></use>
                             </svg>
                         </button>
                     </div>
@@ -144,6 +150,9 @@
         </div>
         <!--The dynamic part of the app-->
         <div id="middlecontent">
+            <div id="writeOnly" class="cautionBar">
+                <div><b>Warning, this build is experimental!</b></div>
+            </div>
             <!--Dynamic pane to allow for multiple mini panes for summaries and other content that makes sense to show when you open the app-->
             <div id="HomeContentPanel" class="middlecontentpanel">
                 <div id="HomeContentPanelHolder">
@@ -276,17 +285,18 @@
                 </div>
                 <!-- The searchbar that allows you to search commands-->
                 <div class="stageSearchPane hoverPanelContent">
-                    <input class="stageSearchPaneInput" type="text" oninput="searchOnChange(this.value,'stageSearchPaneResults')" placeholder="Search...">
+                    <input class="stageSearchPaneInput" type="text"
+                        oninput="searchOnChange(this.value,'stageSearchPaneResults')" placeholder="Search...">
                     <div id="stageSearchPaneResults"></div>
                 </div>
             </div>
             <!--The Dedicated Asset panel meant for only assets and the add/ remove asset buttons-->
             <div id="AssetContentPanel" class="middlecontentpanel">
                 <div id="GeneralTopBarAsset" class="hoverPanelContent">
-                    <button type="button" id="StickyBarAssetButton" onclick="newAssetPrompt(0)">
+                    <button type="button" id="StickyBarAssetButton" onclick="createAssetDialog()">
                         Create Asset
                     </button>
-                    <button type="button" id="StickyBarAssetButton" onclick="newAssetPrompt(1)">
+                    <button type="button" id="StickyBarAssetButton" onclick="openAssetDialog()">
                         Open Asset
                     </button>
                 </div>
@@ -299,10 +309,10 @@
             <div id="GroupContentPanel" class="middlecontentpanel">
                 <!--The header of the group tab- meant for overall commands-->
                 <div id="GeneralTopBarGroup" class="hoverPanelContent">
-                    <button type="button" id="StickyBarGroupButton" onclick="newGroupPrompt(0)">
+                    <button type="button" id="StickyBarGroupButton" onclick="createGroupDialog()">
                         Create Group
                     </button>
-                    <button type="button" id="StickyBarGroupButton" onclick="newGroupPrompt(1)">
+                    <button type="button" id="StickyBarGroupButton" onclick="openGroupDialog()">
                         Open Group
                     </button>
                 </div>
@@ -317,10 +327,10 @@
                     <div class="commandTopBarCurrentCommand">
                         #NULL
                     </div>
-                    <button type="button" class="StickyBarCommandButtonPlaylist"
-                        onclick="jumpBackwardInPlaylist()" title="Rewind">
+                    <button type="button" class="StickyBarCommandButtonPlaylist" onclick="jumpBackwardInPlaylist()"
+                        title="Rewind">
                         <svg class="StickyBarCommandButtonIcon" transform="scale(-1,1)">
-                            <use xlink:href="SvgIcons/fastforward.svg#fast_forward" ></use>
+                            <use xlink:href="SvgIcons/fastforward.svg#fast_forward"></use>
                         </svg>
                     </button>
                     <button type="button" class="StickyBarCommandButtonPlaylist" onclick="startCommandPlaylistAsync()"
@@ -332,15 +342,15 @@
                     <button type="button" class="StickyBarCommandButtonPlaylist" onclick="jumpForwardInPlaylist()"
                         title="Fast Forward">
                         <svg class="StickyBarCommandButtonIcon">
-                            <use xlink:href="SvgIcons/fastforward.svg#fast_forward" ></use>
+                            <use xlink:href="SvgIcons/fastforward.svg#fast_forward"></use>
                         </svg>
                     </button>
-                    <button type="button" class="StickyBarCommandButton" onclick="newCommandPrompt(1)">
+                    <button type="button" class="StickyBarCommandButton" onclick="createCommandDialog()">
                         Open
                         <br>
                         Command
                     </button>
-                    <button type="button" class="StickyBarCommandButton" onclick="newCommandPrompt(0)">
+                    <button type="button" class="StickyBarCommandButton" onclick="openCommandDialog()">
                         Create
                         <br>
                         Command
