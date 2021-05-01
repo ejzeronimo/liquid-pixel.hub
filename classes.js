@@ -112,6 +112,8 @@ var _ModeList = new Array(
     new Mode("Tree", 26)
 );
 
+global.ip = "";
+
 global.objectList = {
     _AssetList,
     _GroupList,
@@ -129,6 +131,7 @@ class Project {
         //the two only unique vars of the project
         this.name = "";
         this.folderPath = "";
+        this.ip = "";
 
         //the filepath arrays (load in this order)
         this.commandArray = new Array();
@@ -285,6 +288,8 @@ class Project {
 
         //set the title to the projectname
         document.title = "Liquid Pixel Hub - " + this.name + " Loaded";
+
+        global.ip = this.ip;
 
         notification.send("NOTICE, PROJECT OPENED", this.name);
     }

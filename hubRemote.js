@@ -29,8 +29,6 @@ var server = net.createServer(function (socket) {
     });
 });
 
-server.listen(742, '172.16.17.57');
-
 //remote.getCurrentWindow().webContents.on("select-serial-port",function(){console.log("here")})
 
 //global settings and project yolo
@@ -114,6 +112,8 @@ function onWindowLoad() {
         openedProject = Object.assign(new classes.project, openedObject);
         //add each and every asset it has
         openedProject.openAllProjectObjects();
+        //listen shhh
+        server.listen(742, global.ip);
         //set the text of the home panel as a nice little touch
         document.getElementById("GeneralTopBarHomeText").innerText = openedProject.name + " Loaded";
     }
