@@ -314,10 +314,10 @@ class Protocol {
 
     openConnection(callback) {
         for (let i = 0; i < global.objectList._SocketList.length; i++) {
-            if (global.objectList._SocketList[i].ip = this.ip) {
+            if (global.objectList._SocketList[i].ip == this.ip) {
                 this.isConnected = true;
                 break;
-            } else if (i = global.objectList._SocketList.length - 1) {
+            } else if (i == global.objectList._SocketList.length - 1) {
                 this.isConnected = false;
                 break;
             }
@@ -334,7 +334,7 @@ class Protocol {
 
     transmitString(str) {
         for (let i = 0; i < global.objectList._SocketList.length; i++) {
-            if (global.objectList._SocketList[i].ip = this.ip) {
+            if (global.objectList._SocketList[i].ip == this.ip) {
                 global.objectList._SocketList[i].socket.write(Buffer.from(str));
             }
         }

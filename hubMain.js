@@ -14,7 +14,8 @@ const {
 const remote = require('@electron/remote/main').initialize()
 const url = require('url');
 const path = require('path');
-const isDev = require('electron-is-dev');
+//const isDev = require('electron-is-dev');
+const isDev = true;
 const {
     autoUpdater
 } = require("electron-updater");

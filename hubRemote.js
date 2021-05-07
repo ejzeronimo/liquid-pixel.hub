@@ -19,8 +19,8 @@ var notification = require('./notification.js');
 
 var server = net.createServer(function (socket) {
     for (let i = 0; i < global.objectList._SocketList.length; i++) {
-        if (global.objectList._SocketList[i].ip = socket.remoteAddress) {
-            global.objectList._SocketList[i].splice(i,1);
+        if (global.objectList._SocketList[i].ip == socket.remoteAddress) {
+            global.objectList._SocketList.splice(i, 1);
         }
     }
     global.objectList._SocketList.push({
@@ -314,32 +314,32 @@ function setProject() {
         if (response == 0) {
             //proceed to set
             remote.dialog.showOpenDialog({
-                    title: "Set Project",
-                    filters: [{
-                            name: 'Json Files',
-                            extensions: ['json']
-                        },
-                        {
-                            name: 'All Files',
-                            extensions: ['*']
-                        }
-                    ]
+                title: "Set Project",
+                filters: [{
+                    name: 'Json Files',
+                    extensions: ['json']
                 },
-                function (fileName) {
-                    if (fileName != undefined) {
-                        //set project and refresh
-                        openedObject = JSON.parse(fs.readFileSync(fileName[0]));
-                        openedProject = Object.assign(new classes.project, openedObject);
+                {
+                    name: 'All Files',
+                    extensions: ['*']
+                }
+                ]
+            }).then(function (result) {
+                console.log(result)
+                if (result.fileName != undefined) {
+                    //set project and refresh
+                    openedObject = JSON.parse(fs.readFileSync(result.fileName[0]));
+                    openedProject = Object.assign(new classes.project, openedObject);
 
-                        //purge the app items now
-                        purgeAllObjects();
-                        //then open the project apps
-                        openedProject.openAllProjectObjects();
-                        document.getElementById("GeneralTopBarHomeText").innerText = openedProject.name + " Loaded";
+                    //purge the app items now
+                    purgeAllObjects();
+                    //then open the project apps
+                    openedProject.openAllProjectObjects();
+                    document.getElementById("GeneralTopBarHomeText").innerText = openedProject.name + " Loaded";
 
-                        setProjectInSettings(openedProject);
-                    }
-                });
+                    setProjectInSettings(openedProject);
+                }
+            });
         } else {
             //remove from settings
             var targetProject = "";
@@ -367,49 +367,48 @@ function createProject() {
     //will create a project.json and a repo and add it to auto open
     //create an empty asset with the same name as the chosen filename
     remote.dialog.showSaveDialog({
-            title: "Create Project",
-            filters: [{
-                    name: 'Json Files',
-                    extensions: ['json']
-                },
-                {
-                    name: 'All Files',
-                    extensions: ['*']
-                }
-            ]
+        title: "Create Project",
+        filters: [{
+            name: 'Json Files',
+            extensions: ['json']
         },
-        function (fileName) {
+        {
+            name: 'All Files',
+            extensions: ['*']
+        }
+        ]
+    }).then(function (result) {
+        console.log(result)
+        folderPath = path.parse(result.filePath).dir + "\\" + path.parse(result.filePath).name;
+        filePath = folderPath + "\\" + path.parse(result.filePath).base;
 
-            folderPath = path.parse(fileName).dir + "\\" + path.parse(fileName).name;
-            filePath = folderPath + "\\" + path.parse(fileName).base;
-
-            //console.log(folderPath)
-            try {
-                if (!fs.existsSync(folderPath)) {
-                    fs.mkdirSync(folderPath, {
-                        recursive: false
-                    })
-                }
-            } catch (err) {
-                console.error(err)
+        //console.log(folderPath)
+        try {
+            if (!fs.existsSync(folderPath)) {
+                fs.mkdirSync(folderPath, {
+                    recursive: false
+                })
             }
+        } catch (err) {
+            console.error(err)
+        }
 
-            //make an empty project
-            project = new classes.project();
-            project.name = path.parse(fileName).name;
-            project.folderPath = folderPath;
-            project.importAllOpenObjects();
-            project.saveAllProjectObjects();
-            document.getElementById("GeneralTopBarHomeText").innerText = project.name + " Loaded";
+        //make an empty project
+        project = new classes.project();
+        project.name = path.parse(result.filePath).name;
+        project.folderPath = folderPath;
+        project.importAllOpenObjects();
+        project.saveAllProjectObjects();
+        document.getElementById("GeneralTopBarHomeText").innerText = project.name + " Loaded";
 
-            if (filePath === undefined) return;
-            fs.writeFile(filePath, JSON.stringify(project, null, 1), (err) => {
-                if (err) throw err;
-            });
-
-            //set project and refresh
-            setProjectInSettings(project);
+        if (filePath === undefined) return;
+        fs.writeFile(filePath, JSON.stringify(project, null, 1), (err) => {
+            if (err) throw err;
         });
+
+        //set project and refresh
+        setProjectInSettings(project);
+    });
 }
 
 function setProjectInSettings(p) {
@@ -433,13 +432,13 @@ function createAssetDialog() {
     remote.dialog.showSaveDialog({
         title: "Save Asset",
         filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }
+            name: 'Json Files',
+            extensions: ['json']
+        },
+        {
+            name: 'All Files',
+            extensions: ['*']
+        }
         ]
     }).then(function (result) {
         //make an empty asset
@@ -467,20 +466,20 @@ function openAssetDialog() {
         title: "Open Assets",
         properties: ['multiSelections'],
         filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }
+            name: 'Json Files',
+            extensions: ['json']
+        },
+        {
+            name: 'All Files',
+            extensions: ['*']
+        }
         ]
     }).then(function (result) {
         if (result.filePaths === undefined) return;
         for (i = 0; i < result.filePaths.length; i++) {
             openedObject = JSON.parse(fs.readFileSync(result.filePaths[i]));
             openedAsset = Object.assign(new classes.asset, openedObject);
-            openedAsset.protocol = Object.assign(new classes.protocol,openedAsset.protocol);
+            openedAsset.protocol = Object.assign(new classes.protocol, openedAsset.protocol);
             //chuck the asset into the asset list and lode it on the screen
             if (global.objectList._AssetList.findKeyValuePair(openedAsset.name) == 0) {
                 global.objectList._AssetList.addKeyValuePair(openedAsset.name, openedAsset);
@@ -496,13 +495,13 @@ function createGroupDialog() {
     remote.dialog.showSaveDialog({
         title: "Save Group",
         filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }
+            name: 'Json Files',
+            extensions: ['json']
+        },
+        {
+            name: 'All Files',
+            extensions: ['*']
+        }
         ]
     }).then(function (result) {
         //make an empty group
@@ -530,13 +529,13 @@ function openGroupDialog() {
         title: "Open Assets",
         properties: ['multiSelections'],
         filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }
+            name: 'Json Files',
+            extensions: ['json']
+        },
+        {
+            name: 'All Files',
+            extensions: ['*']
+        }
         ]
     }).then(function (result) {
         if (result.filePaths === undefined) return;
@@ -558,13 +557,13 @@ function createCommandDialog() {
     remote.dialog.showSaveDialog({
         title: "Save Command",
         filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }
+            name: 'Json Files',
+            extensions: ['json']
+        },
+        {
+            name: 'All Files',
+            extensions: ['*']
+        }
         ]
     }).then(function (result) {
         //make an empty group
@@ -593,13 +592,13 @@ function openCommandDialog() {
         title: "Open Commands",
         properties: ['multiSelections'],
         filters: [{
-                name: 'Json Files',
-                extensions: ['json']
-            },
-            {
-                name: 'All Files',
-                extensions: ['*']
-            }
+            name: 'Json Files',
+            extensions: ['json']
+        },
+        {
+            name: 'All Files',
+            extensions: ['*']
+        }
         ]
     }).then(function (result) {
         if (result.filePaths === undefined) return;
@@ -688,7 +687,7 @@ async function startCommandPlaylistAsync() {
                 commandPlaylist.unshift(commandPlaylistFinished[1]);
                 commandPlaylistFinished.shift();
                 commandPlaylistFinished.shift();
-            } else {}
+            } else { }
         }
         //then send the command
         commandPlaylist[0].Value.sendCommand();
