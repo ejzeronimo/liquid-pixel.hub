@@ -370,3 +370,116 @@
     height: 24px;
     width: 73%;
 }
+
+
+/* CSS for the manual command construction */
+.sidePanelCommandConstruction {
+    border-radius: 10px;
+    background-color: rgb(114, 118, 125);
+    position: relative;
+    margin-left: 5px;
+    margin-top: 5px;
+    display: inline-block;
+    width: calc(100% - 10px);
+}
+
+.sidePanelCommandConstructionTypeSelect {
+    float: left;
+    text-align-last: center;
+    border: 0px;
+    border-radius: 7px;
+    margin: 5px;
+    margin-bottom: 0px;
+    width: calc(100% - 10px);
+    height: 30px;
+    line-height: 30px;
+    background-color: rgb(200, 200, 200);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    color: rgb(66, 70, 77);
+    padding: 0px;
+}
+
+.sidePanelCommandConstructionColorPane {
+    float: left;
+    background-color: rgb(200, 200, 200);
+    height: 60px;
+    width: calc(100% - 10px);
+    border-radius: 7px;
+    margin: 5px;
+    margin-bottom: 0px;
+    display: flex;
+    overflow: hidden;
+}
+
+.sidePanelCommandConstructionColor {
+    flex-grow: 1;
+    cursor: pointer;
+    float: left;
+    user-select: none;
+    font-size: small;
+    font-family: 'Proxima Nova Regular';
+    text-align: center;
+    line-height: 60px;
+    color: rgb(200, 200, 200);
+    background-color: rgb(66, 70, 77);
+    height: 60px;
+}
+
+.sidePanelCommandConstructionColor input {
+    position: relative;
+    top: 100px;
+}
+
+.sidePanelCommandConstructionModeSelect {
+    float: left;
+    text-align-last: center;
+    border: 0px;
+    border-radius: 7px;
+    margin: 5px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    width: calc(100% - 10px);
+    height: 28px;
+    line-height: 27.5px;
+    background-color: rgb(200, 200, 200);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    color: rgb(66, 70, 77);
+    padding: 0px;
+}
+
+.sidePanelCommandConstructionDelay {
+    float: left;
+    border: 0px;
+    border-radius: 7px;
+    margin: 5px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    width: calc(100% - 10px);
+    height: 28px;
+    line-height: 27.5px;
+    background-color: rgb(200, 200, 200);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    color: rgb(66, 70, 77);
+    padding: 0px;
+}
+
+.sidePanelCommandConstructionGeneratedString {
+    float: left;
+    border: 0px;
+    border-radius: 20px;
+    margin: 5px;
+    width: calc(100% - 10px);
+    height: 28px;
+    color: rgb(200, 200, 200);
+    background-color: rgb(66, 70, 77);
+    text-align: center;
+    font-family: 'Proxima Nova Regular';
+    font-size: 1em;
+    padding: 0px;
+}

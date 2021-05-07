@@ -121,6 +121,8 @@ function onWindowLoad() {
     //set the keybinds here
     generateShortcuts();
 
+    updateCommand();
+
     //set all main content to be off except opening panel
     document.getElementById("HomeContentPanel").style.display = "block";
     document.getElementById("StageContentPanel").style.display = "none";
@@ -188,6 +190,35 @@ function regeneratePanels() {
             element.Value.createPaneForAsset();
         }
     });
+    updateCommand();
+}
+
+function updatePanels() {
+    //tdo commands because they nest both
+    global.objectList._CommandList.data().forEach(function (element) {
+        //for each asset make a new pane
+        if (document.getElementById(element.Key + "CommandPanel") != null) {
+            //classes.command.prototype.createPaneForCommand.call(element.Value);
+            element.Value.updateCommand();
+        }
+    });
+    //then do groups first because assets are nested in groups
+    global.objectList._GroupList.data().forEach(function (element) {
+        //for each asset make a new pane
+        if (document.getElementById(element.Key + "GroupPanel") != null) {
+            //classes.group.prototype.createPaneForGroup.call(element.Value);
+            element.Value.updateGroup();
+        }
+    });
+    //then do assets so that they can be nested.
+    global.objectList._AssetList.data().forEach(function (element) {
+        //for each asset make a new pane
+        if (document.getElementById(element.Key + "AssetPanel") != null) {
+            //classes.asset.prototype.createPaneForAsset.call(element.Value);
+            element.Value.updateAsset();
+        }
+    });
+    updateCommand();
 }
 ///////////////////////////////////////////////////////////////////       GLOBAL SAVE FUNCTION
 function globalSave() {
@@ -274,7 +305,8 @@ function generateShortcuts() {
 
     mouseTrap.bind('ctrl+r', function () {
         globalSave();
-        remote.getCurrentWindow().reload();
+        updatePanels();
+        //remote.getCurrentWindow().reload();
     });
 
     mouseTrap.bind('f11', function () {
@@ -316,13 +348,13 @@ function setProject() {
             remote.dialog.showOpenDialog({
                 title: "Set Project",
                 filters: [{
-                    name: 'Json Files',
-                    extensions: ['json']
-                },
-                {
-                    name: 'All Files',
-                    extensions: ['*']
-                }
+                        name: 'Json Files',
+                        extensions: ['json']
+                    },
+                    {
+                        name: 'All Files',
+                        extensions: ['*']
+                    }
                 ]
             }).then(function (result) {
                 console.log(result)
@@ -369,13 +401,13 @@ function createProject() {
     remote.dialog.showSaveDialog({
         title: "Create Project",
         filters: [{
-            name: 'Json Files',
-            extensions: ['json']
-        },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
         ]
     }).then(function (result) {
         console.log(result)
@@ -432,13 +464,13 @@ function createAssetDialog() {
     remote.dialog.showSaveDialog({
         title: "Save Asset",
         filters: [{
-            name: 'Json Files',
-            extensions: ['json']
-        },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
         ]
     }).then(function (result) {
         //make an empty asset
@@ -466,13 +498,13 @@ function openAssetDialog() {
         title: "Open Assets",
         properties: ['multiSelections'],
         filters: [{
-            name: 'Json Files',
-            extensions: ['json']
-        },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
         ]
     }).then(function (result) {
         if (result.filePaths === undefined) return;
@@ -495,13 +527,13 @@ function createGroupDialog() {
     remote.dialog.showSaveDialog({
         title: "Save Group",
         filters: [{
-            name: 'Json Files',
-            extensions: ['json']
-        },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
         ]
     }).then(function (result) {
         //make an empty group
@@ -529,13 +561,13 @@ function openGroupDialog() {
         title: "Open Assets",
         properties: ['multiSelections'],
         filters: [{
-            name: 'Json Files',
-            extensions: ['json']
-        },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
         ]
     }).then(function (result) {
         if (result.filePaths === undefined) return;
@@ -557,13 +589,13 @@ function createCommandDialog() {
     remote.dialog.showSaveDialog({
         title: "Save Command",
         filters: [{
-            name: 'Json Files',
-            extensions: ['json']
-        },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
         ]
     }).then(function (result) {
         //make an empty group
@@ -592,13 +624,13 @@ function openCommandDialog() {
         title: "Open Commands",
         properties: ['multiSelections'],
         filters: [{
-            name: 'Json Files',
-            extensions: ['json']
-        },
-        {
-            name: 'All Files',
-            extensions: ['*']
-        }
+                name: 'Json Files',
+                extensions: ['json']
+            },
+            {
+                name: 'All Files',
+                extensions: ['*']
+            }
         ]
     }).then(function (result) {
         if (result.filePaths === undefined) return;
@@ -687,7 +719,7 @@ async function startCommandPlaylistAsync() {
                 commandPlaylist.unshift(commandPlaylistFinished[1]);
                 commandPlaylistFinished.shift();
                 commandPlaylistFinished.shift();
-            } else { }
+            } else {}
         }
         //then send the command
         commandPlaylist[0].Value.sendCommand();
@@ -704,6 +736,31 @@ async function startCommandPlaylistAsync() {
     currentInterval = 0;
 }
 
+///////////////////////////////////////////////////////////////////       COMMAND MAKER FUNCTIONS
+function generateLocalCommand() {
+    var delayClamped = 0;
+    var checkClamped = 0;
+    var colorClamped = new classes.color("Custom", document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('label[name="colorPicker"]').style.backgroundColor);
+    var modeClamped = global.objectList._ModeList[document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('select[name="modeDropdown"]').value];
+    //clamp the dlay value
+    if (document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('input[name="delay"]').value != "" && !isNaN(document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('input[name="delay"]').value)) {
+        delayClamped = document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('input[name="delay"]').value;
+    }
+    //generate a local command
+    var localCommand = 'I0T0{' + colorClamped.returnColor()[0] + ',' + colorClamped.returnColor()[1] + ',' + colorClamped.returnColor()[2] + '}M' + modeClamped.Value + 'D' + delayClamped + '~';
+    //set the box
+    document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('input[name="generated_string"]').value = localCommand;
+}
+
+function updateCommand() {
+    var optionBox = document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('select[name="modeDropdown"]');
+    if (document.getElementsByClassName("leftSidebarWrapper")[0].querySelector('select[name="modeDropdown"]').length == 1) {
+        global.objectList._ModeList.forEach(function (option) {
+            optionBox.innerHTML += "<option value=\"" + option.Value + "\">" + option.Name + "</option>";
+
+        });
+    }
+}
 ///////////////////////////////////////////////////////////////////       COMMAND VIEWER FUNCTIONS
 function hideOrShow() {
     //if showing close

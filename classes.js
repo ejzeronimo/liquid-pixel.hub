@@ -349,20 +349,23 @@ class Command {
         this.repeatTimes = 0;
         this.position = 0;
         this.filePath = "";
-        this.assetArray = new Array();
-        this.groupArray = new Array();
+        this.targetArray = new Array();
+        this.commandArray = new Array();
+
+        //this.assetArray = new Array();
+        //this.groupArray = new Array();
 
         //outdated
-        this.cubePosition = 0;
+        //this.cubePosition = 0;
         //used in command
-        this.type = 0;
-        this.color = new Color("Null", 'rgb(0,0,0)');
-        this.mode = new Mode("Off", 0);
-        this.delay = 0;
-        this.debug = 0;
-        this.sound = 0;
+        // this.type = 0;
+        // this.color = new Color("Null", 'rgb(0,0,0)');
+        // this.mode = new Mode("Off", 0);
+        // this.delay = 0;
+        // this.debug = 0;
+        // this.sound = 0;
         //actual command message
-        this.command = "";
+        //this.command = "";
     }
 
     //All COMMAND METHODS
@@ -427,47 +430,59 @@ class Command {
         //scroll it into view on the command highlight
         var elmnt = document.getElementById(this.name + "CommandHighlightButton");
         elmnt.scrollIntoView();
-        //for each asset
-        if (this.assetArray.length > 0) {
-            for (var i = 0; i < this.assetArray.length; i++) {
-                global.objectList._AssetList.findKeyValuePair(this.assetArray[i]).sendCommand(this.command);
-            }
-        }
-        //for each group
-        if (this.groupArray.length > 0) {
-            for (var i = 0; i < this.groupArray.length; i++) {
-                global.objectList._GroupList.findKeyValuePair(this.groupArray[i]).sendCommand(this.command);
+        if (this.targetArray.length > 0) {
+            for (var i = 0; i < this.targetArray.length; i++) 
+            {
+                //figure out if its a group or asset.
+                if(global.objectList._AssetList.findKeyValuePair(this.targetArray[i]) != 0)
+                {
+                    //what to do if an asset
+                    //check to see if a command exists for this index
+                    if(this.commandArray[i] != null){
+                        global.objectList._AssetList.findKeyValuePair(this.targetArray[i]).sendCommand(this.commandArray[i]);
+                    }
+                    else{
+                        notification.send(this.targetArray[i].toUpperCase() + " DOES NOT HAVE AN ASSOCIATED COMMAND", this.name)
+                    }
+                }
+                else if(global.objectList._GroupList.findKeyValuePair(this.targetArray[i]) != 0)
+                {
+                    //what to do if a group
+                    //check to see if a command exists for this index
+                    if(this.commandArray[i] != null){
+                        global.objectList._GroupList.findKeyValuePair(this.targetArray[i]).sendCommand(this.commandArray[i]);
+                    }
+                    else{
+                        notification.send(this.targetArray[i].toUpperCase() + " DOES NOT HAVE AN ASSOCIATED COMMAND", this.name)
+                    }
+                }
+                else
+                {
+                    notification.send(this.targetArray[i].toUpperCase() + " ASSET OR GROUP DOES NOT EXIST", this.name)
+                }
+                //global.objectList._AssetList.findKeyValuePair(this.assetArray[i]).sendCommand(this.command);
             }
         }
     }
 
     updateCommand() {
-        //updates the html first
-        var optionBox = document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]');
-        if (document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]').length == 1) {
-            global.objectList._ModeList.forEach(function (option) {
-                optionBox.innerHTML += "<option value=\"" + option.Value + "\">" + option.Name + "</option>";
-            });
-        }
-        //update message specific items
-        this.color = new Color("Custom", document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor);
-        //set the home asset summary
-        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.backgroundColor = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
-        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.color = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
-
-        var temp = document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]').value;
-        if (temp == "") {
-            this.mode = global.objectList._ModeList[0];
-        } else {
-            this.mode = global.objectList._ModeList[temp];
+        //uptade the arrays
+        var tempCommands = document.getElementById(this.name + "CommandPanel").querySelector('textarea[name="commands"]').value;
+        if (tempCommands.length != 0) {
+            //purge spaces
+            //tempCommands = tempCommands.replace(/\s+/g, '');
+            //string.split(",")
+            this.commandArray = tempCommands.split(" ");
         }
 
-        if (!isNaN(document.getElementById(this.name + "CommandPanel").querySelector('input[name="delay"]').value)) {
-            this.delay = document.getElementById(this.name + "CommandPanel").querySelector('input[name="delay"]').value;
+        var tempTargets = document.getElementById(this.name + "CommandPanel").querySelector('textarea[name="targets"]').value;
+        if (tempTargets.length != 0) {
+            //purge spaces
+            //tempCommands = tempCommands.replace(/\s+/g, '');
+            //string.split(",")
+            this.targetArray = tempTargets.split(" ");
         }
-        if (document.getElementById(this.name + "CommandPanel").querySelector('input[name="debug"]').checked) {
-            this.debug = 1;
-        }
+
         //update the module specific variables
         if (!isNaN(document.getElementById(this.name + "CommandPanel").querySelector('input[name="command_delay"]').value)) {
             this.startDelay = document.getElementById(this.name + "CommandPanel").querySelector('input[name="command_delay"]').value;
@@ -476,80 +491,24 @@ class Command {
             this.repeatTimes = document.getElementById(this.name + "CommandPanel").querySelector('input[name="command_repeat"]').value;
         }
 
-        this.generateCommand();
-        //will update the assets activated
-        var assetsTemp = document.getElementById(this.name + "CommandPanel").querySelector('div[name="objectHolder"]').querySelectorAll('label[id*="Asset"]');
-        this.assetArray = []
-        for (var i = 0; i < assetsTemp.length; i++) {
-            if (assetsTemp[i].querySelector("input").checked) {
-                var alias = assetsTemp[i].querySelector("input").id.replace('commandPanelAssetCheckbox', '');
-                this.assetArray.push(alias);
-            }
-        }
-        //will update the groups activated
-        var groupsTemp = document.getElementById(this.name + "CommandPanel").querySelector('div[name="objectHolder"]').querySelectorAll('label[id*="Group"]');
-        this.groupArray = []
-        for (var i = 0; i < groupsTemp.length; i++) {
-            if (groupsTemp[i].querySelector("input").checked) {
-                var alias = groupsTemp[i].querySelector("input").id.replace('commandPanelGroupCheckbox', '');
-                this.groupArray.push(alias);
-            }
-        }
     }
 
     commandSetup() {
-        //updates the html purely in this function
-        var optionBox = document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]');
-        if (document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]').length == 1) {
-            global.objectList._ModeList.forEach(function (option) {
-                optionBox.innerHTML += "<option value=\"" + option.Value + "\">" + option.Name + "</option>";
-            });
+
+        if (this.commandArray.length != 0) {
+            document.getElementById(this.name + "CommandPanel").querySelector('textarea[name="commands"]').value = this.commandArray.join(" ");
         }
-        document.getElementById(this.name + "CommandPanel").querySelector('select[name="modeDropdown"]').selectedIndex = this.mode.Value + 1;
-        var temp = Object.assign(new Color, this.color);
-        this.color = temp;
-        document.getElementById(this.name + "CommandPanel").querySelector('input[name="colorData"]').value = this.color.fullColorHex();
-        document.getElementById(this.name + "CommandPanel").querySelector('input[name="colorData"]').onchange();
-        //set the home asset summary
-        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.backgroundColor = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
-        document.getElementById(this.name + 'homePanelCommandPanel').getElementsByClassName('HomePanelCommandSummaryColor')[0].style.color = document.getElementById(this.name + "CommandPanel").querySelector('label[name="colorPicker"]').style.backgroundColor;
-        if (this.delay != 0) {
-            document.getElementById(this.name + "CommandPanel").querySelector('input[name="delay"]').value = this.delay;
+
+        if (this.targetArray.length != 0) {
+            document.getElementById(this.name + "CommandPanel").querySelector('textarea[name="targets"]').value = this.targetArray.join(" ");
         }
-        if (this.debug == 1) {
-            document.getElementById(this.name + "CommandPanel").querySelector('input[name="debug"]').checked = true;
-        }
-        //this.generateCommand();
+
         if (this.startDelay != 0) {
             document.getElementById(this.name + "CommandPanel").querySelector('input[name="command_delay"]').value = this.startDelay;
         }
         if (this.repeatTimes != 0) {
             document.getElementById(this.name + "CommandPanel").querySelector('input[name="command_repeat"]').value = this.repeatTimes;
         }
-        //will update the assets activated
-        var assetsTemp = document.getElementById(this.name + "CommandPanel").querySelector('div[name="objectHolder"]').querySelectorAll('label[id*="Asset"]');
-        for (var i = 0; i < assetsTemp.length; i++) {
-            for (var j = 0; j < this.assetArray.length; j++) {
-                if (assetsTemp[i].querySelector("input").id == this.assetArray[j] + 'commandPanelAssetCheckbox') {
-                    if (!assetsTemp[i].querySelector("input").checked) {
-                        assetsTemp[i].click()
-                    }
-                }
-            }
-        }
-        this.assetArray = Array.from(new Set(this.assetArray));
-        //will update the groups activated
-        var groupsTemp = document.getElementById(this.name + "CommandPanel").querySelector('div[name="objectHolder"]').querySelectorAll('label[id*="Group"]');
-        for (var i = 0; i < groupsTemp.length; i++) {
-            for (var j = 0; j < this.groupArray.length; j++) {
-                if (groupsTemp[i].querySelector("input").id == this.groupArray[j] + 'commandPanelGroupCheckbox') {
-                    if (!groupsTemp[i].querySelector("input").checked) {
-                        groupsTemp[i].click()
-                    }
-                }
-            }
-        }
-        this.groupArray = Array.from(new Set(this.groupArray));
     }
 
     generateCommand() {
@@ -615,45 +574,19 @@ class Command {
             }) + `</div>
             <!--The command name-->
             <input class="viewableCommandInput" type="text" name="commandName" value="` + this.name + `" readonly="readonly">
-            <!--The command generation pane-->
-            <div class="viewableCommandMessageGeneration">
-                <!--The color for the command-->
-                <label class="viewableCommandMessageGenerationColor" name="colorPicker">
-                    <input type="color" style="display: none;" name="colorData" onchange="this.parentElement.style.backgroundColor = this.value;  this.parentElement.style.color = this.value; global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()"/>
-                    No Color
-                </label>
-                <!--The string update button-->
-                <button type="button" class="viewableCommandMessageGenerationInputGenerateButton" onclick="global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand(); global.objectList._CommandList.findKeyValuePair('` + this.name + `').generateCommand();">
-                    <svg id="viewableCommandMessageGenerationIcon">
-                        <use xlink:href="SvgIcons/Generate.svg#generate"></use>
-                    </svg>
-                </button>
-                <!--The mode dropdown-->
-                <select class="viewableCommandMessageGenerationMode" name="modeDropdown" onchange="global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()">
-                    <option value="">Select Mode</option>
-                </select>
-                <!--The generated string-->
-                <input class="viewableCommandMessageGenerationInput" type="text" name="generated_string" value="Generated String" readonly="readonly">
-                <!--The delay of the command-->
-                <input class="viewableCommandMessageGenerationInput" type="text" name="delay" value="Set Delay (ms)" onchange="global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()">
-                <!--The debug of the command-->
-                <label class="viewableCommandMessageGenerationInputCheck">
-                    Debug
-                    <input class="viewableCommandMessageGenerationInputCheckbox" name="debug" type="checkbox" onclick="this.parentElement.childNodes[0].nodeValue  = 'Debug ' + this.checked;" onchange="global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()">
-                </label>
-            </div>
+            <!--The command messagepane-->
+            <textarea  class="viewableCommandInputPane" type="text" name="commands" placeholder="put command strings here"></textarea> 
+            <!--A list of all assets and groups here-->
+            <textarea  class="viewableCommandInputPane" type="text" name="targets" placeholder="put assets/groups here"></textarea> 
             <div class="viewableCommandControlPane">
                 <!--The settings for a command to be ran with-->
-                <div class="viewableCommandControlPaneControls" style="overflow:hidden; margin-right: 5px; width: calc(50% - 5px);">
+                <div class="viewableCommandControlPaneControls">
                     <input class="viewableCommandControlPaneControlsNumber" type="text" name="command_delay" value="Activation delay" onchange="global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()">
                     <input class="viewableCommandControlPaneControlsNumber" type="text" name="command_repeat" value="Number of repeats" onchange="global.objectList._CommandList.findKeyValuePair('` + this.name + `').updateCommand()">
                 </div>
                 <!--A list of all assets and groups-->
-                <div name="objectHolder" class="viewableCommandControlPaneControls viewableCommandObjectHolderPanel">
-                    <!--Objects go here-->
-                </div>
             </div>
-            <button type="button" class="viewableCommandControlPaneSend" onclick="global.objectList._CommandList.findKeyValuePair('` + this.name + `').generateCommand(); global.objectList._CommandList.findKeyValuePair('` + this.name + `').sendCommand()">
+            <button type="button" class="viewableCommandControlPaneSend" onclick="global.objectList._CommandList.findKeyValuePair('` + this.name + `').sendCommand()">
                 <svg id="viewableCommandControlPaneSendIcon">
                     <use xlink:href="SvgIcons/play.svg#play"></use>
                 </svg>
@@ -1180,7 +1113,7 @@ class Asset {
         var colorClamped = new Color("Custom", document.getElementById(this.name + "AssetPanel").querySelector('label[name="colorPicker"]').style.backgroundColor);
         var modeClamped = global.objectList._ModeList[document.getElementById(this.name + "AssetPanel").querySelector('select[name="modeDropdown"]').value];
         //clamp the dlay value
-        if (!isNaN(document.getElementById(this.name + "AssetPanel").querySelector('input[name="delay"]').value)) {
+        if (document.getElementById(this.name + "AssetPanel").querySelector('input[name="delay"]').value != "" && !isNaN(document.getElementById(this.name + "AssetPanel").querySelector('input[name="delay"]').value)) {
             delayClamped = document.getElementById(this.name + "AssetPanel").querySelector('input[name="delay"]').value;
         }
         //generate a local command
@@ -1290,7 +1223,7 @@ class Asset {
                     <option value="0">Select Mode</option>
                 </select>
                 <!--The delay of the command-->
-                <input class="viewableAssetCommandConstructionDelay" type="text" name="delay" value="Set Delay (ms)">
+                <input class="viewableAssetCommandConstructionDelay" type="text" name="delay" placeholder="Set Delay (ms)">
                 <!--The generated string-->
                 <input class="viewableAssetCommandConstructionGeneratedString" type="text" name="generated_string" value="Generated String" readonly="readonly">
                 <!--The send button-->

@@ -107,6 +107,33 @@
             </div>
             <!--The Dynamic part of the sidebar-->
             <div class="leftSidebarWrapper">
+                <!--This is a basic command panel in the asset panel so that test commands can be sent-->
+                <div class="sidePanelCommandConstruction">
+                    <!--Select the specific type of command-->
+                    <select class="sidePanelCommandConstructionTypeSelect" name="typeDropdown" onchange="generateLocalCommand()">
+                        <option value="0">Single Color RGB</option>
+                        <option value="1">Dual Color RGB</option>
+                    </select>
+                    <!--The color pane that allows multiple colors>-->
+                    <div class="sidePanelCommandConstructionColorPane">
+                        <!--The colors for the command-->
+                        <label class="sidePanelCommandConstructionColor" name="colorPicker" onchange="generateLocalCommand()">
+                            <input type="color" style="display: none;"
+                                onchange="this.parentElement.style.backgroundColor = this.value;  this.parentElement.style.color = this.value;" />
+                            No Color
+                        </label>
+                    </div>
+                    <!--The mode dropdown-->
+                    <select class="sidePanelCommandConstructionModeSelect" name="modeDropdown" onchange="generateLocalCommand()">
+                        <option value="0">Select Mode</option>
+                    </select>
+                    <!--The delay of the command-->
+                    <input class="sidePanelCommandConstructionDelay" type="text" name="delay"
+                        placeholder="Set Delay (ms)" onchange="generateLocalCommand()">
+                    <!--The generated string-->
+                    <input class="sidePanelCommandConstructionGeneratedString" type="text" name="generated_string"
+                        value="Generated String" readonly="readonly">
+                </div>
                 <!--The Command Viewer and searcher-->
                 <div class="leftSidebarCommandViewer hoverPanelContent">
                     <div class="leftSidebarCommandViewerCollapse">
@@ -345,12 +372,12 @@
                             <use xlink:href="SvgIcons/fastforward.svg#fast_forward"></use>
                         </svg>
                     </button>
-                    <button type="button" class="StickyBarCommandButton" onclick="createCommandDialog()">
+                    <button type="button" class="StickyBarCommandButton" onclick="openCommandDialog()">
                         Open
                         <br>
                         Command
                     </button>
-                    <button type="button" class="StickyBarCommandButton" onclick="openCommandDialog()">
+                    <button type="button" class="StickyBarCommandButton" onclick="createCommandDialog()">
                         Create
                         <br>
                         Command
