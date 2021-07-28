@@ -15,7 +15,7 @@ steps:
     checkLatest: true
 
 - script: 
-    npm install electron@6.1.5 --save-dev
+    npm install electron@latest --save-dev
   displayName: 'download electron'
 
 - script: 
