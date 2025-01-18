@@ -45,7 +45,7 @@
     "webbluetooth": "^2.1.0"
   },
   "devDependencies": {
-    "electron": "^12.1.0",
+    "electron": "^15.5.5",
     "electron-builder": "^20.44.4",
     "electron-rebuild": "^1.11.0"
   }
